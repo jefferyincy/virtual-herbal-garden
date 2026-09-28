@@ -1,0 +1,36 @@
+# Render blueprint for the Virtual Herbal Garden API.
+#
+# Deploy: Render dashboard -> New -> Blueprint -> pick this repo. It reads this file.
+# The free plan sleeps after ~15 min idle; the first request then cold-starts (~50s).
+services:
+  - type: web
+    name: vhg-api
+    runtime: node
+    plan: free
+    # Pin Node >= 22.9: the start script passes `--env-file-if-exists`, added in 22.9.
+    # (On Render there is no ../.env, so the flag is a no-op and env comes from the dashboard.)
+    buildCommand: npm ci
+    startCommand: npm run start -w server
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: 22.14.0
+      - key: NODE_ENV
+        value: production
+      # One proxy hop (Render's edge) so req.ip is the real client and the auth rate limiter
+      # buckets per user instead of putting everyone in one bucket.
+      - key: TRUST_PROXY
+        value: "1"
+      # Prompted in the dashboard, never stored in git:
+      #   CLIENT_ORIGIN - the deployed Vercel URL, e.g. https://your-app.vercel.app
+      #   MONGO_URI     - the Atlas SRV string,
+      #                   e.g. mongodb+srv://user:pass@cluster.mongodb.net/herbal_garden
+      - key: CLIENT_ORIGIN
+        sync: false
+      - key: MONGO_URI
+        sync: false
+      # Secrets: Render generates strong values on first deploy.
+      - key: JWT_ACCESS_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true

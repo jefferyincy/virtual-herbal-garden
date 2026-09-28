@@ -13,6 +13,9 @@ const schema = z.object({
   ACCESS_TTL: z.string().default('15m'),
   REFRESH_TTL: z.string().default('7d'),
   CLIENT_ORIGIN: z.string().default('http://localhost:5173'),
+  // Number of proxy hops to trust for `X-Forwarded-For`. 1 behind a single hosting proxy
+  // (Render/Railway); 0 when the app is reached directly, so a client cannot spoof its own IP.
+  TRUST_PROXY: z.coerce.number().int().min(0).default(0),
 });
 
 export type Env = z.infer<typeof schema>;

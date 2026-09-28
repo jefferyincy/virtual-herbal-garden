@@ -21,6 +21,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.9.5",
     "multer": "^2.0.2",
+    "tsx": "^4.23.15",
     "zod": "^3.24.1"
   },
   "devDependencies": {
@@ -31,7 +32,6 @@
     "@types/jsonwebtoken": "^9.0.7",
     "@types/multer": "^2.0.0",
     "@types/node": "^22.10.5",
-    "tsx": "^4.23.15",
     "typescript": "^5.7.3"
   }
 }

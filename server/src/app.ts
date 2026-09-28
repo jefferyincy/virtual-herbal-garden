@@ -32,6 +32,10 @@ export function createApp(): Express {
   const app = express();
 
   app.disable('x-powered-by');
+  // Trust exactly the configured number of proxy hops so `req.ip` is the real client behind a
+  // hosting proxy (the rate limiter buckets per IP); 0 by default so `X-Forwarded-For` cannot be
+  // spoofed when the app is reached directly.
+  if (env.TRUST_PROXY > 0) app.set('trust proxy', env.TRUST_PROXY);
   app.use(cors({ origin: env.CLIENT_ORIGIN, credentials: true }));
   app.use(cookieParser());
   app.use(express.json({ limit: '1mb' }));
