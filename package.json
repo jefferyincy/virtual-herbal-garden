@@ -10,6 +10,11 @@
   "engines": {
     "node": ">=20"
   },
+  "overrides": {
+    "@babel/helper-compilation-targets": {
+      "lru-cache": "^5.1.1"
+    }
+  },
   "scripts": {
     "db:start": "bash scripts/db.sh start",
     "db:stop": "bash scripts/db.sh stop",

@@ -25,7 +25,6 @@ const TITLE_MAX = 160;
 const BODY_MIN = 20;
 const BODY_MAX = 8000;
 const MAX_PLANTS = 5;
-const REMEDY_SOURCE_ERROR = 'Remedies must cite a source';
 
 const TYPE_OPTIONS: Array<{ value: PostType; label: string; icon: 'leaf' | 'message' | 'pencil' }> = [
   { value: 'remedy', label: 'Remedy', icon: 'leaf' },
@@ -332,12 +331,13 @@ export default function NewPostPage() {
             </ul>
           )}
 
-          {/* Client-side mirror of the server rule, with the server's own message: a remedy with no
-              citation cannot be submitted, so the requirement is visible before the round trip. */}
+          {/* Client-side mirror of the server rule: the persistent helper line above states the
+              requirement, and this notice explains why Submit is disabled - the two never repeat
+              the same sentence. */}
           {remedyNeedsSource && (
             <p className="flex items-center gap-1 text-small text-danger">
               <Icon name="alert-circle" size={14} />
-              {REMEDY_SOURCE_ERROR}
+              Add at least one source before submitting this remedy
             </p>
           )}
         </div>

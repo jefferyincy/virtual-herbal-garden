@@ -12,9 +12,9 @@ import { loginSchema } from '@/features/auth/schemas';
 
 /**
  * Submission validates with `loginSchema.safeParse` and maps `error.issues[].path[0]` onto the
- * field with `setError`, because `@hookform/resolvers` is not a dependency. react-hook-form is
- * therefore not used here at all: `safeParse` plus a `useState` error map is the same behaviour
- * without a resolver library, and the pending flag is the mutation's own `isPending`.
+ * offending field, because `@hookform/resolvers` is not a dependency of this project. A controlled
+ * `useState` form plus that mapper is the same behaviour without a resolver library; the pending
+ * flag is the mutation's own `isPending`.
  */
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -34,7 +34,7 @@ export default function LoginPage() {
     event.preventDefault();
     const parsed = loginSchema.safeParse({ email, password });
     if (!parsed.success) {
-      setErrors(fieldErrorsFromIssues(parsed.error.issues));
+      setErrors(issuesToFieldErrors(parsed.error.issues));
       return;
     }
     setErrors({});
@@ -172,9 +172,10 @@ function Divider() {
 }
 
 /**
- * The Google mark is drawn as a single-colour 18px line glyph in `currentColor` - no brand fill, no
- * emoji - because the app ships one icon set and a second colour palette on one button would break
- * it. The button only reports that the provider is unconfigured; it must never fake a session.
+ * The Google mark is drawn as a single-colour 18px `g` letterform in `currentColor` - no brand
+ * fill, no emoji - because the app ships one icon set and a second colour palette on one button
+ * would break it. The button only reports that the provider is unconfigured; it must never fake a
+ * session.
  */
 function GoogleGlyph() {
   return (
@@ -186,12 +187,12 @@ function GoogleGlyph() {
       stroke="currentColor"
       strokeWidth={1.5}
       strokeLinecap="round"
+      strokeLinejoin="round"
       aria-hidden="true"
       className="text-fg"
     >
-      <circle cx="12" cy="12" r="9" />
-      <path d="M20.5 12H12" />
-      <path d="M12 12v7.5" />
+      <circle cx="11" cy="9" r="5" />
+      <path d="M16 9v5.5a3.5 3.5 0 0 1-3.5 3.5H10" />
     </svg>
   );
 }

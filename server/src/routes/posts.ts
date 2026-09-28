@@ -21,7 +21,7 @@ import { Types, type Model, type UpdateWithAggregationPipeline } from 'mongoose'
 import { z } from 'zod';
 import { route } from '../lib/asyncRoute.ts';
 import { badRequest, notFound, unauthorized } from '../lib/http.ts';
-import { paginated, pagination } from '../lib/query.ts';
+import { paginated, pagination, type PageWindow } from '../lib/query.ts';
 import { optionalAuth, requireAuth, requireRole } from '../middleware/auth.ts';
 import { writeLimiter } from '../middleware/rateLimit.ts';
 import { validate } from '../middleware/validate.ts';
@@ -67,6 +67,8 @@ type PostRecord = {
   // the documents written by these routes always set it.
   reviewerId?: Types.ObjectId | null;
   reviewerNote?: string | null;
+  // Required, unlike the nullable paths above: the schema gives every post a `default: []`, so a
+  // stored post always has an array and the count needs no null branch.
   upvotes: Types.ObjectId[];
   createdAt: Date;
   updatedAt: Date;
@@ -91,7 +93,6 @@ type UserRecord = {
   name: string;
   handle: string;
   bio: string | null;
-  role: Role;
   level: number;
   xp: number;
   streak?: { current?: number } | null;
@@ -127,12 +128,11 @@ type AuthorView = {
   level: number;
 };
 
-/** Plant fields a feed card renders. */
+/** Plant fields a feed card renders; the detail view adds `toxicity` via `PLANT_TAG_FIELDS`. */
 const PLANT_CARD_FIELDS = 'slug commonName botanicalName images';
-/** The full post view adds the toxicity dot to every tagged plant. */
 const PLANT_TAG_FIELDS = `${PLANT_CARD_FIELDS} toxicity`;
 
-type PlantCardView = {
+type PlantView = {
   _id: Types.ObjectId;
   slug: string;
   commonName: string;
@@ -141,14 +141,12 @@ type PlantCardView = {
   toxicity?: string;
 };
 
-type PlantTagView = PlantCardView;
-
 type PostRow = {
   _id: Types.ObjectId;
   type: PostType;
   title: string;
   body: string;
-  plantIds: PlantTagView[];
+  plantIds: PlantView[];
   sources: string[];
   status: PostStatus;
   upvoteCount: number;
@@ -156,6 +154,9 @@ type PostRow = {
   expertApproved: boolean;
   author: AuthorView | null;
   createdAt: Date;
+  // The shared client contract (`Post` in client/src/types/api.ts) requires `updatedAt` on every
+  // post row, so the feed and detail send it; nothing private rides along with it.
+  updatedAt: Date;
 };
 
 type CommentRow = {
@@ -167,6 +168,7 @@ type CommentRow = {
   parentId: Types.ObjectId | null;
   author: AuthorView | null;
   createdAt: Date;
+  updatedAt: Date;
 };
 
 type BadgeRow = {
@@ -245,9 +247,9 @@ function canReadPost(post: PostRecord, viewer: ViewingCaller): boolean {
  * private" is meant to prevent.
  */
 async function loadVisiblePost(identifier: string, viewer: ViewingCaller): Promise<PostRecord> {
-  const post = OBJECT_ID.test(identifier)
-    ? await Post.findById(identifier).lean<PostRecord | null>()
-    : null;
+  // The route's params schema already rejected anything that is not a 24-character id, so
+  // `findById` cannot be handed a value mongoose would fail to cast.
+  const post = await Post.findById(identifier).lean<PostRecord | null>();
   if (!post || !canReadPost(post, viewer)) throw notFound('Post not found');
   return post;
 }
@@ -297,7 +299,7 @@ async function buildPostRows(
   const [plants, users, commentCounts] = await Promise.all([
     Plant.find({ _id: { $in: [...plantIds] } })
       .select(plantFields)
-      .lean<PlantTagView[]>(),
+      .lean<PlantView[]>(),
     // Authors and reviewers come from the same projection, so two ids per row still cost one
     // query. `email` is not selected, so it cannot be leaked by a row builder.
     User.find({ _id: { $in: [...userIds] } })
@@ -316,7 +318,7 @@ async function buildPostRows(
   const commentsPerPost = new Map(commentCounts.map((row) => [String(row._id), row.count]));
 
   return posts.map((post) => {
-    const tags: PlantTagView[] = [];
+    const tags: PlantView[] = [];
     for (const id of post.plantIds) {
       const plant = plantById.get(String(id));
       // A plant deleted after the post was written is dropped rather than invented.
@@ -343,6 +345,7 @@ async function buildPostRows(
       expertApproved: post.status === 'approved' && approvedByExpert,
       author,
       createdAt: post.createdAt,
+      updatedAt: post.updatedAt,
     };
   });
 }
@@ -366,12 +369,20 @@ async function loadCommentRows(postIds: Types.ObjectId[]): Promise<CommentRow[]>
     .sort({ createdAt: 1, _id: 1 })
     .lean<CommentRecord[]>();
 
+  return toCommentRows(comments);
+}
+
+/**
+ * Project comments onto the wire shape with their authors attached in ONE query. Rows are built in
+ * input order, so the caller decides the ordering.
+ */
+async function toCommentRows(comments: CommentRecord[]): Promise<CommentRow[]> {
+  if (comments.length === 0) return [];
+
   const authorIds = [...new Set(comments.map((comment) => String(comment.userId)))];
-  const authors = authorIds.length
-    ? await User.find({ _id: { $in: authorIds } })
-        .select('name handle role level')
-        .lean<AuthorView[]>()
-    : [];
+  const authors = await User.find({ _id: { $in: authorIds } })
+    .select('name handle role level')
+    .lean<AuthorView[]>();
   const authorById = new Map(authors.map((author) => [String(author._id), author]));
 
   return comments.map((comment) => ({
@@ -383,13 +394,17 @@ async function loadCommentRows(postIds: Types.ObjectId[]): Promise<CommentRow[]>
     parentId: comment.parentId ?? null,
     author: authorById.get(String(comment.userId)) ?? null,
     createdAt: comment.createdAt,
+    updatedAt: comment.updatedAt,
   }));
 }
 
-/** Single-document form of `loadCommentRows`, for the 201 answer of a new comment. */
+/**
+ * Single-comment form of `toCommentRows`, for the 201 answer of a new comment: the author is
+ * looked up for that one row instead of the whole thread.
+ */
 async function buildOneCommentRow(comment: CommentRecord): Promise<CommentRow> {
-  const rows = await loadCommentRows([comment.postId]);
-  const row = rows.find((candidate) => String(candidate._id) === String(comment._id));
+  const rows = await toCommentRows([comment]);
+  const row = rows[0];
   if (!row) throw notFound('Comment not found');
   return row;
 }
@@ -400,7 +415,7 @@ async function buildOneCommentRow(comment: CommentRecord): Promise<CommentRow> {
  */
 async function newestPostPage(
   filter: Record<string, unknown>,
-  window: { skip: number; limit: number; page: number; pageSize: number },
+  window: PageWindow,
 ): Promise<PostRecord[]> {
   return Post.find(filter)
     .sort({ createdAt: -1, _id: -1 })
@@ -418,7 +433,7 @@ async function newestPostPage(
  */
 async function topPostPage(
   filter: Record<string, unknown>,
-  window: { skip: number; limit: number; page: number; pageSize: number },
+  window: PageWindow,
 ): Promise<PostRecord[]> {
   return Post.aggregate<PostRecord>([
     { $match: filter },
@@ -467,7 +482,9 @@ postsRouter.get(
     //   1. `?author=<own handle>`  - the caller's own listing, in any status (their pending and
     //      rejected posts are theirs to see);
     //   2. a moderator (`expert`/`admin`) - sees every status by default (this is the moderation
-    //      surface), and may narrow with `?status=`;
+    //      surface, which is also the only caller that may widen), and may narrow with `?status=`;
+    //      this holds with an `?author=` filter too, because the moderation queue filters by
+    //      submitter;
     //   3. anything else - forced to `approved`, including an explicit `?status=pending` request
     //      from a plain user, which is clamped rather than rejected so the response cannot be used
     //      to probe which statuses exist.
@@ -545,6 +562,49 @@ postsRouter.get(
   }),
 );
 
+/**
+ * Resolve every plant tag by ObjectId or slug in ONE query. An unknown tag is a 400 that names it,
+ * rather than a silently dropped tag on a saved post.
+ */
+async function resolvePlantTags(tags: string[]): Promise<Types.ObjectId[]> {
+  if (tags.length === 0) return [];
+
+  const ids: Types.ObjectId[] = [];
+  const slugs: string[] = [];
+  for (const tag of tags) {
+    if (OBJECT_ID.test(tag)) ids.push(new Types.ObjectId(tag));
+    else slugs.push(tag.toLowerCase());
+  }
+
+  const conditions: Record<string, unknown>[] = [];
+  if (ids.length > 0) conditions.push({ _id: { $in: ids } });
+  if (slugs.length > 0) conditions.push({ slug: { $in: slugs } });
+
+  const plants = await Plant.find({ $or: conditions })
+    .select('_id slug')
+    .lean<Array<{ _id: Types.ObjectId; slug: string }>>();
+
+  // Two indexes, because a slug has to resolve to the plant's own `_id`: the tag the client sent
+  // is not an ObjectId, so the id cannot be rebuilt from it.
+  const idByPlantId = new Map(plants.map((plant) => [String(plant._id), plant._id]));
+  const idBySlug = new Map(plants.map((plant) => [plant.slug, plant._id]));
+
+  const resolved: Types.ObjectId[] = [];
+  const unknown: string[] = [];
+  for (const tag of tags) {
+    const match = OBJECT_ID.test(tag)
+      ? idByPlantId.get(tag.toLowerCase())
+      : idBySlug.get(tag.toLowerCase());
+    if (match) resolved.push(match);
+    else unknown.push(tag);
+  }
+
+  if (unknown.length > 0) throw badRequest(`Unknown plant: ${unknown.join(', ')}`);
+  // The same plant sent twice (once by slug, once by id) is stored once: the tag list is a set of
+  // references, not an ordered list where repetition could mean anything.
+  return [...new Map(resolved.map((id) => [String(id), id])).values()];
+}
+
 const createPostSchema = z
   .object({
     type: z.enum(POST_TYPES),
@@ -604,67 +664,6 @@ postsRouter.post(
   }),
 );
 
-/**
- * Resolve every plant tag by ObjectId or slug in ONE query. An unknown tag is a 400 that names it,
- * rather than a silently dropped tag on a saved post.
- */
-async function resolvePlantTags(tags: string[]): Promise<Types.ObjectId[]> {
-  if (tags.length === 0) return [];
-
-  const ids: Types.ObjectId[] = [];
-  const slugs: string[] = [];
-  for (const tag of tags) {
-    if (OBJECT_ID.test(tag)) ids.push(new Types.ObjectId(tag));
-    else slugs.push(tag.toLowerCase());
-  }
-
-  const conditions: Record<string, unknown>[] = [];
-  if (ids.length > 0) conditions.push({ _id: { $in: ids } });
-  if (slugs.length > 0) conditions.push({ slug: { $in: slugs } });
-
-  const plants = await Plant.find({ $or: conditions })
-    .select('_id slug')
-    .lean<Array<{ _id: Types.ObjectId; slug: string }>>();
-
-  // Two indexes, because a slug has to resolve to the plant's own `_id`: the tag the client sent
-  // is not an ObjectId, so the id cannot be rebuilt from it.
-  const idByPlantId = new Map(plants.map((plant) => [String(plant._id), plant._id]));
-  const idBySlug = new Map(plants.map((plant) => [plant.slug, plant._id]));
-
-  const resolved: Types.ObjectId[] = [];
-  const unknown: string[] = [];
-  for (const tag of tags) {
-    const match = OBJECT_ID.test(tag)
-      ? idByPlantId.get(tag.toLowerCase())
-      : idBySlug.get(tag.toLowerCase());
-    if (match) resolved.push(match);
-    else unknown.push(tag);
-  }
-
-  if (unknown.length > 0) throw badRequest(`Unknown plant: ${unknown.join(', ')}`);
-  // The same plant sent twice (once by slug, once by id) is stored once: the tag list is a set of
-  // references, not an ordered list where repetition could mean anything.
-  return [...new Map(resolved.map((id) => [String(id), id])).values()];
-}
-
-postsRouter.post(
-  '/posts/:id/upvote',
-  requireAuth,
-  validate({ params: postParamsSchema }),
-  route(async (req, res) => {
-    const caller = callerOf(req);
-    const { id } = req.params as z.infer<typeof postParamsSchema>;
-    const post = await loadVisiblePost(id, caller);
-
-    if (String(post.userId) === caller.id) {
-      throw badRequest('You cannot upvote your own post');
-    }
-
-    const updated = await toggleUpvote<PostRecord>(Post, post._id, caller.id);
-    res.json(toUpvoteResult(updated, caller.id));
-  }),
-);
-
 type VotableRecord = { upvotes: Types.ObjectId[] };
 
 /**
@@ -706,17 +705,37 @@ async function toggleUpvote<T extends VotableRecord>(
 
 /** The toggled state as the client reads it: a count, plus whether THIS caller is now in the list. */
 function toUpvoteResult(document: { upvotes: Types.ObjectId[] }, voterId: string) {
-  return {
-    upvoteCount: document.upvotes.length,
-    upvoted: document.upvotes.some((voter) => String(voter) === voterId),
-  };
+  const upvoteCount = document.upvotes.length;
+  const upvoted = document.upvotes.some((voter) => String(voter) === voterId);
+  return { upvoteCount, upvoted };
 }
+
+postsRouter.post(
+  '/posts/:id/upvote',
+  requireAuth,
+  validate({ params: postParamsSchema }),
+  route(async (req, res) => {
+    const caller = callerOf(req);
+    const { id } = req.params as z.infer<typeof postParamsSchema>;
+    const post = await loadVisiblePost(id, caller);
+
+    if (String(post.userId) === caller.id) {
+      throw badRequest('You cannot upvote your own post');
+    }
+
+    const updated = await toggleUpvote<PostRecord>(Post, post._id, caller.id);
+    res.json(toUpvoteResult(updated, caller.id));
+  }),
+);
 
 const createCommentSchema = z.object({
   body: z.string().trim().min(1, 'Write a comment').max(2000),
   // `nullish` rather than `optional`: a form that clears the reply target sends an explicit null,
   // and both spellings mean the same thing (a top-level comment).
   parentId: objectIdString.nullish(),
+  // `markedUseful` is absent on purpose and zod strips unknown keys, so a request that tries to
+  // send it is ignored: marking a comment useful is an expert/moderator action, not one the author
+  // of a comment can grant themselves. Same for `upvotes` on both create routes.
 });
 
 postsRouter.post(
@@ -782,6 +801,9 @@ postsRouter.post(
     // A comment is only as visible as the post under it, so the thread has to be readable too.
     await loadVisiblePost(String(comment.postId), caller);
 
+    // The product rule "a user cannot upvote their own post" is applied to comments as well: a
+    // comment is the same kind of contribution and self-voting it is the same self-promotion the
+    // post rule forbids. The rest of the endpoint is identical to the post toggle.
     if (String(comment.userId) === caller.id) {
       throw badRequest('You cannot upvote your own comment');
     }
@@ -852,14 +874,16 @@ postsRouter.patch(
       await awardBadgesIfEarned({ userId: String(previous.userId), event });
     }
 
-    // The author is told the outcome, including the reviewer's note. A moderator reviewing their
-    // own post is not notified about themselves (notifyUsers skips the actor).
+    // The author is told the outcome, including the reviewer's note. The note is sent verbatim
+    // (already bounded at 1000 characters by the schema): it is the feedback the author has to act
+    // on, so truncating it to a preview would be withholding the message. A moderator reviewing
+    // their own post is not notified about themselves (notifyUsers skips the actor).
     await notifyUsers(
       [String(previous.userId)],
       {
         type: 'moderation',
         title: MODERATION_TITLE[action],
-        body: excerpt(note ?? `Your post is now ${nextStatus}.`, 140),
+        body: note ?? `Your post is now ${nextStatus}.`,
         href: `/community/${String(previous._id)}`,
       },
       caller.id,
@@ -900,10 +924,9 @@ postsRouter.get(
           .sort({ createdAt: -1 })
           .lean<GardenRecord[]>(),
         // ONE query joins the earned keys to the Badge catalogue, so names and icons come from the
-        // stored documents instead of a hardcoded table in the route.
-        badgeKeys.length > 0
-          ? Badge.find({ key: { $in: badgeKeys } }).lean<BadgeRecord[]>()
-          : Promise.resolve([] as BadgeRecord[]),
+        // stored documents instead of a hardcoded table in the route. An empty key list is a `$in`
+        // that matches nothing, so the no-badges case needs no special path.
+        Badge.find({ key: { $in: badgeKeys } }).lean<BadgeRecord[]>(),
         Post.find(recentFilter)
           .sort({ createdAt: -1, _id: -1 })
           .limit(RECENT_POST_LIMIT)
@@ -939,15 +962,13 @@ postsRouter.get(
 
     const recentPosts = await buildPostRows(recentPostDocs);
 
-    // Public identity only. `email` is neither selected above nor present in any row builder, so
-    // it cannot reach a profile response.
+    // Public identity only, and exactly the keys the profile screen declares. `email` is neither
+    // selected above nor present in any row builder, so it cannot reach a profile response.
     res.json({
       user: {
-        _id: user._id,
         name: user.name,
         handle: user.handle,
         bio: user.bio ?? '',
-        role: user.role,
         level: user.level,
         xp: user.xp,
         createdAt: user.createdAt,

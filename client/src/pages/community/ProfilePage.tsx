@@ -169,7 +169,7 @@ function ProfileBanner({
 
         <div className="min-w-0 flex-1">
           <h1 className="text-h1 text-fg">{user.name}</h1>
-          <p className="mono-label">@{user.handle}</p>
+          <p className="mono-label truncate">@{user.handle}</p>
           {user.bio ? (
             <p className="mt-2 max-w-reading text-body text-fg-secondary">{user.bio}</p>
           ) : (
@@ -177,10 +177,16 @@ function ProfileBanner({
           )}
 
           <div className="mt-4 flex flex-wrap gap-2">
-            <StatChip label="xp" value={formatNumber(user.xp)} />
-            <StatChip label="badges" value={formatNumber(stats.badges)} />
-            <StatChip label="plants read" value={formatNumber(stats.plantsRead)} />
-            <StatChip label="day streak" value={formatNumber(stats.streakDays)} />
+            <StatChip value={formatNumber(user.xp)} label="XP" />
+            <StatChip
+              value={formatNumber(stats.badges)}
+              label={stats.badges === 1 ? 'badge' : 'badges'}
+            />
+            <StatChip value={formatNumber(stats.plantsRead)} label="plants read" />
+            <StatChip
+              value={`${formatNumber(stats.streakDays)}-day`}
+              label="streak"
+            />
           </div>
         </div>
 
@@ -217,6 +223,7 @@ function ProfileBanner({
   );
 }
 
+/** Mono stat chip: the value is `font-mono` data, the label a `mono-label` caption. */
 function StatChip({ label, value }: { label: string; value: string }): ReactNode {
   return (
     <span className="inline-flex items-baseline gap-1.5 rounded-full border border-line-subtle px-3 py-1">

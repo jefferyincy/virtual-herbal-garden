@@ -455,12 +455,29 @@ function DiffView({
 }): ReactNode {
   const changed = useMemo(() => new Set(changedLines), [changedLines]);
 
+  /**
+   * The two panes carry different bars: the submission marks the lines the reviewer typed (accent,
+   * from the server's `changedLines`), and the published version marks the lines that submission
+   * replaces (danger). Without this the "current" pane would look untouched even though the
+   * reviewer is about to overwrite exactly those lines.
+   */
+  const submittedLines = useMemo(() => submitted.body.split('\n'), [submitted.body]);
+  const superseded = useMemo(() => {
+    const marked = new Set<number>();
+    if (!current) return marked;
+    current.body.split('\n').forEach((line, index) => {
+      if (submittedLines[index] !== line) marked.add(index);
+    });
+    return marked;
+  }, [current, submittedLines]);
+
   return (
     <Card variant="flat" padding="none" className="overflow-hidden">
       <VersionPane
         label="SUBMITTED"
         version={submitted}
         changed={changed}
+        bar="accent"
         tone="submitted"
       />
       {current === null ? (
@@ -472,7 +489,7 @@ function DiffView({
           </p>
         </div>
       ) : (
-        <VersionPane label="CURRENT" version={current} changed={changed} tone="current" />
+        <VersionPane label="CURRENT" version={current} changed={superseded} bar="danger" tone="current" />
       )}
     </Card>
   );
@@ -482,11 +499,14 @@ function VersionPane({
   label,
   version,
   changed,
+  bar,
   tone,
 }: {
   label: string;
   version: ModerationVersion;
   changed: Set<number>;
+  /** Which left bar marks a changed line: accent for the submission, danger for what it replaces. */
+  bar: 'accent' | 'danger';
   tone: 'submitted' | 'current';
 }): ReactNode {
   const lines = version.body.split('\n');
@@ -510,8 +530,12 @@ function VersionPane({
             <p
               key={index}
               className={cn(
-                'border-l-2 px-3 py-0.5 text-body text-fg-secondary',
-                isChanged ? 'border-accent-500 bg-accent-tint text-fg' : 'border-transparent',
+                'border-l-2 px-3 py-0.5 text-body',
+                isChanged
+                  ? bar === 'danger'
+                    ? 'border-danger bg-danger-tint text-fg'
+                    : 'border-accent-500 bg-accent-tint text-fg'
+                  : 'border-transparent text-fg-secondary',
               )}
             >
               {line || '\u00a0'}

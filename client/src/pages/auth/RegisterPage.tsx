@@ -24,8 +24,9 @@ export default function RegisterPage() {
   const [accepted, setAccepted] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const serverErrors = apiFieldErrors(register.error);
-  const fieldError = (field: string): string | undefined => errors[field] ?? serverErrors[field];
+  // A 422's `details` are merged over the local zod errors, so a server-side conflict on `email`
+  // renders on the email field and not only in the banner.
+  const fieldErrors: Record<string, string | undefined> = { ...apiFieldErrors(register.error), ...errors };
 
   function handleSubmit(event: FormEvent<HTMLFormElement>): void {
     event.preventDefault();
@@ -70,7 +71,7 @@ export default function RegisterPage() {
           placeholder="Your name"
           value={name}
           onChange={(event) => setName(event.target.value)}
-          error={fieldError('name')}
+          error={fieldErrors.name}
         />
 
         <Input
@@ -81,7 +82,7 @@ export default function RegisterPage() {
           placeholder="you@example.com"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
-          error={fieldError('email')}
+          error={fieldErrors.email}
         />
 
         <div className="flex flex-col gap-2">
@@ -93,7 +94,7 @@ export default function RegisterPage() {
             placeholder="Choose a password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
-            error={fieldError('password')}
+            error={fieldErrors.password}
           />
           {/* The meter lists the three requirements itself, so they are not repeated as copy. */}
           <PasswordStrengthMeter value={password} />
@@ -111,7 +112,7 @@ export default function RegisterPage() {
           }
           checked={accepted}
           onChange={(event) => setAccepted(event.target.checked)}
-          error={fieldError('acceptedTerms')}
+          error={fieldErrors.acceptedTerms}
         />
 
         <Button type="submit" fullWidth loading={register.isPending}>

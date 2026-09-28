@@ -24,7 +24,7 @@ import { Skeleton } from '@/components/ui/Skeleton';
 import { Watermark } from '@/components/ui/Watermark';
 import { Icon } from '@/components/icons';
 import { formatNumber, titleCase } from '@/lib/format';
-import { usePlantCatalogue, useRegionPlants } from '@/features/plants/hooks';
+import { FACET_PAGE_SIZE, usePlantCatalogue, useRegionPlants } from '@/features/plants/hooks';
 import type { Plant } from '@/types/api';
 
 /**
@@ -51,7 +51,9 @@ export default function MapPage(): ReactNode {
   const [regionFilter, setRegionFilter] = useState('');
   const [familyFilter, setFamilyFilter] = useState('');
   const [nativeOnly, setNativeOnly] = useState(false);
-  /** Region whose marker is highlighted; also the popover target until it is dismissed. */
+  /** Region whose marker is highlighted. Set by a click and kept after the popover closes. */
+  const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
+  /** Region whose preview popover is open, if any. */
   const [popoverRegion, setPopoverRegion] = useState<string | null>(null);
   /** Region loaded into the right panel - only "View all" moves it, per the screen prompt. */
   const [panelRegion, setPanelRegion] = useState<string | null>(null);
@@ -122,6 +124,11 @@ export default function MapPage(): ReactNode {
     setPage(1);
   }
 
+  function selectMarker(region: string): void {
+    setSelectedRegion(region);
+    setPopoverRegion(region);
+  }
+
   const controls = (
     <div className="mb-6 flex flex-wrap items-end gap-3">
       <Select
@@ -135,6 +142,7 @@ export default function MapPage(): ReactNode {
           setPage(1);
           // Picking a region outright is the same intent as "View all" on its marker.
           setPanelRegion(next || null);
+          setSelectedRegion(next || null);
           setPopoverRegion(null);
         }}
         options={[
@@ -260,13 +268,13 @@ export default function MapPage(): ReactNode {
                   {markers.map((marker) => {
                     const ratio = maxCount > 0 ? marker.stat.count / maxCount : 0;
                     const radius = 9 + Math.sqrt(ratio) * 20;
-                    const active = popoverRegion === marker.region;
+                    const active = selectedRegion === marker.region;
                     return (
                       <g
                         key={marker.region}
                         transform={`translate(${marker.coords.x}, ${marker.coords.y})`}
                         className="cursor-pointer"
-                        onClick={() => setPopoverRegion(marker.region)}
+                        onClick={() => selectMarker(marker.region)}
                       >
                         <circle
                           r={radius}
@@ -327,6 +335,14 @@ export default function MapPage(): ReactNode {
                   ))}
                 </div>
               </div>
+            )}
+
+            {catalogue.truncated && (
+              <p className="mt-3 flex items-start gap-2 text-small text-fg-muted">
+                <Icon name="info" size={14} className="mt-0.5 shrink-0" />
+                Marker sizes and region counts are derived from the first {FACET_PAGE_SIZE} catalogue
+                rows, so they undercount the full catalogue of {formatNumber(catalogue.data?.total ?? 0)}.
+              </p>
             )}
 
             {unmappedRegions.length > 0 && (

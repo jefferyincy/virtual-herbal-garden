@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Icon } from '@/components/icons';
 import { PageHeader } from '@/components/layout/PageHeader';
-import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ErrorState } from '@/components/ui/ErrorState';

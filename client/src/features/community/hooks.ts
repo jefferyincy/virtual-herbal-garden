@@ -19,15 +19,7 @@ import {
 import { api, ApiError } from '@/lib/api';
 import { queryKeys } from '@/lib/query';
 import { useToast } from '@/components/ui/Toast';
-import type {
-  Comment,
-  LeaderboardRow,
-  Paginated,
-  Plant,
-  Post,
-  PostStatus,
-  PostType,
-} from '@/types/api';
+import type { LeaderboardRow, Paginated, Plant, Post, PostStatus, PostType } from '@/types/api';
 
 /* ------------------------------------------------------------------ response shapes */
 
@@ -45,9 +37,13 @@ export type PostAuthor = {
 
 /**
  * `plantIds` arrives populated. The projection matches `Post['plantIds']` in `types/api.ts`; the
- * extra `toxicity` the detail route may add is not consumed here.
+ * server's `images` array can be absent on an unphotographed plant, so it is optional here and
+ * every reader guards it rather than crashing on the first index.
  */
-export type PostPlant = Pick<Plant, '_id' | 'slug' | 'commonName' | 'botanicalName' | 'images'>;
+export type PostPlant = Pick<Plant, '_id' | 'slug' | 'commonName' | 'botanicalName'> & {
+  images?: Plant['images'] | null;
+  toxicity?: Plant['toxicity'];
+};
 
 /**
  * A feed row: `Post` with the author/plant fields named as the route serialises them and the
@@ -59,17 +55,32 @@ export type PostSummary = Omit<Post, 'userId' | 'plantIds' | 'reviewerId' | 'upv
   plantIds: PostPlant[];
 };
 
-export interface PostComment extends Omit<Comment, 'userId' | 'postId'> {
+/**
+ * A comment row: the route names the author `author` (not `userId`) and sends `postId` so the
+ * detail screen can group replies without a second request. `upvotes` is never sent - only the
+ * derived count.
+ */
+export interface PostComment {
+  _id: string;
+  postId: string;
   author: PostAuthor | null;
-  /** The route populates the post id; the detail reply nesting only needs it for grouping. */
-  postId?: string;
+  body: string;
+  upvoteCount: number;
+  markedUseful: boolean;
+  parentId: string | null;
+  createdAt: string;
 }
 
-export type PostDetail = PostSummary & {
-  /** The route returns this alongside the post; `reviewerNote` comes from `Post` itself. */
+/**
+ * `GET /posts/:id` returns the row, the flag, and the comment thread as separate keys - the
+ * comments are not nested inside `post`. `reviewerNote` is present only for the author and for
+ * moderators, which is why it is optional rather than nullable.
+ */
+export interface PostDetailResponse {
+  post: PostSummary & { reviewerNote?: string | null };
+  comments: PostComment[];
   canModerate: boolean;
-  comments?: PostComment[];
-};
+}
 
 export interface PostFilter {
   type?: PostType | 'all';
@@ -206,7 +217,8 @@ export function usePost(id: string | undefined) {
   return useQuery({
     queryKey: communityKeys.detail(id ?? ''),
     enabled: Boolean(id),
-    queryFn: ({ signal }) => api.get<{ post: PostDetail; canModerate: boolean }>(`/posts/${id}`, { signal }),
+    queryFn: ({ signal }) =>
+      api.get<PostDetailResponse>(`/posts/${id}`, { signal }),
   });
 }
 

@@ -13,11 +13,35 @@ import { Skeleton } from '@/components/ui/Skeleton';
 import { Watermark } from '@/components/ui/Watermark';
 import { cn } from '@/lib/cn';
 import { apiErrorMessage, useCompleteOnboarding, useFollowablePlants } from '@/features/auth/hooks';
+import {
+  onboardingExperienceSchema,
+  onboardingInterestsSchema,
+  onboardingPlantsSchema,
+  onboardingSchema,
+} from '@/features/auth/schemas';
 import type { Experience, Plant } from '@/types/api';
 
 const STEP_COUNT = 3;
 
-const STEP_LABELS = ['Your herbal practice', 'Your experience level', 'Pick plants to follow'] as const;
+/**
+ * One entry per step. Declared as a tuple so the per-step label and intro stay paired, and read
+ * through `STEPS[step] ?? STEPS[0]` because `noUncheckedIndexedAccess` makes a numeric index
+ * `| undefined`.
+ */
+const STEPS = [
+  {
+    label: 'Your herbal practice',
+    intro: 'Which traditions do you want the garden to lead with? Pick as many as apply.',
+  },
+  {
+    label: 'Your experience level',
+    intro: 'This sets how much a monograph assumes you already know.',
+  },
+  {
+    label: 'Pick plants to follow',
+    intro: 'Follow plants to get their lessons, quizzes and review cards first.',
+  },
+] as const;
 
 /** The six practices the onboarding mockup lists. The label is also the value stored on the user. */
 const PRACTICES: Array<{ label: string; icon: IconName }> = [
@@ -44,7 +68,17 @@ export default function OnboardingPage() {
   const [experience, setExperience] = useState<Experience | null>(null);
   const [followed, setFollowed] = useState<string[]>([]);
 
-  const stepComplete = step === 0 ? interests.length > 0 : step === 1 ? experience !== null : followed.length > 0;
+  const current = STEPS[step] ?? STEPS[0];
+  const isLastStep = step === STEP_COUNT - 1;
+
+  // Each step's gate is the same zod rule the final submit enforces, so a step cannot be passed
+  // while holding a value the API would reject.
+  const stepComplete =
+    step === 0
+      ? onboardingInterestsSchema.safeParse({ interests }).success
+      : step === 1
+        ? onboardingExperienceSchema.safeParse({ experience }).success
+        : onboardingPlantsSchema.safeParse({ followedPlants: followed }).success;
 
   function toggleInterest(value: string): void {
     setInterests((prev) => (prev.includes(value) ? prev.filter((item) => item !== value) : [...prev, value]));
@@ -55,19 +89,17 @@ export default function OnboardingPage() {
   }
 
   function submit(): void {
-    if (!experience || interests.length === 0 || followed.length === 0) return;
-    complete.mutate(
-      { interests, experience, followedPlants: followed },
-      { onSuccess: () => navigate('/garden', { replace: true }) },
-    );
+    const parsed = onboardingSchema.safeParse({ interests, experience, followedPlants: followed });
+    if (!parsed.success) return;
+    complete.mutate(parsed.data, { onSuccess: () => navigate('/garden', { replace: true }) });
   }
 
   return (
     <div className="mx-auto flex w-full max-w-content flex-col">
       <StepIndicator step={step} />
 
-      <h1 className="mt-8 text-h1 text-fg">{STEP_LABELS[step]}</h1>
-      <p className="mt-2 max-w-reading text-body text-fg-secondary">{STEP_INTRO[step]}</p>
+      <h1 className="mt-8 text-h1 text-fg">{current.label}</h1>
+      <p className="mt-2 max-w-reading text-body text-fg-secondary">{current.intro}</p>
 
       <div className="mt-8 flex-1">
         {step === 0 && (
@@ -99,15 +131,15 @@ export default function OnboardingPage() {
             Back
           </Button>
 
-          {step === STEP_COUNT - 1 && <span className="mono-label">{followed.length} selected</span>}
+          {isLastStep && <span className="mono-label">{followed.length} selected</span>}
 
-          {step < STEP_COUNT - 1 ? (
-            <Button onClick={() => setStep((prev) => prev + 1)} disabled={!stepComplete} iconRight="arrow-right">
-              Next
-            </Button>
-          ) : (
+          {isLastStep ? (
             <Button onClick={submit} loading={complete.isPending} disabled={!stepComplete}>
               Enter the garden
+            </Button>
+          ) : (
+            <Button onClick={() => setStep((prev) => prev + 1)} disabled={!stepComplete} iconRight="arrow-right">
+              Next
             </Button>
           )}
         </div>
@@ -127,12 +159,6 @@ export default function OnboardingPage() {
   );
 }
 
-const STEP_INTRO = [
-  'Which traditions do you want the garden to lead with? Pick as many as apply.',
-  'This sets how much a monograph assumes you already know.',
-  'Follow plants to get their lessons, quizzes and review cards first.',
-] as const;
-
 /** Mono step label plus three segments; the segments restate the label rather than replacing it. */
 function StepIndicator({ step }: { step: number }) {
   return (
@@ -146,13 +172,13 @@ function StepIndicator({ step }: { step: number }) {
         ))}
       </div>
       <ol className="flex flex-wrap gap-x-6 gap-y-1">
-        {STEP_LABELS.map((label, index) => (
+        {STEPS.map((item, index) => (
           <li
-            key={label}
+            key={item.label}
             className={cn('text-small', index === step ? 'text-fg' : 'text-fg-muted')}
             aria-current={index === step ? 'step' : undefined}
           >
-            {label}
+            {item.label}
           </li>
         ))}
       </ol>
@@ -198,8 +224,6 @@ function PracticeStep({
   );
 }
 
-const PLANT_GRID_BOTTOM_PADDING = 'pb-32';
-
 function PlantStep({
   selected,
   onToggle,
@@ -210,8 +234,8 @@ function PlantStep({
   const plants = useFollowablePlants();
   const [query, setQuery] = useState('');
 
-  const all = plants.data?.items ?? [];
   const filtered = useMemo(() => {
+    const all = plants.data?.items ?? [];
     const needle = query.trim().toLowerCase();
     if (!needle) return all;
     return all.filter(
@@ -220,7 +244,9 @@ function PlantStep({
         plant.botanicalName.toLowerCase().includes(needle) ||
         plant.family.toLowerCase().includes(needle),
     );
-  }, [all, query]);
+  }, [plants.data, query]);
+
+  const totalPlants = plants.data?.total ?? plants.data?.items.length ?? 0;
 
   return (
     <div className="flex flex-col gap-4">
@@ -245,19 +271,19 @@ function PlantStep({
           message={apiErrorMessage(plants.error)}
           onRetry={() => void plants.refetch()}
         />
-      ) : all.length === 0 ? (
+      ) : totalPlants === 0 ? (
         <EmptyState
           title="No plants exist yet"
-          description="No monographs are published yet, so there is nothing to follow. You can add follows later from any plant page."
+          description="No monographs are published yet, so there is nothing to follow. You can follow plants later from any monograph."
         />
       ) : filtered.length === 0 ? (
         <EmptyState
           title="No plants match this search"
-          description={`Nothing in the catalogue matches “${query.trim()}”. Try a common name, a botanical name or a family.`}
+          description={`Nothing in the catalogue matches "${query.trim()}". Try a common name, a botanical name or a family.`}
           watermark="search"
         />
       ) : (
-        <div className={cn('max-h-[440px] overflow-y-auto', PLANT_GRID_BOTTOM_PADDING)}>
+        <div className="max-h-[420px] overflow-y-auto pb-28">
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {filtered.map((plant) => (
               <PlantTile

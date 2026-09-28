@@ -173,16 +173,18 @@ export function usePlantPlot(gardenId: string) {
   const client = useQueryClient();
   return useMutation({
     mutationFn: (input: { x: number; z: number; plantId: string }) =>
-      api.post<{ plot: GardenPlotDetail | null; garden: GardenDetail }>(
+      api.post<{ plot: GardenPlotDetail | null; plots: GardenPlotDetail[] }>(
         `/gardens/${gardenId}/plots`,
         input,
       ),
     onSuccess: (data) => {
-      // The server hands back the whole updated garden, so the detail cache is replaced from the
-      // response instead of triggering a second GET.
-      client.setQueryData(gardenKeys.detail(gardenId), { garden: data.garden });
-      // The list row shows `plantCount`, which just changed. Only the list prefix is invalidated:
-      // the detail entry above is already current.
+      // The route answers with the created plot plus the whole re-rendered plot grid (`plots`), not
+      // a garden envelope, so the cached detail is rebuilt around the existing garden fields. The
+      // list row's `plantCount` changed, so only the list prefix is invalidated.
+      client.setQueryData<{ garden: GardenDetail } | undefined>(
+        gardenKeys.detail(gardenId),
+        (previous) => (previous ? { garden: { ...previous.garden, plots: data.plots } } : previous),
+      );
       void client.invalidateQueries({ queryKey: gardenKeys.listRoot });
     },
     // No handler for failures on purpose. A 409 means another session took the tile: the server is
@@ -282,19 +284,34 @@ const gardenSettingsSchema = z.object({
 let settingsCache: GardenSettings | null = null;
 const settingsListeners = new Set<() => void>();
 
+/**
+ * Validate a stored value, falling back to the documented defaults when it is missing, unreadable or
+ * corrupt. Exported because it is the whole contract of `vhg:garden-settings` and is exercised
+ * directly; `readStoredSettings` wraps it with the storage read and the module cache.
+ */
+export function parseGardenSettings(raw: string | null): GardenSettings {
+  if (!raw) return DEFAULT_GARDEN_SETTINGS;
+  try {
+    const parsed = gardenSettingsSchema.safeParse(JSON.parse(raw));
+    return parsed.success ? parsed.data : DEFAULT_GARDEN_SETTINGS;
+  } catch {
+    // Corrupt JSON (truncated write, hand-edited value): keep the documented defaults.
+    return DEFAULT_GARDEN_SETTINGS;
+  }
+}
+
 /** Reads and validates once, then serves the same object until a write replaces it. */
 function readStoredSettings(): GardenSettings {
   if (settingsCache) return settingsCache;
-  settingsCache = DEFAULT_GARDEN_SETTINGS;
-  if (typeof window === 'undefined') return settingsCache;
+  if (typeof window === 'undefined') {
+    settingsCache = DEFAULT_GARDEN_SETTINGS;
+    return settingsCache;
+  }
   try {
-    const raw = window.localStorage.getItem(SETTINGS_STORAGE_KEY);
-    if (raw) {
-      const parsed = gardenSettingsSchema.safeParse(JSON.parse(raw));
-      if (parsed.success) settingsCache = parsed.data;
-    }
+    settingsCache = parseGardenSettings(window.localStorage.getItem(SETTINGS_STORAGE_KEY));
   } catch {
-    // Unreadable storage (private mode, corrupt JSON): keep the documented defaults.
+    // Storage unreadable (private mode, blocked cookies): keep the documented defaults.
+    settingsCache = DEFAULT_GARDEN_SETTINGS;
   }
   return settingsCache;
 }

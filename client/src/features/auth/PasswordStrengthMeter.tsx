@@ -16,7 +16,7 @@ const BONUS_LENGTH = 14;
 type Strength = 'WEAK' | 'FAIR' | 'STRONG';
 
 type Assessment = {
-  /** 0..SEGMENTS */
+  /** 0..SEGMENTS: one segment per satisfied rule plus one for the length bonus. */
   filled: number;
   word: Strength;
   passed: boolean[];
@@ -28,8 +28,10 @@ function assess(value: string): Assessment {
   const bonus = value.length >= BONUS_LENGTH ? 1 : 0;
   const filled = Math.min(SEGMENTS, rulesMet + bonus);
 
+  // All three requirements met is STRONG regardless of the bonus; the bonus only lights the fourth
+  // segment and never upgrades a password that is still missing a required rule.
   let word: Strength = 'WEAK';
-  if (rulesMet === PASSWORD_RULES.length && bonus === 1) word = 'STRONG';
+  if (rulesMet === PASSWORD_RULES.length) word = 'STRONG';
   else if (rulesMet >= 2) word = 'FAIR';
 
   return { filled, word, passed };

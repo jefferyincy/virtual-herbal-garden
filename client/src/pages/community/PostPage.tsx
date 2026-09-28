@@ -70,7 +70,8 @@ export default function PostPage() {
 
   const query = usePost(id);
   const post = query.data?.post;
-  const comments = post?.comments ?? [];
+  // The route sends the thread beside the post, not inside it.
+  const comments = query.data?.comments ?? [];
 
   const comment = useComment(id);
   const upvotePost = useUpvotePost();
@@ -268,7 +269,9 @@ export default function PostPage() {
         {post.plantIds.length > 0 && (
           <div className="flex flex-col gap-3">
             {post.plantIds.map((plant) => (
-              <PlantReferenceCard key={plant.slug} plant={plant} />
+              // `PlantReferenceCard` requires an `images` array; the server omits the key for a
+              // plant with no photograph, so the empty array is the honest normalisation.
+              <PlantReferenceCard key={plant.slug} plant={{ ...plant, images: plant.images ?? [] }} />
             ))}
           </div>
         )}

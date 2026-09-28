@@ -80,7 +80,10 @@ export default function PlantsPage(): ReactNode {
     [searchParams],
   );
 
-  const activeCount = RAIL_KEYS.filter((key) => Boolean(filters[key])).length;
+  // `toxic: false` is an active filter but falsy, so it cannot go through a plain Boolean test.
+  const activeCount = RAIL_KEYS.filter((key) =>
+    key === 'toxic' ? filters.toxic !== undefined : Boolean(filters[key]),
+  ).length;
   const qFromUrl = filters.q ?? '';
   const [field, setField] = useState(qFromUrl);
 
@@ -133,6 +136,16 @@ export default function PlantsPage(): ReactNode {
       for (const key of RAIL_KEYS) params.delete(key);
       params.delete('page');
     });
+  }
+
+  /** The empty state's action also drops `q`, or clearing the rail could leave the grid empty. */
+  function clearEverything(): void {
+    updateParams((params) => {
+      for (const key of RAIL_KEYS) params.delete(key);
+      params.delete('q');
+      params.delete('page');
+    });
+    setField('');
   }
 
   const headerActions = (
@@ -232,7 +245,7 @@ export default function PlantsPage(): ReactNode {
               title="No plants match these filters"
               description="Nothing in the catalogue matches this combination. Clear the filters to see every monograph."
               action={
-                <Button variant="secondary" iconLeft="close" onClick={clearFilters}>
+                <Button variant="secondary" iconLeft="close" onClick={clearEverything}>
                   Clear filters
                 </Button>
               }

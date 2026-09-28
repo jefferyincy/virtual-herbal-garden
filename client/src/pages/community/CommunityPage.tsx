@@ -43,6 +43,13 @@ const TYPE_LABEL: Record<PostType, string> = {
   note: 'Note',
 };
 
+/** Plural form used by the empty filter state ("No remedies yet"). */
+const TYPE_PLURAL: Record<PostType, string> = {
+  remedy: 'remedies',
+  question: 'questions',
+  note: 'notes',
+};
+
 const TYPE_TONE: Record<PostType, 'accent' | 'clay' | 'neutral'> = {
   remedy: 'accent',
   question: 'clay',
@@ -97,7 +104,7 @@ export default function CommunityPage() {
           />
         ) : items.length === 0 ? (
           <EmptyState
-            title={tab === 'all' ? 'No posts yet' : `No ${TYPE_LABEL[tab].toLowerCase()}s yet`}
+            title={tab === 'all' ? 'No posts yet' : `No ${TYPE_PLURAL[tab]} yet`}
             description={
               tab === 'all'
                 ? 'Nothing has cleared review yet. Share a remedy, ask a question or post a field note.'
@@ -288,7 +295,8 @@ function PostCard({ post, isOwn }: { post: PostSummary; isOwn: boolean }): React
 }
 
 function TaggedPlant({ plant }: { plant: PostPlant }): ReactNode {
-  const image = plant.images[0];
+  // `images` is absent on a plant that has no photograph yet; the leaf glyph covers that case.
+  const image = plant.images?.[0];
   return (
     <Link
       to={`/plants/${plant.slug}`}
