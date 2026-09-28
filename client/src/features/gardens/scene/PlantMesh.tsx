@@ -6,14 +6,15 @@
  * Geometry is memoised per plant + quality so a re-render (selection, hover, settings change) never
  * rebuilds meshes, and the merged BufferGeometry is a single mesh per plant.
  */
-import { useEffect, useMemo } from 'react';
-import { DoubleSide } from 'three';
-import type { ThreeEvent } from '@react-three/fiber';
+import { useEffect, useMemo, useRef } from 'react';
+import { DoubleSide, type Group } from 'three';
+import { useFrame, type ThreeEvent } from '@react-three/fiber';
 import type { PlotPlant, PlotStage } from '../hooks';
 import {
   FLOWER_COLOR,
   GREEN_RAMP,
   buildHerbGeometry,
+  hashString,
   herbShapeFor,
   type QualityLevel,
 } from './procedural';
@@ -61,8 +62,20 @@ export function PlantMesh({
     onSelect();
   };
 
+  // Idle sway: a small per-plant phase offset (hash of the id) so the bed never moves in lockstep.
+  // Presentation only, and skipped for ghosts - a placement preview should sit still on its tile.
+  const swayRef = useRef<Group>(null);
+  const phase = useMemo(() => (hashString(plant._id) / 0x100000000) * Math.PI * 2, [plant._id]);
+  useFrame((state) => {
+    const node = swayRef.current;
+    if (!node || ghost) return;
+    const t = state.clock.elapsedTime;
+    node.rotation.z = Math.sin(t * 0.9 + phase) * 0.035;
+    node.rotation.x = Math.cos(t * 0.7 + phase) * 0.02;
+  });
+
   return (
-    <group position={[position[0], position[1], position[2]]} scale={scale}>
+    <group ref={swayRef} position={[position[0], position[1], position[2]]} scale={scale}>
       <mesh
         geometry={geometry}
         castShadow={!ghost}

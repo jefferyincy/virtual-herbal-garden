@@ -58,6 +58,14 @@ const QUALITY: Array<{ value: GardenSettings['quality']; label: string }> = [
   { value: 'high', label: 'High' },
 ];
 
+/** One-tap times of day; values are 5-minute boundaries so they match a slider step exactly. */
+const TIME_PRESETS: Array<{ value: number; label: string; icon: 'sun' | 'moon' }> = [
+  { value: 6, label: 'Dawn', icon: 'sun' },
+  { value: 12, label: 'Day', icon: 'sun' },
+  { value: 18 + 40 / 60, label: 'Dusk', icon: 'moon' },
+  { value: 0, label: 'Night', icon: 'moon' },
+];
+
 /** 24h decimal -> `HH:MM`, the mockup's mono clock. */
 function clockLabel(timeOfDay: number): string {
   const hours = Math.floor(timeOfDay) % 24;
@@ -166,6 +174,20 @@ export function GardenSettingsPanel({
             onChange={(event) => patch({ timeOfDay: Number(event.target.value) })}
             className="h-2 w-full cursor-pointer appearance-none rounded-full bg-bg-hover accent-accent-500"
           />
+          {/* One-tap presets: the slider is precise but fiddly on a trackpad, and "make it day" is
+              the common intent. Each is a 5-minute boundary so it lands on a slider step. */}
+          <div className="flex flex-wrap gap-2">
+            {TIME_PRESETS.map((preset) => (
+              <FilterChip
+                key={preset.label}
+                active={Math.abs(draft.timeOfDay - preset.value) < 1 / 1440}
+                onClick={() => patch({ timeOfDay: preset.value })}
+              >
+                <Icon name={preset.icon} size={13} className={preset.icon === 'sun' ? 'text-clay-400' : undefined} />
+                {preset.label}
+              </FilterChip>
+            ))}
+          </div>
         </div>
 
         <div className="flex flex-col gap-2">

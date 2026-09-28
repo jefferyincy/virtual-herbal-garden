@@ -9,7 +9,7 @@
 import { useEffect, useMemo } from 'react';
 import { BufferGeometry, Color, DoubleSide, Float32BufferAttribute, PlaneGeometry } from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
-import type { ThreeEvent } from '@react-three/fiber';
+import { useFrame, useThree, type ThreeEvent } from '@react-three/fiber';
 import type { GardenSettings } from '@/types/api';
 import type { QualityLevel } from './procedural';
 
@@ -26,9 +26,14 @@ const DAY_BACKGROUND = 0x101713;
 /** Warm key light through the day (clay-family warmth) and the accent-green rim from DESIGN.md. */
 const KEY_NIGHT = 0xd9845f;
 const KEY_DAY = 0xf2ddba;
+/** Overcast key: a cool grey, so rain/storm reads as dull daylight rather than a lit scene. */
+const KEY_OVERCAST = 0xb9c4bd;
 const RIM_COLOR = 0x7be0a8;
 const TILE_LIGHT = 0x1d2821;
 const TILE_DARK = 0x131a15;
+/** Overcast backgrounds: a desaturated cool grey, slightly darker than the clear-sky twins. */
+const OVERCAST_NIGHT_BACKGROUND = 0x080b0a;
+const OVERCAST_DAY_BACKGROUND = 0x151b19;
 
 /** Season modifiers on top of the time-of-day curve. Presentation only. */
 const SEASON_MULTIPLIER: Record<SeasonKind, { key: number; ambient: number; saturation: number }> = {
@@ -50,28 +55,34 @@ export type GardenAmbience = {
 
 /**
  * Derived (not stored) so the light rig and the canvas background always agree and cannot drift
- * apart from `timeOfDay`.
+ * apart from `timeOfDay`. `weather` only tints and dims: rain/mist are overcast (cooler, greyer,
+ * lower contrast) while clear keeps the warm key and the time-of-day sky.
  */
-export function ambienceFor(timeOfDay: number, season: SeasonKind): GardenAmbience {
+export function ambienceFor(timeOfDay: number, season: SeasonKind, weather: WeatherKind = 'clear'): GardenAmbience {
   const hour = ((timeOfDay % 24) + 24) % 24;
   // Sun is up between 06:00 and 18:00; the curve peaks at midday.
   const daylight = Math.max(0, Math.sin(((hour - 6) / 12) * Math.PI));
   const scale = SEASON_MULTIPLIER[season];
-  const keyColor = new Color(KEY_NIGHT).lerp(new Color(KEY_DAY), daylight * scale.saturation);
-  const background = new Color(NIGHT_BACKGROUND).lerp(
-    new Color(DAY_BACKGROUND),
-    daylight * 0.85 * scale.saturation,
-  );
+  // Overcast factor: mist is the softest, rain the heaviest, clear the baseline.
+  const overcast = weather === 'rain' ? 0.85 : weather === 'mist' ? 0.55 : 0;
+
+  const keyColor = new Color(KEY_NIGHT)
+    .lerp(new Color(KEY_DAY), daylight * scale.saturation)
+    .lerp(new Color(KEY_OVERCAST), overcast);
+  const background = new Color(NIGHT_BACKGROUND)
+    .lerp(new Color(DAY_BACKGROUND), daylight * 0.85 * scale.saturation)
+    .lerp(new Color(OVERCAST_DAY_BACKGROUND).lerp(new Color(OVERCAST_NIGHT_BACKGROUND), 1 - daylight), overcast);
 
   return {
     background: background.getHex(),
     keyColor: keyColor.getHex(),
-    keyIntensity: (0.3 + daylight * 1.15) * scale.key,
+    // Overcast diffuses the key light, so a rainy day is lit but flat, not bright.
+    keyIntensity: (0.3 + daylight * 1.15) * scale.key * (1 - overcast * 0.35),
     rimColor: RIM_COLOR,
     // The rim is an accent, so it stays low even under a noon key light.
-    rimIntensity: 0.3 + daylight * 0.25,
-    ambientIntensity: (0.16 + daylight * 0.14) * scale.ambient,
-    hemisphereIntensity: (0.12 + daylight * 0.18) * scale.ambient,
+    rimIntensity: 0.3 + daylight * 0.25 * (1 - overcast * 0.5),
+    ambientIntensity: (0.16 + daylight * 0.14) * scale.ambient * (1 + overcast * 0.5),
+    hemisphereIntensity: (0.12 + daylight * 0.18) * scale.ambient * (1 + overcast * 0.4),
   };
 }
 
@@ -157,7 +168,10 @@ export function Ground({
     () => (showGrid ? gridLineGeometry(size, gridSize) : null),
     [showGrid, size, gridSize],
   );
-  const ambience = useMemo(() => ambienceFor(timeOfDay, season), [timeOfDay, season]);
+  const ambience = useMemo(
+    () => ambienceFor(timeOfDay, season, weather),
+    [timeOfDay, season, weather],
+  );
 
   // Every memoised geometry holds GPU buffers, so it is released when swapped or unmounted.
   useEffect(
@@ -167,21 +181,6 @@ export function Ground({
     },
     [soil, grid],
   );
-
-  // Rain is a capped point field, fixed in place: no rAF loop and no per-frame allocation.
-  const rainPoints = useMemo(() => {
-    if (weather !== 'rain') return null;
-    const count = quality === 'low' ? 180 : 360;
-    const positions = new Float32Array(count * 3);
-    for (let index = 0; index < count; index += 1) {
-      const a = tileNoise(index, count);
-      const b = tileNoise(index * 1.7, count * 0.5);
-      positions[index * 3 + 0] = (a - 0.5) * size;
-      positions[index * 3 + 1] = 0.15 + b * size * 0.85;
-      positions[index * 3 + 2] = (b - 0.5) * size;
-    }
-    return positions;
-  }, [weather, quality, size]);
 
   const handleMove = (event: ThreeEvent<PointerEvent>) => {
     onTileHover?.(tileAt(event.point.x, event.point.z, size, gridSize));
@@ -232,15 +231,66 @@ export function Ground({
         </mesh>
       )}
 
-      {rainPoints && (
-        <points>
-          <bufferGeometry>
-            <bufferAttribute attach="attributes-position" args={[rainPoints, 3]} />
-          </bufferGeometry>
-          <pointsMaterial color={RIM_COLOR} size={0.045} transparent opacity={0.4} depthWrite={false} />
-        </points>
-      )}
+      {weather === 'rain' && <Rain size={size} quality={quality} />}
     </group>
+  );
+}
+
+/**
+ * Falling rain: a capped point field that each frame drops straight down and wraps back to the top,
+ * so it reads as weather rather than a static scatter. `useFrame` runs on the demand loop, which the
+ * same loop keeps invalidating via `invalidate()` while it is mounted - so rain animates and the idle
+ * garden still costs nothing once the weather is switched off.
+ *
+ * Motes are drawn as small accent-tinted points; three.js cannot render true streaks from `Points`,
+ * so the length reads from the fall speed instead of geometry.
+ */
+function Rain({ size, quality }: { size: number; quality: QualityLevel }): React.ReactNode {
+  const { invalidate } = useThree();
+  const count = quality === 'low' ? 260 : quality === 'medium' ? 520 : 900;
+  const top = size * 0.95;
+
+  const geometry = useMemo(() => {
+    const positions = new Float32Array(count * 3);
+    const speeds = new Float32Array(count);
+    for (let index = 0; index < count; index += 1) {
+      positions[index * 3 + 0] = (tileNoise(index, count) - 0.5) * size * 2.2;
+      positions[index * 3 + 1] = tileNoise(index * 1.7, count * 0.5) * top;
+      positions[index * 3 + 2] = (tileNoise(index * 3.1, count * 0.9) - 0.5) * size * 2.2;
+      speeds[index] = 6 + tileNoise(index * 5.3, count) * 6;
+    }
+    const buffer = new BufferGeometry();
+    buffer.setAttribute('position', new Float32BufferAttribute(positions, 3));
+    return { buffer, positions, speeds };
+  }, [count, size, top]);
+
+  useEffect(() => () => geometry.buffer.dispose(), [geometry]);
+
+  useFrame((_state, delta) => {
+    // dt is clamped so a backgrounded tab does not teleport every drop on resume.
+    const step = Math.min(delta, 0.05);
+    const { positions, speeds } = geometry;
+    for (let index = 0; index < count; index += 1) {
+      const y = index * 3 + 1;
+      const next = (positions[y] ?? 0) - (speeds[index] ?? 0) * step;
+      positions[y] = next < 0 ? top : next;
+    }
+    const attr = geometry.buffer.attributes.position;
+    if (attr) attr.needsUpdate = true;
+    invalidate();
+  });
+
+  return (
+    <points geometry={geometry.buffer} frustumCulled={false}>
+      <pointsMaterial
+        color={RIM_COLOR}
+        size={quality === 'low' ? 0.045 : 0.05}
+        transparent
+        opacity={0.32}
+        depthWrite={false}
+        sizeAttenuation
+      />
+    </points>
   );
 }
 
