@@ -1,0 +1,702 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Botanica Admin — Overview</title>
+<!-- Google Fonts: Inter, Instrument Serif, JetBrains Mono, Noto Serif -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Noto+Serif:ital,wght@0,400;0,600;1,400&amp;display=swap" rel="stylesheet">
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-surface-variant": "#bccabd",
+            "tertiary-container": "#ffa37f",
+            "on-primary-fixed-variant": "#00522f",
+            "text-on-accent": "#06110B",
+            "secondary-fixed-dim": "#ffb597",
+            "danger": "#D9645C",
+            "surface-container-high": "#282b28",
+            "on-tertiary-container": "#78371b",
+            "inverse-primary": "#006d40",
+            "clay-400": "#E39A72",
+            "tertiary": "#ffcab7",
+            "surface-variant": "#323533",
+            "surface-container-lowest": "#0c0f0d",
+            "error-container": "#93000a",
+            "primary-fixed": "#7bfbb1",
+            "tertiary-fixed-dim": "#ffb599",
+            "on-primary-container": "#005631",
+            "bg-raised": "#171E19",
+            "on-secondary": "#571f02",
+            "on-secondary-fixed-variant": "#743416",
+            "text-primary": "#E6EDE8",
+            "primary-fixed-dim": "#5dde96",
+            "border-subtle": "rgba(255, 255, 255, 0.06)",
+            "on-tertiary-fixed-variant": "#743418",
+            "bg-hover": "#1D251F",
+            "clay-500": "#D9845F",
+            "surface-tint": "#5dde96",
+            "on-secondary-fixed": "#360f00",
+            "on-primary-fixed": "#002110",
+            "inverse-on-surface": "#2e312f",
+            "background": "#111412",
+            "surface": "#111412",
+            "text-secondary": "#9BACA0",
+            "on-error-container": "#ffdad6",
+            "bg-surface": "#121713",
+            "on-tertiary": "#571e04",
+            "on-background": "#e1e3df",
+            "clay-tint": "rgba(217, 132, 95, 0.12)",
+            "accent-tint": "rgba(79, 209, 139, 0.12)",
+            "bg-sunken": "#070A08",
+            "tertiary-fixed": "#ffdbce",
+            "inverse-surface": "#e1e3df",
+            "primary-container": "#4fd18b",
+            "on-secondary-container": "#fda27b",
+            "text-disabled": "#47524A",
+            "text-muted": "#6A7A6F",
+            "danger-tint": "rgba(217, 100, 92, 0.12)",
+            "bg-base": "#0A0D0B",
+            "border-strong": "rgba(255, 255, 255, 0.11)",
+            "surface-container": "#1d201e",
+            "surface-bright": "#373a37",
+            "primary": "#6eeea5",
+            "secondary": "#ffb597",
+            "error": "#ffb4ab",
+            "secondary-fixed": "#ffdbcd",
+            "outline": "#879489",
+            "on-tertiary-fixed": "#370e00",
+            "accent-glow": "rgba(79, 209, 139, 0.28)",
+            "on-primary": "#00391f",
+            "on-surface": "#e1e3df",
+            "accent-400": "#7BE0A8",
+            "success": "#4FD18B",
+            "secondary-container": "#773618",
+            "outline-variant": "#3d4a40",
+            "surface-container-low": "#191c1a",
+            "on-error": "#690005",
+            "accent-500": "#4FD18B",
+            "accent-600": "#35A96D",
+            "surface-container-highest": "#323533",
+            "surface-dim": "#111412",
+            "warning": "#E0A458"
+          },
+          borderRadius: {
+            DEFAULT: "0.25rem",
+            lg: "0.5rem",
+            xl: "0.75rem",
+            "2xl": "1rem",
+            full: "9999px"
+          },
+          fontFamily: {
+            "label-mono": ["JetBrains Mono", "monospace"],
+            "data-mono": ["JetBrains Mono", "monospace"],
+            "body-sm": ["Inter", "sans-serif"],
+            "body-md": ["Inter", "sans-serif"],
+            "body-lg": ["Inter", "sans-serif"],
+            "display": ["Inter", "sans-serif"],
+            "headline-lg": ["Inter", "sans-serif"],
+            "headline-md": ["Inter", "sans-serif"],
+            "headline-sm": ["Inter", "sans-serif"],
+            "latin-botanical": ["Instrument Serif", "Georgia", "serif"],
+            "botanical-title": ["Noto Serif", "serif"],
+            "botanical-body": ["Noto Serif", "serif"]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+      font-size: 18px;
+      line-height: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .card-highlight {
+      position: relative;
+    }
+    .card-highlight::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      top: 0;
+      left: 12px;
+      right: 12px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.09) 50%, transparent 100%);
+      pointer-events: none;
+    }
+  </style>
+<meta content="web_dashboard" name="shell-type"></head>
+<body class="bg-bg-base font-body-md text-body-md text-text-primary min-h-screen selection:bg-accent-tint selection:text-primary"><aside class="fixed left-0 top-0 bottom-0 w-[248px] bg-bg-surface z-50 flex flex-col justify-between shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex flex-col flex-1 min-h-0"><div class="px-space-lg pt-space-lg pb-space-md flex flex-col gap-space-xs"><div class="flex items-center gap-space-sm"><div class="w-7 h-7 rounded-lg bg-surface-container-high flex items-center justify-center"><span class="material-symbols-outlined text-accent-500 text-[18px]">spa</span></div><span class="font-botanical-title text-botanical-title italic tracking-tight text-text-primary">Herbarium Noctis</span></div><span class="font-label-mono text-label-mono uppercase tracking-widest text-text-muted pl-9">EXPEDITION / ARCHIVE CMS</span></div><div class="px-space-lg pt-space-md pb-space-xs"><span class="font-label-mono text-label-mono uppercase tracking-wider text-text-muted">ADMIN</span></div><nav class="flex-1 px-space-sm space-y-1 overflow-y-auto" data-active-classes="bg-accent-tint text-accent-400 font-semibold"><a class="flex items-center justify-between px-space-md py-2.5 rounded-lg text-text-secondary hover:bg-bg-hover hover:text-text-primary transition-all duration-150" data-path="dashboard" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">grid_view</span><span class="font-body-sm text-body-sm">Dashboard</span></div></a><a class="flex items-center justify-between px-space-md py-2.5 rounded-lg text-text-secondary hover:bg-bg-hover hover:text-text-primary transition-all duration-150" data-path="plants" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">psychiatry</span><span class="font-body-sm text-body-sm">Plants</span></div></a><a class="flex items-center justify-between px-space-md py-2.5 rounded-lg text-text-secondary hover:bg-bg-hover hover:text-text-primary transition-all duration-150" data-path="moderation" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">verified_user</span><span class="font-body-sm text-body-sm">Moderation</span></div><span class="font-label-mono text-label-mono px-1.5 py-0.5 rounded-full bg-clay-tint text-warning font-semibold">14</span></a><a class="flex items-center justify-between px-space-md py-2.5 rounded-lg text-text-secondary hover:bg-bg-hover hover:text-text-primary transition-all duration-150" data-path="users" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">group</span><span class="font-body-sm text-body-sm">Users</span></div></a><a class="flex items-center justify-between px-space-md py-2.5 rounded-lg text-text-secondary hover:bg-bg-hover hover:text-text-primary transition-all duration-150" data-path="quizzes" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">quiz</span><span class="font-body-sm text-body-sm">Quizzes</span></div></a><a class="flex items-center justify-between px-space-md py-2.5 rounded-lg text-text-secondary hover:bg-bg-hover hover:text-text-primary transition-all duration-150" data-path="badges" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">military_tech</span><span class="font-body-sm text-body-sm">Badges</span></div></a></nav></div><div class="p-space-sm flex flex-col gap-space-xs bg-bg-surface"><nav class="space-y-1" data-active-classes="bg-accent-tint text-accent-400 font-semibold"><a class="flex items-center gap-space-sm px-space-md py-2 rounded-lg text-text-secondary hover:bg-bg-hover hover:text-text-primary transition-all duration-150" data-path="system-telemetry" href="#"><span class="material-symbols-outlined text-[18px]">terminal</span><span class="font-body-sm text-body-sm">System Telemetry</span></a><a class="flex items-center gap-space-sm px-space-md py-2 rounded-lg text-text-secondary hover:bg-bg-hover hover:text-text-primary transition-all duration-150" data-path="settings" href="#"><span class="material-symbols-outlined text-[18px]">tune</span><span class="font-body-sm text-body-sm">Settings</span></a></nav><div class="mt-space-xs p-space-sm rounded-lg bg-bg-raised flex items-center gap-space-sm"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="flex flex-col min-w-0"><span class="font-body-sm text-body-sm font-semibold text-text-primary truncate">Eleanor Vance</span><span class="font-label-mono text-label-mono text-text-muted truncate">Admin / Curator</span></div></div></div></aside><div class="pl-[248px]"><header class="fixed top-0 left-[248px] right-0 h-16 bg-bg-base/80 backdrop-blur-xl z-40 shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 w-full px-space-xl flex items-center justify-between"><div class="flex items-center gap-space-md flex-1 max-w-md"><div class="relative w-full"><span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[18px] text-text-muted">search</span><input class="w-full h-11 pl-10 pr-4 bg-bg-surface rounded-lg text-body-sm font-body-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-accent-500/40 transition-all" placeholder="Search specimens, collectors, taxa..." type="text"></div></div><div class="flex items-center gap-space-lg"><div class="flex items-center gap-2 px-3 py-1 rounded-full bg-bg-raised"><span class="w-2 h-2 rounded-full bg-accent-500 animate-pulse"></span><span class="font-data-mono text-data-mono uppercase tracking-wider text-accent-400">ENGINE 4.2 ONLINE</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-16 bg-bg-base min-h-screen"><div class="flex flex-col w-full">
+<div class="px-space-xl py-space-lg flex flex-col gap-space-lg max-w-[1400px] mx-auto w-full relative">
+<!-- Header Section -->
+<header class="flex flex-col md:flex-row md:items-end justify-between gap-space-md">
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center gap-2">
+<span class="font-label-mono text-label-mono text-text-muted tracking-widest uppercase">Curatorial Repository</span>
+<span class="text-text-muted text-body-sm">/</span>
+<span class="font-label-mono text-label-mono text-accent-400 tracking-widest uppercase">Specimen Catalog</span>
+</div>
+<div class="flex items-center gap-space-md mt-1">
+<h1 class="font-headline-lg text-headline-lg text-text-primary tracking-tight">Plants</h1>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-accent-tint text-accent-400 font-label-mono text-label-mono tracking-wider font-semibold border border-primary/20">
+<span class="w-1.5 h-1.5 rounded-full bg-accent-500 animate-pulse"></span>
+            240 TOTAL
+          </span>
+</div>
+</div>
+<div class="flex items-center gap-space-sm shrink-0">
+<button class="h-11 px-space-md rounded-[10px] bg-bg-surface hover:bg-bg-hover text-text-secondary hover:text-text-primary transition-all duration-150 font-body-sm text-body-sm flex items-center gap-2 border border-border-subtle" type="button">
+<span class="material-symbols-outlined text-[19px]">file_download</span>
+<span>Export CSV</span>
+</button>
+<button class="h-11 px-space-lg rounded-[10px] bg-accent-500 hover:bg-accent-400 active:scale-[0.985] text-text-on-accent transition-all duration-150 font-body-sm text-body-sm font-semibold flex items-center gap-2 shadow-[0_4px_20px_rgba(79,209,139,0.22)]" type="button">
+<span class="material-symbols-outlined text-[20px] font-bold">add</span>
+<span>New plant</span>
+</button>
+</div>
+</header>
+<!-- Herbarium Telemetry Bar (Quick Stats Strip) -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-space-sm">
+<div class="bg-bg-surface p-space-md rounded-xl card-highlight border border-border-subtle flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-mono text-label-mono text-text-muted uppercase">Active Taxa</span>
+<span class="font-data-mono text-body-lg font-semibold text-text-primary mt-0.5">38 Families</span>
+</div>
+<div class="w-9 h-9 rounded-lg bg-bg-raised flex items-center justify-center text-accent-400">
+<span class="material-symbols-outlined text-[20px]">account_tree</span>
+</div>
+</div>
+<div class="bg-bg-surface p-space-md rounded-xl card-highlight border border-border-subtle flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-mono text-label-mono text-text-muted uppercase">Published Entries</span>
+<span class="font-data-mono text-body-lg font-semibold text-text-primary mt-0.5">218 Specimens</span>
+</div>
+<div class="w-9 h-9 rounded-lg bg-bg-raised flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">verified</span>
+</div>
+</div>
+<div class="bg-bg-surface p-space-md rounded-xl card-highlight border border-border-subtle flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-mono text-label-mono text-text-muted uppercase">Toxic Profiled</span>
+<span class="font-data-mono text-body-lg font-semibold text-danger mt-0.5">14 High Risk</span>
+</div>
+<div class="w-9 h-9 rounded-lg bg-danger-tint flex items-center justify-center text-danger">
+<span class="material-symbols-outlined text-[20px]">warning</span>
+</div>
+</div>
+<div class="bg-bg-surface p-space-md rounded-xl card-highlight border border-border-subtle flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-mono text-label-mono text-text-muted uppercase">Curatorial Drafts</span>
+<span class="font-data-mono text-body-lg font-semibold text-warning mt-0.5">22 Pending</span>
+</div>
+<div class="w-9 h-9 rounded-lg bg-clay-tint flex items-center justify-center text-warning">
+<span class="material-symbols-outlined text-[20px]">edit_note</span>
+</div>
+</div>
+</div>
+<!-- Control Bar -->
+<div class="bg-bg-surface p-space-sm rounded-xl border border-border-subtle flex flex-col xl:flex-row gap-space-sm items-stretch xl:items-center justify-between">
+<!-- Search & Quick Filters -->
+<div class="flex flex-1 flex-col sm:flex-row items-stretch sm:items-center gap-space-sm">
+<div class="relative flex-1 min-w-[280px]">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-[18px]">search</span>
+<input class="w-full h-11 pl-10 pr-14 bg-bg-raised rounded-lg text-body-sm font-body-sm text-text-primary placeholder:text-text-muted border border-border-subtle focus:outline-none focus:border-accent-500 focus:ring-1 focus:ring-accent-500/40 transition-all" placeholder="Filter by common name, taxon, family..." type="text">
+<kbd class="absolute right-3 top-1/2 -translate-y-1/2 font-label-mono text-[10px] text-text-muted bg-bg-surface px-1.5 py-0.5 rounded border border-border-subtle pointer-events-none">⌘K</kbd>
+</div>
+<!-- Segmented Status Tabs -->
+<div class="inline-flex p-1 bg-bg-raised rounded-lg border border-border-subtle shrink-0">
+<button class="px-3 py-1.5 rounded-md text-body-sm font-body-sm font-semibold bg-accent-tint text-accent-400 transition-all" type="button">
+            All <span class="font-label-mono text-label-mono ml-1 opacity-80">(240)</span>
+</button>
+<button class="px-3 py-1.5 rounded-md text-body-sm font-body-sm text-text-secondary hover:text-text-primary transition-all" type="button">
+            Published <span class="font-label-mono text-label-mono ml-1 opacity-60">(218)</span>
+</button>
+<button class="px-3 py-1.5 rounded-md text-body-sm font-body-sm text-text-secondary hover:text-text-primary transition-all" type="button">
+            Draft <span class="font-label-mono text-label-mono ml-1 opacity-60">(22)</span>
+</button>
+</div>
+</div>
+<!-- Family Dropdown & Secondary Actions -->
+<div class="flex items-center gap-space-sm shrink-0 flex-wrap">
+<div class="relative">
+<button class="h-11 px-3.5 rounded-lg bg-bg-raised hover:bg-bg-hover text-text-secondary hover:text-text-primary border border-border-subtle flex items-center gap-2 font-body-sm text-body-sm transition-all" type="button">
+<span class="material-symbols-outlined text-[18px] text-text-muted">category</span>
+<span>All Families (Lamiaceae, Fabaceae...)</span>
+<span class="material-symbols-outlined text-[16px] text-text-muted">expand_more</span>
+</button>
+</div>
+<button class="h-11 px-3 rounded-lg bg-bg-raised hover:bg-bg-hover text-text-secondary hover:text-text-primary border border-border-subtle flex items-center gap-1.5 font-body-sm text-body-sm transition-all" type="button">
+<span class="material-symbols-outlined text-[18px] text-text-muted">filter_alt</span>
+<span>More Filters</span>
+</button>
+<div class="h-6 w-[1px] bg-border-subtle hidden sm:block"></div>
+<button class="h-11 px-3 rounded-lg bg-bg-raised hover:bg-bg-hover text-text-secondary hover:text-text-primary border border-border-subtle flex items-center gap-1.5 font-body-sm text-body-sm transition-all" title="View mode toggle" type="button">
+<span class="material-symbols-outlined text-[18px]">view_column</span>
+</button>
+</div>
+</div>
+<!-- Data Table Container -->
+<div class="bg-bg-surface rounded-2xl border border-border-subtle overflow-hidden card-highlight shadow-sm">
+<div class="overflow-x-auto w-full">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-bg-raised/70 border-b border-border-subtle text-text-muted font-label-mono text-label-mono uppercase tracking-wider">
+<th class="py-3.5 pl-space-md pr-2 w-10 text-center" scope="col">
+<input class="w-4 h-4 rounded bg-bg-surface border-border-strong text-accent-500 focus:ring-accent-500/30 focus:ring-offset-0 cursor-pointer transition-all" type="checkbox">
+</th>
+<th class="py-3.5 px-space-md font-medium" scope="col">Specimen / Common Name</th>
+<th class="py-3.5 px-space-md font-medium" scope="col">Botanical Name (Binomial)</th>
+<th class="py-3.5 px-space-md font-medium" scope="col">Taxon Family</th>
+<th class="py-3.5 px-space-md font-medium" scope="col">Toxicity &amp; Safety</th>
+<th class="py-3.5 px-space-md font-medium text-center" scope="col">Lessons</th>
+<th class="py-3.5 px-space-md font-medium" scope="col">Status</th>
+<th class="py-3.5 px-space-md font-medium" scope="col">Last Modified</th>
+<th class="py-3.5 pr-space-md pl-2 text-right" scope="col">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-border-subtle text-body-sm font-body-sm">
+<!-- Row 1: Holy Basil -->
+<tr class="hover:bg-bg-hover/80 transition-colors duration-150 group">
+<td class="py-3 pl-space-md pr-2 text-center">
+<input class="w-4 h-4 rounded bg-bg-surface border-border-strong text-accent-500 focus:ring-accent-500/30 focus:ring-offset-0 cursor-pointer" type="checkbox">
+</td>
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg overflow-hidden shrink-0 border border-border-subtle bg-bg-raised">
+<img alt="Holy Basil specimen leaf" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida/AEtjO1WyGgvPSo99EFoRFFVXtzjWVvsjMNhiPn1kmuGA6tw1Pj_L7vpNgjafaen7JgLgcAyEjOFOzGLxbT_IaHFs7fjYip6LjwfC7FrYuhlqcT4Faq2c5br15CrTYv-CBOaziVIpSHFmYAmUXCymtKrGMRHkQ8_npH6KBFJ4aJjOl9MJut4bk9XA9g0Xotmd8dXkU4XjGxrlydmt0uMID76HeMi1lmzbWFz17dWZzwBXWGvkVZt-jCEx5K4BrHMG">
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-semibold text-text-primary truncate">Holy Basil</span>
+<span class="text-text-muted font-body-sm text-[12px] truncate">Tulsi / Sacred Plant</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<span class="font-latin-botanical italic text-[18px] text-text-secondary leading-none">Ocimum tenuiflorum</span>
+</td>
+<td class="py-3 px-space-md">
+<span class="font-label-mono text-label-mono px-2 py-0.5 rounded-full bg-bg-raised text-text-secondary border border-border-subtle uppercase">Lamiaceae</span>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-accent-500 shadow-[0_0_8px_rgba(79,209,139,0.6)]"></span>
+<span class="text-text-secondary text-body-sm">Non-toxic / Safe</span>
+</div>
+</td>
+<td class="py-3 px-space-md text-center">
+<span class="font-data-mono text-data-mono text-text-primary font-medium">5</span>
+</td>
+<td class="py-3 px-space-md">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-accent-tint text-accent-400 font-label-mono text-label-mono border border-accent-500/20 font-semibold">
+                  Published
+                </span>
+</td>
+<td class="py-3 px-space-md">
+<span class="font-data-mono text-data-mono text-text-muted">2025-10-28</span>
+</td>
+<td class="py-3 pr-space-md pl-2 text-right">
+<button class="w-8 h-8 rounded-lg hover:bg-bg-raised text-text-muted hover:text-text-primary transition-colors inline-flex items-center justify-center" type="button">
+<span class="material-symbols-outlined text-[18px]">more_horiz</span>
+</button>
+</td>
+</tr>
+<!-- Row 2: Selected Row (Garden Sage) -->
+<tr class="bg-bg-raised relative group border-l-[3px] border-l-accent-500">
+<td class="py-3 pl-space-md pr-2 text-center">
+<input checked="" class="w-4 h-4 rounded bg-accent-500 border-accent-500 text-text-on-accent focus:ring-accent-500/30 focus:ring-offset-0 cursor-pointer" type="checkbox">
+</td>
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg overflow-hidden shrink-0 border border-accent-500/40 bg-bg-surface shadow-[0_0_12px_rgba(79,209,139,0.15)]">
+<img alt="Garden Sage leaves" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida/AEtjO1X7mUpM8oW9fXcB6w8F51en0uVFzsOZ_CKBjFMmT_fMKVx_eVyePOHfB4R7iJ93GZxrnfqwBXMcgkWLTJvXba9rPfq4_QtpqS3A_zw5F2Kzis7tHV_03tFMoqVcFYbvlnVIcAOkoAGLMtEri6n7PyGY4PaV80yODKImz8E4JtNz6CqlN6OHpa2QEzU99CPB9VcRP-HQuPIwCzfini-xJdF3rvWgFjHwN56SlpVyHxUb6ynkYN1ZAO2OpXnn">
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1.5">
+<span class="font-semibold text-text-primary truncate">Garden Sage</span>
+<span class="w-1.5 h-1.5 rounded-full bg-accent-500"></span>
+</div>
+<span class="text-text-muted font-body-sm text-[12px] truncate">Common Sage</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<span class="font-latin-botanical italic text-[18px] text-accent-400 leading-none">Salvia officinalis</span>
+</td>
+<td class="py-3 px-space-md">
+<span class="font-label-mono text-label-mono px-2 py-0.5 rounded-full bg-accent-tint text-accent-400 border border-accent-500/20 uppercase font-semibold">Lamiaceae</span>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-warning shadow-[0_0_8px_rgba(224,164,88,0.5)]"></span>
+<span class="text-text-secondary text-body-sm">Mild / Caution (Thujone)</span>
+</div>
+</td>
+<td class="py-3 px-space-md text-center">
+<span class="font-data-mono text-data-mono text-accent-400 font-semibold">4</span>
+</td>
+<td class="py-3 px-space-md">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-accent-tint text-accent-400 font-label-mono text-label-mono border border-accent-500/20 font-semibold">
+                  Published
+                </span>
+</td>
+<td class="py-3 px-space-md">
+<span class="font-data-mono text-data-mono text-text-primary">2025-10-24</span>
+</td>
+<td class="py-3 pr-space-md pl-2 text-right">
+<button class="w-8 h-8 rounded-lg bg-bg-surface hover:bg-bg-hover text-text-primary transition-colors inline-flex items-center justify-center border border-border-subtle" type="button">
+<span class="material-symbols-outlined text-[18px]">more_horiz</span>
+</button>
+</td>
+</tr>
+<!-- Row 3: Licorice Root -->
+<tr class="hover:bg-bg-hover/80 transition-colors duration-150 group">
+<td class="py-3 pl-space-md pr-2 text-center">
+<input class="w-4 h-4 rounded bg-bg-surface border-border-strong text-accent-500 focus:ring-accent-500/30 focus:ring-offset-0 cursor-pointer" type="checkbox">
+</td>
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg overflow-hidden shrink-0 border border-border-subtle bg-bg-raised">
+<img alt="Licorice root specimen" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida/AEtjO1VUWr--mcJfBZrQ7R_X78B92e7hzSo-LCCWcmr1IbbV2dnZ6ol4gXChIhDCEFrOQP9bsyrjiZ_nF-iXSJImzDJSthLqBzbnCgtlMHH-i50X6KLEM3xNOpjfbgYKw-uEG7KzPMTDbRTZQbokfYNA6Crl5UwY4g7e5MZDyK7Jnhhz80CJ02yzaixaT_e5uOkv_j9rOoD6Il79dyP_wXvShUlZ_w6w0hQSk4uuqLLBqnJZadIVUozkHo7saJVh">
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-semibold text-text-primary truncate">Licorice Root</span>
+<span class="text-text-muted font-body-sm text-[12px] truncate">Sweet Root</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<span class="font-latin-botanical italic text-[18px] text-text-secondary leading-none">Glycyrrhiza glabra</span>
+</td>
+<td class="py-3 px-space-md">
+<span class="font-label-mono text-label-mono px-2 py-0.5 rounded-full bg-bg-raised text-text-secondary border border-border-subtle uppercase">Fabaceae</span>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-warning shadow-[0_0_8px_rgba(224,164,88,0.5)]"></span>
+<span class="text-text-secondary text-body-sm">Moderate / Hypertension</span>
+</div>
+</td>
+<td class="py-3 px-space-md text-center">
+<span class="font-data-mono text-data-mono text-text-primary font-medium">3</span>
+</td>
+<td class="py-3 px-space-md">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-accent-tint text-accent-400 font-label-mono text-label-mono border border-accent-500/20 font-semibold">
+                  Published
+                </span>
+</td>
+<td class="py-3 px-space-md">
+<span class="font-data-mono text-data-mono text-text-muted">2025-10-20</span>
+</td>
+<td class="py-3 pr-space-md pl-2 text-right">
+<button class="w-8 h-8 rounded-lg hover:bg-bg-raised text-text-muted hover:text-text-primary transition-colors inline-flex items-center justify-center" type="button">
+<span class="material-symbols-outlined text-[18px]">more_horiz</span>
+</button>
+</td>
+</tr>
+<!-- Row 4: Marshmallow Root -->
+<tr class="hover:bg-bg-hover/80 transition-colors duration-150 group">
+<td class="py-3 pl-space-md pr-2 text-center">
+<input class="w-4 h-4 rounded bg-bg-surface border-border-strong text-accent-500 focus:ring-accent-500/30 focus:ring-offset-0 cursor-pointer" type="checkbox">
+</td>
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg overflow-hidden shrink-0 border border-border-subtle bg-bg-raised">
+<img alt="Marshmallow root slices" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida/AEtjO1VqQ9wl-837g0xXC-mZ9GIqEm1-rIDKsPizLkbeBhntIeVXWLsks2Rc1LT6uvujJLo9hgqEPPDEZxMPZxqx1vtVn6RnXt9Hy7p4vZiLls7ZKm4mxOVblPEciPgzkbJ6vPtfMRRc8XRm9FjbVJLOVicAdZHpQ0a6h2KBibliQ7j5pyPzXtmMYWtJl39lRP6O6lkE-1P36reQg_2xBuv6-SoYeoYeLPo7uxhsA1A3E-gUF2jrL8jGeM7c0h41">
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-semibold text-text-primary truncate">Marshmallow Root</span>
+<span class="text-text-muted font-body-sm text-[12px] truncate">White Mallow</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<span class="font-latin-botanical italic text-[18px] text-text-secondary leading-none">Althaea officinalis</span>
+</td>
+<td class="py-3 px-space-md">
+<span class="font-label-mono text-label-mono px-2 py-0.5 rounded-full bg-bg-raised text-text-secondary border border-border-subtle uppercase">Malvaceae</span>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-accent-500 shadow-[0_0_8px_rgba(79,209,139,0.6)]"></span>
+<span class="text-text-secondary text-body-sm">Non-toxic / Emollient</span>
+</div>
+</td>
+<td class="py-3 px-space-md text-center">
+<span class="font-data-mono text-data-mono text-text-primary font-medium">2</span>
+</td>
+<td class="py-3 px-space-md">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-accent-tint text-accent-400 font-label-mono text-label-mono border border-accent-500/20 font-semibold">
+                  Published
+                </span>
+</td>
+<td class="py-3 px-space-md">
+<span class="font-data-mono text-data-mono text-text-muted">2025-10-18</span>
+</td>
+<td class="py-3 pr-space-md pl-2 text-right">
+<button class="w-8 h-8 rounded-lg hover:bg-bg-raised text-text-muted hover:text-text-primary transition-colors inline-flex items-center justify-center" type="button">
+<span class="material-symbols-outlined text-[18px]">more_horiz</span>
+</button>
+</td>
+</tr>
+<!-- Row 5: Deadly Nightshade -->
+<tr class="hover:bg-bg-hover/80 transition-colors duration-150 group bg-danger-tint/10">
+<td class="py-3 pl-space-md pr-2 text-center">
+<input class="w-4 h-4 rounded bg-bg-surface border-border-strong text-accent-500 focus:ring-accent-500/30 focus:ring-offset-0 cursor-pointer" type="checkbox">
+</td>
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg overflow-hidden shrink-0 border border-danger/40 bg-bg-raised relative">
+<div class="w-full h-full bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-danger text-[22px]">skull</span>
+</div>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-semibold text-text-primary truncate">Deadly Nightshade</span>
+<span class="text-danger font-label-mono text-[11px] truncate uppercase font-medium">Curatorial Quarantine</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<span class="font-latin-botanical italic text-[18px] text-danger leading-none">Atropa belladonna</span>
+</td>
+<td class="py-3 px-space-md">
+<span class="font-label-mono text-label-mono px-2 py-0.5 rounded-full bg-danger-tint text-danger border border-danger/20 uppercase font-semibold">Solanaceae</span>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-danger animate-ping"></span>
+<span class="text-danger font-medium text-body-sm">Highly Toxic / Lethal</span>
+</div>
+</td>
+<td class="py-3 px-space-md text-center">
+<span class="font-data-mono text-data-mono text-text-muted font-medium">1</span>
+</td>
+<td class="py-3 px-space-md">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-container-high text-text-muted font-label-mono text-label-mono border border-border-subtle uppercase">
+                  Draft
+                </span>
+</td>
+<td class="py-3 px-space-md">
+<span class="font-data-mono text-data-mono text-text-muted">2025-10-29</span>
+</td>
+<td class="py-3 pr-space-md pl-2 text-right">
+<button class="w-8 h-8 rounded-lg hover:bg-bg-raised text-text-muted hover:text-text-primary transition-colors inline-flex items-center justify-center" type="button">
+<span class="material-symbols-outlined text-[18px]">more_horiz</span>
+</button>
+</td>
+</tr>
+<!-- Row 6: Ashwagandha -->
+<tr class="hover:bg-bg-hover/80 transition-colors duration-150 group">
+<td class="py-3 pl-space-md pr-2 text-center">
+<input class="w-4 h-4 rounded bg-bg-surface border-border-strong text-accent-500 focus:ring-accent-500/30 focus:ring-offset-0 cursor-pointer" type="checkbox">
+</td>
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg overflow-hidden shrink-0 border border-border-subtle bg-bg-raised">
+<img alt="Botanical sprig specimen" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida/AEtjO1UTX-5KQM3rbXPZC9w-PevEkmeRulXquSZWPlwa_KXTTHt5lmaKR6u6aJFHDQ72QZj3lwJtpBqEol5SWMO6zOJ0gTsZQVNpW9-QTLzXJTYySMKM9v0uJ80MdXn28T3ppxF75RVb5WphNMDp4DGcinuq7Ystz2gyrTPgM5iKMZofnjZNzYli0FcYOvRptRt-hoo4l9yy-baCbIXMOuKt-QUFOxxm4ip3owXWo8rsKzOg53avpCMw7fgE1aPq">
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-semibold text-text-primary truncate">Ashwagandha</span>
+<span class="text-text-muted font-body-sm text-[12px] truncate">Indian Ginseng</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<span class="font-latin-botanical italic text-[18px] text-text-secondary leading-none">Withania somnifera</span>
+</td>
+<td class="py-3 px-space-md">
+<span class="font-label-mono text-label-mono px-2 py-0.5 rounded-full bg-bg-raised text-text-secondary border border-border-subtle uppercase">Solanaceae</span>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-warning shadow-[0_0_8px_rgba(224,164,88,0.5)]"></span>
+<span class="text-text-secondary text-body-sm">Caution / Sedative</span>
+</div>
+</td>
+<td class="py-3 px-space-md text-center">
+<span class="font-data-mono text-data-mono text-text-primary font-medium">3</span>
+</td>
+<td class="py-3 px-space-md">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-accent-tint text-accent-400 font-label-mono text-label-mono border border-accent-500/20 font-semibold">
+                  Published
+                </span>
+</td>
+<td class="py-3 px-space-md">
+<span class="font-data-mono text-data-mono text-text-muted">2025-10-15</span>
+</td>
+<td class="py-3 pr-space-md pl-2 text-right">
+<button class="w-8 h-8 rounded-lg hover:bg-bg-raised text-text-muted hover:text-text-primary transition-colors inline-flex items-center justify-center" type="button">
+<span class="material-symbols-outlined text-[18px]">more_horiz</span>
+</button>
+</td>
+</tr>
+<!-- Row 7: Sweet Basil -->
+<tr class="hover:bg-bg-hover/80 transition-colors duration-150 group">
+<td class="py-3 pl-space-md pr-2 text-center">
+<input class="w-4 h-4 rounded bg-bg-surface border-border-strong text-accent-500 focus:ring-accent-500/30 focus:ring-offset-0 cursor-pointer" type="checkbox">
+</td>
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg overflow-hidden shrink-0 border border-border-subtle bg-bg-raised">
+<img alt="Sweet Basil specimen leaves" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida/AEtjO1UBmKj3eHRY0T5c_lf2Au4F8GQRH9kXvrKk1FRact208pn4KxK9WTjATVKzkncqPKXktIbrM28CcuItcHcV5ecGr6mOA4FjemY9s6Z18dzBui7obUA5PVYZ7qCL3Bq3enKExvOKoJzdnhEVS2zqlIWQWubWWWCnWVjbpD-B7mPB60zUDUEuq3yu-w7XgpIQm2cAYlN7-AdBT1mRWBOn3DisMCSmC1Doyb2tuEqh61IffaxvcluwS2YnSSX9">
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-semibold text-text-primary truncate">Sweet Basil</span>
+<span class="text-text-muted font-body-sm text-[12px] truncate">Genovese Cultivar</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<span class="font-latin-botanical italic text-[18px] text-text-secondary leading-none">Ocimum basilicum</span>
+</td>
+<td class="py-3 px-space-md">
+<span class="font-label-mono text-label-mono px-2 py-0.5 rounded-full bg-bg-raised text-text-secondary border border-border-subtle uppercase">Lamiaceae</span>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-accent-500 shadow-[0_0_8px_rgba(79,209,139,0.6)]"></span>
+<span class="text-text-secondary text-body-sm">Non-toxic / Edible</span>
+</div>
+</td>
+<td class="py-3 px-space-md text-center">
+<span class="font-data-mono text-data-mono text-text-primary font-medium">2</span>
+</td>
+<td class="py-3 px-space-md">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-container-high text-text-muted font-label-mono text-label-mono border border-border-subtle uppercase">
+                  Draft
+                </span>
+</td>
+<td class="py-3 px-space-md">
+<span class="font-data-mono text-data-mono text-text-muted">2025-10-12</span>
+</td>
+<td class="py-3 pr-space-md pl-2 text-right">
+<button class="w-8 h-8 rounded-lg hover:bg-bg-raised text-text-muted hover:text-text-primary transition-colors inline-flex items-center justify-center" type="button">
+<span class="material-symbols-outlined text-[18px]">more_horiz</span>
+</button>
+</td>
+</tr>
+<!-- Row 8: Autumn Crocus -->
+<tr class="hover:bg-bg-hover/80 transition-colors duration-150 group">
+<td class="py-3 pl-space-md pr-2 text-center">
+<input class="w-4 h-4 rounded bg-bg-surface border-border-strong text-accent-500 focus:ring-accent-500/30 focus:ring-offset-0 cursor-pointer" type="checkbox">
+</td>
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg overflow-hidden shrink-0 border border-border-subtle bg-bg-raised flex items-center justify-center text-text-muted">
+<span class="material-symbols-outlined text-[20px]">filter_vintage</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-semibold text-text-primary truncate">Autumn Crocus</span>
+<span class="text-text-muted font-body-sm text-[12px] truncate">Meadow Saffron</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<span class="font-latin-botanical italic text-[18px] text-danger leading-none">Colchicum autumnale</span>
+</td>
+<td class="py-3 px-space-md">
+<span class="font-label-mono text-label-mono px-2 py-0.5 rounded-full bg-bg-raised text-text-secondary border border-border-subtle uppercase">Colchicaceae</span>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-danger shadow-[0_0_8px_rgba(217,100,92,0.6)]"></span>
+<span class="text-danger text-body-sm font-medium">High Toxicity (Colchicine)</span>
+</div>
+</td>
+<td class="py-3 px-space-md text-center">
+<span class="font-data-mono text-data-mono text-text-disabled">0</span>
+</td>
+<td class="py-3 px-space-md">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-container-high text-text-muted font-label-mono text-label-mono border border-border-subtle uppercase">
+                  Draft
+                </span>
+</td>
+<td class="py-3 px-space-md">
+<span class="font-data-mono text-data-mono text-text-muted">2025-10-09</span>
+</td>
+<td class="py-3 pr-space-md pl-2 text-right">
+<button class="w-8 h-8 rounded-lg hover:bg-bg-raised text-text-muted hover:text-text-primary transition-colors inline-flex items-center justify-center" type="button">
+<span class="material-symbols-outlined text-[18px]">more_horiz</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination Footer -->
+<div class="px-space-lg py-3.5 bg-bg-raised/50 border-t border-border-subtle flex flex-col sm:flex-row items-center justify-between gap-space-sm">
+<span class="font-label-mono text-label-mono text-text-muted">
+          Showing <span class="text-text-primary font-semibold">1–8</span> of <span class="text-text-primary font-semibold">240</span> specimens
+        </span>
+<div class="flex items-center gap-1">
+<button class="w-8 h-8 rounded-lg bg-bg-surface text-text-disabled border border-border-subtle flex items-center justify-center cursor-not-allowed" disabled="" type="button">
+<span class="material-symbols-outlined text-[16px]">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded-lg bg-accent-500 text-text-on-accent font-data-mono text-data-mono font-semibold flex items-center justify-center shadow-[0_0_12px_rgba(79,209,139,0.3)]" type="button">
+            1
+          </button>
+<button class="w-8 h-8 rounded-lg bg-bg-surface hover:bg-bg-hover text-text-secondary hover:text-text-primary font-data-mono text-data-mono border border-border-subtle flex items-center justify-center transition-colors" type="button">
+            2
+          </button>
+<button class="w-8 h-8 rounded-lg bg-bg-surface hover:bg-bg-hover text-text-secondary hover:text-text-primary font-data-mono text-data-mono border border-border-subtle flex items-center justify-center transition-colors" type="button">
+            3
+          </button>
+<span class="w-6 text-center text-text-muted font-data-mono">...</span>
+<button class="w-8 h-8 rounded-lg bg-bg-surface hover:bg-bg-hover text-text-secondary hover:text-text-primary font-data-mono text-data-mono border border-border-subtle flex items-center justify-center transition-colors" type="button">
+            30
+          </button>
+<button class="w-8 h-8 rounded-lg bg-bg-surface hover:bg-bg-hover text-text-secondary hover:text-text-primary border border-border-subtle flex items-center justify-center transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Floating HUD Bulk Action Bar -->
+<div class="sticky bottom-6 z-30 mx-auto max-w-2xl w-full">
+<div class="bg-bg-raised/95 backdrop-blur-xl px-space-md py-3 rounded-2xl border border-border-strong shadow-[0_16px_36px_rgba(0,0,0,0.65)] flex items-center justify-between gap-space-md">
+<!-- Selection count -->
+<div class="flex items-center gap-3 shrink-0">
+<div class="w-2.5 h-2.5 rounded-full bg-accent-500 animate-pulse"></div>
+<span class="font-body-sm text-body-sm font-semibold text-text-primary">
+            24 <span class="text-text-secondary font-normal font-label-mono text-label-mono uppercase ml-1">Selected</span>
+</span>
+<div class="h-4 w-[1px] bg-border-strong hidden sm:block"></div>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-2">
+<button class="h-9 px-3 rounded-lg bg-accent-tint hover:bg-accent-500/20 text-accent-400 font-body-sm text-body-sm font-semibold border border-accent-500/30 flex items-center gap-1.5 transition-all" type="button">
+<span class="material-symbols-outlined text-[17px]">visibility</span>
+<span>Publish</span>
+</button>
+<button class="h-9 px-3 rounded-lg bg-bg-surface hover:bg-bg-hover text-text-secondary hover:text-text-primary font-body-sm text-body-sm border border-border-subtle flex items-center gap-1.5 transition-all" type="button">
+<span class="material-symbols-outlined text-[17px]">visibility_off</span>
+<span class="hidden sm:inline">Unpublish</span>
+</button>
+<button class="h-9 px-3 rounded-lg bg-danger-tint hover:bg-danger/20 text-danger font-body-sm text-body-sm border border-danger/30 flex items-center gap-1.5 transition-all" type="button">
+<span class="material-symbols-outlined text-[17px]">delete</span>
+<span>Delete</span>
+</button>
+</div>
+<!-- Dismiss -->
+<div class="shrink-0">
+<button class="font-label-mono text-label-mono text-text-muted hover:text-text-primary uppercase tracking-wider px-2 py-1 hover:bg-bg-hover rounded transition-colors" type="button">
+            Deselect all
+          </button>
+</div>
+</div>
+</div>
+</div>
+</div></main></div></body></html>

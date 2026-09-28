@@ -1,0 +1,134 @@
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/jetbrains-mono/500.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    --grain: 0.025;
+    --dotgrid: 0.03;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-bg-base font-sans text-body text-fg antialiased;
+  }
+
+  /* Never pure black, never pure white. */
+  ::selection {
+    background: rgba(79, 209, 139, 0.24);
+    color: #e6ede8;
+  }
+
+  :focus-visible {
+    outline: 2px solid rgba(79, 209, 139, 0.4);
+    outline-offset: 2px;
+  }
+
+  /* Dark scrollbars that do not fight the surfaces. */
+  * {
+    scrollbar-color: #1d251f transparent;
+    scrollbar-width: thin;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #1d251f;
+    border-radius: 999px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #2a342c;
+    background-clip: content-box;
+  }
+}
+
+@layer components {
+  /* Signature detail: fine grain noise at 2.5% across dark backgrounds. */
+  .grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: var(--grain);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode: overlay;
+  }
+
+  /* Signature detail: hairline dot-grid page texture at 3%. */
+  .dot-grid {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1px);
+    background-size: 22px 22px;
+    background-position: -1px -1px;
+  }
+
+  .dot-grid::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: var(--dotgrid);
+    background-image: radial-gradient(rgba(255, 255, 255, 1) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+
+  /* Signature detail: 1px top highlight line on cards. */
+  .top-highlight {
+    position: relative;
+  }
+
+  .top-highlight::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.09), transparent);
+    pointer-events: none;
+  }
+
+  /* Faint radial accent glow used behind heroes and the selected plant. */
+  .accent-halo {
+    background: radial-gradient(60% 60% at 50% 40%, rgba(79, 209, 139, 0.18), transparent 70%);
+  }
+
+  .mono-label {
+    @apply font-mono text-micro uppercase text-fg-muted;
+  }
+
+  .botanical {
+    @apply font-serif italic;
+  }
+
+  .reading-measure {
+    max-width: 68ch;
+  }
+}
+
+/* Honour the OS setting: no transitions, no pulse loops, no shimmer. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

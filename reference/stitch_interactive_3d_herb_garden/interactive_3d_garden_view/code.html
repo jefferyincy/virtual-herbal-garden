@@ -1,0 +1,811 @@
+<!DOCTYPE html><html class="dark" lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_standard" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "background": "#111412", "surface-variant": "#323533", "bg-surface": "#121713", "surface-container-highest": "#323533", "clay-tint": "rgba(217, 132, 95, 0.12)", "on-secondary": "#571f02", "on-error-container": "#ffdad6", "text-disabled": "#47524A", "tertiary-fixed": "#ffdbce", "surface-bright": "#373a37", "inverse-surface": "#e1e3df", "danger": "#D9645C", "on-tertiary-fixed-variant": "#743418", "tertiary-container": "#ffa37f", "on-tertiary-container": "#78371b", "outline-variant": "#3d4a40", "border-subtle": "rgba(255, 255, 255, 0.06)", "secondary-container": "#773618", "surface-tint": "#5dde96", "tertiary": "#ffcab7", "text-primary": "#E6EDE8", "text-secondary": "#9BACA0", "on-primary-fixed": "#002110", "accent-600": "#35A96D", "surface-container": "#1d201e", "tertiary-fixed-dim": "#ffb599", "warning": "#E0A458", "surface": "#111412", "on-secondary-fixed": "#360f00", "on-surface": "#e1e3df", "primary-fixed-dim": "#5dde96", "accent-400": "#7BE0A8", "on-error": "#690005", "on-tertiary": "#571e04", "bg-hover": "#1D251F", "danger-tint": "rgba(217, 100, 92, 0.12)", "primary-fixed": "#7bfbb1", "surface-container-lowest": "#0c0f0d", "on-primary": "#00391f", "outline": "#879489", "on-background": "#e1e3df", "on-primary-container": "#005631", "text-on-accent": "#06110B", "inverse-primary": "#006d40", "bg-raised": "#171E19", "error-container": "#93000a", "accent-tint": "rgba(79, 209, 139, 0.12)", "on-surface-variant": "#bccabd", "primary-container": "#4fd18b", "border-strong": "rgba(255, 255, 255, 0.11)", "success": "#4FD18B", "on-secondary-fixed-variant": "#743416", "surface-container-high": "#282b28", "text-muted": "#6A7A6F", "clay-500": "#D9845F", "surface-dim": "#111412", "accent-glow": "rgba(79, 209, 139, 0.28)", "bg-sunken": "#070A08", "secondary-fixed-dim": "#ffb597", "bg-base": "#0A0D0B", "secondary": "#ffb597", "clay-400": "#E39A72", "surface-container-low": "#191c1a", "accent-500": "#4FD18B", "on-primary-fixed-variant": "#00522f", "secondary-fixed": "#ffdbcd", "on-secondary-container": "#fda27b", "error": "#ffb4ab", "on-tertiary-fixed": "#370e00", "primary": "#6eeea5", "inverse-on-surface": "#2e312f" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "margin": "2rem", "space-lg": "1.5rem", "space-xl": "2rem", "space-md": "1rem", "space-xs": "0.25rem", "space-3xl": "4rem", "gutter-mobile": "1rem", "space-2xl": "3rem", "space-sm": "0.5rem", "gutter": "1.5rem", "margin-mobile": "1rem" }, "fontFamily": { "headline-lg": [ "Inter" ], "botanical-body": [ "Noto Serif" ], "headline-md": [ "Inter" ], "body-lg": [ "Inter" ], "label-mono": [ "JetBrains Mono" ], "display": [ "Inter" ], "body-md": [ "Inter" ], "body-sm": [ "Inter" ], "botanical-title": [ "Noto Serif" ], "headline-lg-mobile": [ "Inter" ], "headline-sm": [ "Inter" ], "display-mobile": [ "Inter" ], "data-mono": [ "JetBrains Mono" ] }, "fontSize": { "headline-lg": [ "40px", { "lineHeight": "46px", "letterSpacing": "-0.015em", "fontWeight": "600" } ], "botanical-body": [ "16px", { "lineHeight": "26px", "letterSpacing": "0em", "fontWeight": "400" } ], "headline-md": [ "28px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "600" } ], "body-lg": [ "17px", { "lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "400" } ], "label-mono": [ "11px", { "lineHeight": "15px", "letterSpacing": "0.08em", "fontWeight": "500" } ], "display": [ "56px", { "lineHeight": "59px", "letterSpacing": "-0.02em", "fontWeight": "600" } ], "body-md": [ "15px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" } ], "body-sm": [ "13px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" } ], "botanical-title": [ "22px", { "lineHeight": "30px", "letterSpacing": "0em", "fontWeight": "400" } ], "headline-lg-mobile": [ "28px", { "lineHeight": "34px", "letterSpacing": "-0.015em", "fontWeight": "600" } ], "headline-sm": [ "20px", { "lineHeight": "26px", "letterSpacing": "-0.005em", "fontWeight": "600" } ], "display-mobile": [ "36px", { "lineHeight": "42px", "letterSpacing": "-0.02em", "fontWeight": "600" } ], "data-mono": [ "13px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "400" } ] } } } };</script></head><body class="bg-bg-base font-body-md text-text-primary min-h-screen selection:bg-primary selection:text-on-primary"><header class="fixed top-0 left-0 right-0 w-full z-50 bg-bg-base/75 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 w-full px-gutter flex items-center justify-between"><div class="flex items-center gap-space-md"><span class="material-symbols-outlined text-primary text-[22px]">potted_plant</span><div class="flex items-center gap-space-xs"><span class="font-label-mono text-label-mono uppercase text-text-primary tracking-widest">HERBARIUM</span><span class="text-text-muted">·</span><span class="font-label-mono text-label-mono uppercase text-text-secondary tracking-widest">VIRTUAL GARDEN</span></div></div><nav class="hidden lg:flex items-center gap-space-sm bg-surface-container-lowest/60 p-1 rounded-xl backdrop-blur-sm" data-active-classes="bg-primary-container text-on-primary-container font-semibold rounded-lg px-space-md py-space-xs shadow-[0_0_16px_rgba(79,209,139,0.2)]"><a aria-current="page" class="transition-colors bg-primary-container text-on-primary-container font-semibold rounded-lg px-space-md py-space-xs shadow-[0_0_16px_rgba(79,209,139,0.2)]" data-path="garden-view" href="#">Garden View</a><a class="px-space-md py-space-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors font-body-sm text-body-sm rounded-lg" data-path="botanical-index" href="#">Botanical Index</a><a class="px-space-md py-space-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors font-body-sm text-body-sm rounded-lg" data-path="field-notes" href="#">Field Notes</a><a class="px-space-md py-space-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors font-body-sm text-body-sm rounded-lg" data-path="apothecary-lab" href="#">Apothecary Lab</a></nav><div class="flex items-center gap-space-md"><div class="hidden sm:flex items-center gap-space-xs px-space-sm py-1 rounded-full bg-surface-container-lowest/80 text-accent-400 font-label-mono text-label-mono uppercase"><span class="w-1.5 h-1.5 rounded-full bg-accent-500 animate-pulse"></span><span>Twilight Cycle</span><span class="text-text-muted ml-1">21:40</span></div><button aria-label="Toggle Ambient Soundscape" class="w-8 h-8 rounded-lg flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">volume_up</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-16 bg-bg-base relative min-h-screen"><div class="flex flex-col w-full h-[calc(100vh-4rem)] relative overflow-hidden bg-bg-base select-none">
+<!-- Interactive 3D Viewport Layer -->
+<div class="absolute inset-0 w-full h-full overflow-hidden">
+<!-- STITCH_THREEJS_START:ANIMATION_3 class="absolute inset-0 w-full h-full bg-transparent" -->
+<div class="absolute inset-0 w-full h-full bg-transparent" style="display:block;">
+<script src="https://ajax.googleapis.com/ajax/libs/threejs/r125/three.min.js"></script>
+<div id="threejs-container-ANIMATION_3" style="width:100%;height:100%"></div>
+<script>
+(function() {
+  const container = document.getElementById('threejs-container-ANIMATION_3');
+  const devicePixelRatio = window.devicePixelRatio || 1;
+  // Three.js Interactive Botanical Herbal Garden View
+// Palette matching DESIGN.md: Dark near-black greens (#0A0D0B, #070A08), warm terracotta key, green rim (#4FD18B)
+
+const width = container.clientWidth || window.innerWidth;
+const height = container.clientHeight || window.innerHeight;
+
+// Scene, Camera, Renderer
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x070A08);
+scene.fog = new THREE.FogExp2(0x070A08, 0.022);
+
+const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+camera.position.set(0, 14, 22);
+camera.lookAt(0, 0, 0);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+renderer.setSize(width, height);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.15;
+container.appendChild(renderer.domElement);
+
+// Lighting setup (Warm key light + living green rim light on near-black scene)
+const ambientLight = new THREE.AmbientLight(0x0e1711, 1.8);
+scene.add(ambientLight);
+
+const keyLight = new THREE.DirectionalLight(0xffecd0, 2.4); // Warm key
+keyLight.position.set(16, 26, 12);
+keyLight.castShadow = true;
+keyLight.shadow.mapSize.width = 2048;
+keyLight.shadow.mapSize.height = 2048;
+keyLight.shadow.camera.near = 0.5;
+keyLight.shadow.camera.far = 60;
+keyLight.shadow.camera.left = -20;
+keyLight.shadow.camera.right = 20;
+keyLight.shadow.camera.top = 20;
+keyLight.shadow.camera.bottom = -20;
+scene.add(keyLight);
+
+const rimLight = new THREE.DirectionalLight(0x4fd18b, 3.2); // Green rim light
+rimLight.position.set(-18, 16, -16);
+scene.add(rimLight);
+
+const fillLight = new THREE.PointLight(0xd9845f, 1.2, 35); // Warm terracotta fill
+fillLight.position.set(0, 6, 8);
+scene.add(fillLight);
+
+// Ground Plane (Near-black soil base)
+const groundGeo = new THREE.PlaneGeometry(60, 60, 32, 32);
+const groundMat = new THREE.MeshLambertMaterial({ color: 0x090d0a });
+const ground = new THREE.Mesh(groundGeo, groundMat);
+ground.rotation.x = -Math.PI / 2;
+ground.receiveShadow = true;
+scene.add(ground);
+
+// Dirt Garden Path (Meandering low-poly winding dirt path)
+const pathMat = new THREE.MeshLambertMaterial({ color: 0x141812, roughness: 0.9 });
+const pathCurve = new THREE.CatmullRomCurve3([
+  new THREE.Vector3(-18, 0.04, 18),
+  new THREE.Vector3(-8, 0.04, 8),
+  new THREE.Vector3(0, 0.04, 2),
+  new THREE.Vector3(6, 0.04, -6),
+  new THREE.Vector3(14, 0.04, -18)
+]);
+const pathPoints = pathCurve.getPoints(40);
+for (let i = 0; i < pathPoints.length - 1; i++) {
+  const p1 = pathPoints[i];
+  const p2 = pathPoints[i + 1];
+  const dist = p1.distanceTo(p2);
+  const pathTile = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.05, dist + 0.3), pathMat);
+  pathTile.position.copy(p1.clone().add(p2).multiplyScalar(0.5));
+  pathTile.lookAt(p2.x, 0.04, p2.z);
+  pathTile.receiveShadow = true;
+  scene.add(pathTile);
+}
+
+// Low-poly Stepping Stones along path
+const stoneMat = new THREE.MeshLambertMaterial({ color: 0x222a24, flatShading: true });
+for (let i = 0; i < 18; i++) {
+  const stone = new THREE.Mesh(new THREE.CylinderGeometry(0.4 + Math.random()*0.25, 0.5 + Math.random()*0.25, 0.08, 6), stoneMat);
+  const pt = pathCurve.getPoint(i / 18);
+  stone.position.set(pt.x + (Math.random()-0.5)*0.8, 0.06, pt.z + (Math.random()-0.5)*0.8);
+  stone.rotation.y = Math.random() * Math.PI;
+  scene.add(stone);
+}
+
+// Garden Plot Beds (Raised wooden planter borders + dark nutrient-rich loam)
+const bedTimberMat = new THREE.MeshLambertMaterial({ color: 0x1f1813 });
+const soilMat = new THREE.MeshLambertMaterial({ color: 0x0f1410, roughness: 0.95 });
+
+function createPlotBed(x, z, width, length, rotation = 0) {
+  const group = new THREE.Group();
+  
+  // Bed soil
+  const soil = new THREE.Mesh(new THREE.BoxGeometry(width - 0.2, 0.35, length - 0.2), soilMat);
+  soil.position.y = 0.18;
+  soil.receiveShadow = true;
+  group.add(soil);
+
+  // Border beams
+  const beamThick = 0.22;
+  const beamH = 0.45;
+  const b1 = new THREE.Mesh(new THREE.BoxGeometry(width, beamH, beamThick), bedTimberMat);
+  b1.position.set(0, beamH/2, length/2 - beamThick/2);
+  b1.castShadow = true;
+  const b2 = b1.clone();
+  b2.position.set(0, beamH/2, -length/2 + beamThick/2);
+  const b3 = new THREE.Mesh(new THREE.BoxGeometry(beamThick, beamH, length), bedTimberMat);
+  b3.position.set(width/2 - beamThick/2, beamH/2, 0);
+  b3.castShadow = true;
+  const b4 = b3.clone();
+  b4.position.set(-width/2 + beamThick/2, beamH/2, 0);
+
+  group.add(b1, b2, b3, b4);
+  group.position.set(x, 0, z);
+  group.rotation.y = rotation;
+  scene.add(group);
+  return group;
+}
+
+// Place 5 primary garden plot beds
+createPlotBed(-6, 2, 5.2, 8, 0.15); // Herb Bed A (Tulsi / Basil sanctuary)
+createPlotBed(6, 4, 5.2, 7.5, -0.1); // Herb Bed B (Rosemary, Thyme, Sage)
+createPlotBed(-7, -8, 5.5, 6.5, -0.08); // Herb Bed C (Mint, Lemon Balm)
+createPlotBed(7, -6, 5, 7.5, 0.22); // Herb Bed D (Chamomile, Calendula)
+createPlotBed(0, -14, 7, 4.5, 0); // Herb Bed E (Lavender Terrace)
+
+// Botanical Plant Builder (Stylized low-poly herbs)
+const plantsGroup = new THREE.Group();
+scene.add(plantsGroup);
+
+// Leaf & Stem Materials
+const stemMat = new THREE.MeshLambertMaterial({ color: 0x22492f, flatShading: true });
+const greenMat = new THREE.MeshLambertMaterial({ color: 0x3aa76b, flatShading: true });
+const tulsiLeafMat = new THREE.MeshLambertMaterial({ color: 0x4fd18b, flatShading: true }); // Living green
+const purpleTulsiFlowerMat = new THREE.MeshLambertMaterial({ color: 0xa988cc, flatShading: true });
+const lavenderMat = new THREE.MeshLambertMaterial({ color: 0x9d82db, flatShading: true });
+const chamomileFlowerMat = new THREE.MeshLambertMaterial({ color: 0xedebe4, flatShading: true });
+const goldFlowerMat = new THREE.MeshLambertMaterial({ color: 0xe0a458, flatShading: true });
+const terracottaClayPotMat = new THREE.MeshLambertMaterial({ color: 0xd9845f, flatShading: true });
+
+// Function: Build Low-poly Tulsi Plant (Holy Basil)
+let tulsiCenterMesh = null;
+function createTulsiPlant(x, z, scale = 1.0, isMain = false) {
+  const plant = new THREE.Group();
+  plant.position.set(x, 0.35, z);
+  plant.scale.set(scale, scale, scale);
+
+  // Main Stems
+  const stemGeo = new THREE.CylinderGeometry(0.04, 0.08, 1.8, 5);
+  const mainStem = new THREE.Mesh(stemGeo, stemMat);
+  mainStem.position.y = 0.9;
+  mainStem.castShadow = true;
+  plant.add(mainStem);
+
+  // Branched Stalks with opposing leaves
+  const leafGeo = new THREE.ConeGeometry(0.22, 0.55, 4);
+  leafGeo.rotateX(Math.PI / 2);
+
+  const tiers = 6;
+  for (let i = 0; i < tiers; i++) {
+    const y = 0.4 + i * 0.25;
+    const leafCount = 4;
+    for (let j = 0; j < leafCount; j++) {
+      const angle = (j * Math.PI / 2) + (i * 0.5);
+      const leaf = new THREE.Mesh(leafGeo, isMain ? tulsiLeafMat : greenMat);
+      leaf.scale.set(1 - i * 0.08, 1, 1 - i * 0.08);
+      leaf.position.set(Math.cos(angle) * (0.28 + i*0.04), y, Math.sin(angle) * (0.28 + i*0.04));
+      leaf.rotation.set(0.4, angle, 0.25);
+      leaf.castShadow = true;
+      plant.add(leaf);
+    }
+  }
+
+  // Flower Inflorescence spikes (Tulsi purple-green racemes)
+  const racemeGeo = new THREE.ConeGeometry(0.12, 0.65, 5);
+  const raceme = new THREE.Mesh(racemeGeo, purpleTulsiFlowerMat);
+  raceme.position.y = 1.9;
+  plant.add(raceme);
+
+  for (let b = 0; b < 3; b++) {
+    const bAngle = (b * Math.PI * 2) / 3;
+    const sideRaceme = new THREE.Mesh(racemeGeo, purpleTulsiFlowerMat);
+    sideRaceme.scale.set(0.65, 0.65, 0.65);
+    sideRaceme.position.set(Math.cos(bAngle)*0.35, 1.6, Math.sin(bAngle)*0.35);
+    sideRaceme.rotation.z = Math.sin(bAngle) * 0.35;
+    plant.add(sideRaceme);
+  }
+
+  if (isMain) {
+    tulsiCenterMesh = plant;
+  }
+
+  plantsGroup.add(plant);
+  return plant;
+}
+
+// Function: Build Rosemary / Lavender Shrub
+function createHerbalShrub(x, z, flowerColor = lavenderMat, scale = 1.0) {
+  const shrub = new THREE.Group();
+  shrub.position.set(x, 0.35, z);
+  shrub.scale.set(scale, scale, scale);
+
+  const stemCount = 9;
+  for (let s = 0; s < stemCount; s++) {
+    const angle = (s / stemCount) * Math.PI * 2 + Math.random()*0.3;
+    const rad = 0.2 + Math.random()*0.3;
+    const h = 1.0 + Math.random()*0.6;
+    const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.05, h, 4), stemMat);
+    stem.position.set(Math.cos(angle)*rad, h/2, Math.sin(angle)*rad);
+    stem.rotation.x = (Math.random()-0.5)*0.35;
+    stem.rotation.z = (Math.random()-0.5)*0.35;
+    shrub.add(stem);
+
+    // Tip flower
+    const tip = new THREE.Mesh(new THREE.ConeGeometry(0.09, 0.45, 5), flowerColor);
+    tip.position.set(stem.position.x, h + 0.15, stem.position.z);
+    shrub.add(tip);
+  }
+  plantsGroup.add(shrub);
+  return shrub;
+}
+
+// Function: Build Chamomile / Calendula Plant
+function createDaisyHerb(x, z, petalsMat = chamomileFlowerMat, scale = 1.0) {
+  const herb = new THREE.Group();
+  herb.position.set(x, 0.35, z);
+  herb.scale.set(scale, scale, scale);
+
+  const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.05, 1.1, 4), stemMat);
+  stem.position.y = 0.55;
+  herb.add(stem);
+
+  // Blossom
+  const disk = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.05, 6), goldFlowerMat);
+  disk.position.y = 1.15;
+  herb.add(disk);
+
+  for (let p = 0; p < 7; p++) {
+    const pAng = (p / 7) * Math.PI * 2;
+    const petal = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.03, 0.32), petalsMat);
+    petal.position.set(Math.cos(pAng)*0.24, 1.14, Math.sin(pAng)*0.24);
+    petal.rotation.y = -pAng;
+    herb.add(petal);
+  }
+  plantsGroup.add(herb);
+  return herb;
+}
+
+// Populate Herb Bed A (Centerpiece: Tulsi Sanctum)
+const mainTulsi = createTulsiPlant(-6, 2, 1.35, true); // Primary selected Tulsi
+createTulsiPlant(-7.2, 0.8, 0.95);
+createTulsiPlant(-4.8, 1.2, 1.05);
+createTulsiPlant(-6.5, 3.4, 0.9);
+createTulsiPlant(-5.2, 4.2, 1.1);
+
+// Highlight Ring & Soft Living Green Glow for Tulsi
+const ringGeo = new THREE.RingGeometry(1.0, 1.18, 32);
+const ringMat = new THREE.MeshBasicMaterial({ 
+  color: 0x4fd18b, 
+  side: THREE.DoubleSide, 
+  transparent: true, 
+  opacity: 0.85 
+});
+const highlightRing = new THREE.Mesh(ringGeo, ringMat);
+highlightRing.rotation.x = -Math.PI / 2;
+highlightRing.position.set(-6, 0.42, 2);
+scene.add(highlightRing);
+
+// Plant Glow light
+const tulsiGlowLight = new THREE.PointLight(0x7be0a8, 2.2, 5.5);
+tulsiGlowLight.position.set(-6, 1.6, 2);
+scene.add(tulsiGlowLight);
+
+// Populate Herb Bed B (Rosemary & Thyme)
+for (let i = 0; i < 8; i++) {
+  const rx = 4.5 + (i % 3) * 1.3 + (Math.random()-0.5)*0.4;
+  const rz = 1.5 + Math.floor(i / 3) * 2.1 + (Math.random()-0.5)*0.4;
+  createHerbalShrub(rx, rz, lavenderMat, 0.9 + Math.random()*0.3);
+}
+
+// Populate Herb Bed C (Mint & Lemon Balm)
+for (let i = 0; i < 6; i++) {
+  const mx = -8.2 + (i % 2) * 2.2 + (Math.random()-0.5)*0.5;
+  const mz = -9.5 + Math.floor(i / 2) * 2.2 + (Math.random()-0.5)*0.5;
+  createTulsiPlant(mx, mz, 0.85 + Math.random()*0.2);
+}
+
+// Populate Herb Bed D (Chamomile & Calendula)
+for (let i = 0; i < 9; i++) {
+  const cx = 5.2 + (i % 3) * 1.5 + (Math.random()-0.5)*0.4;
+  const cz = -8.5 + Math.floor(i / 3) * 1.9 + (Math.random()-0.5)*0.4;
+  createDaisyHerb(cx, cz, i % 2 === 0 ? chamomileFlowerMat : goldFlowerMat, 0.85 + Math.random()*0.3);
+}
+
+// Populate Herb Bed E (Lavender Terrace)
+for (let i = 0; i < 7; i++) {
+  const lx = -2.8 + i * 0.95;
+  const lz = -14 + (Math.random()-0.5)*0.5;
+  createHerbalShrub(lx, lz, lavenderMat, 1.05 + Math.random()*0.2);
+}
+
+// Terracotta Clay Planter Pots around garden
+const potGeo = new THREE.CylinderGeometry(0.48, 0.34, 0.65, 8);
+function placePot(x, z, rotation = 0) {
+  const pot = new THREE.Mesh(potGeo, terracottaClayPotMat);
+  pot.position.set(x, 0.32, z);
+  pot.rotation.y = rotation;
+  pot.castShadow = true;
+  scene.add(pot);
+  // soil inside pot
+  const potSoil = new THREE.Mesh(new THREE.CylinderGeometry(0.44, 0.44, 0.05, 8), soilMat);
+  potSoil.position.set(x, 0.6, z);
+  scene.add(potSoil);
+}
+placePot(-3.2, 5.8, 0.4);
+placePot(-2.4, 6.2, 1.2);
+placePot(3.2, 0.2, 0.7);
+
+// Floating Botanical Spores / Fireflies (Living Green Ambient Particles)
+const sporeCount = 45;
+const sporeGeo = new THREE.BufferGeometry();
+const sporePositions = new Float32Array(sporeCount * 3);
+for (let i = 0; i < sporeCount * 3; i += 3) {
+  sporePositions[i] = (Math.random() - 0.5) * 26;
+  sporePositions[i + 1] = 0.5 + Math.random() * 6.5;
+  sporePositions[i + 2] = (Math.random() - 0.5) * 26;
+}
+sporeGeo.setAttribute('position', new THREE.BufferAttribute(sporePositions, 3));
+const sporeMat = new THREE.PointsMaterial({
+  color: 0x7be0a8,
+  size: 0.16,
+  transparent: true,
+  opacity: 0.75,
+  blending: THREE.AdditiveBlending
+});
+const spores = new THREE.Points(sporeGeo, sporeMat);
+scene.add(spores);
+
+// Camera Orbit / Gentle Pan interaction
+let isDragging = false;
+let prevMouseX = 0;
+let prevMouseY = 0;
+let sphericalAngle = { theta: 0.18, phi: 0.58, radius: 26 };
+
+function updateCameraPosition() {
+  camera.position.x = sphericalAngle.radius * Math.sin(sphericalAngle.phi) * Math.sin(sphericalAngle.theta);
+  camera.position.y = sphericalAngle.radius * Math.cos(sphericalAngle.phi);
+  camera.position.z = sphericalAngle.radius * Math.sin(sphericalAngle.phi) * Math.cos(sphericalAngle.theta);
+  camera.lookAt(-1, 1.5, 0);
+}
+updateCameraPosition();
+
+container.addEventListener('mousedown', (e) => {
+  isDragging = true;
+  prevMouseX = e.clientX;
+  prevMouseY = e.clientY;
+});
+
+window.addEventListener('mouseup', () => { isDragging = false; });
+window.addEventListener('mousemove', (e) => {
+  if (!isDragging) return;
+  const deltaX = e.clientX - prevMouseX;
+  const deltaY = e.clientY - prevMouseY;
+  prevMouseX = e.clientX;
+  prevMouseY = e.clientY;
+
+  sphericalAngle.theta -= deltaX * 0.005;
+  sphericalAngle.phi = Math.max(0.25, Math.min(Math.PI / 2.1, sphericalAngle.phi - deltaY * 0.005));
+  updateCameraPosition();
+});
+
+// Resize Listener
+function onResize() {
+  const w = container.clientWidth || window.innerWidth;
+  const h = container.clientHeight || window.innerHeight;
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h);
+}
+window.addEventListener('resize', onResize);
+
+// Animation Loop
+let clock = new THREE.Clock();
+function animate() {
+  requestAnimationFrame(animate);
+  const elapsedTime = clock.getElapsedTime();
+
+  // Subtle breathing motion for plants
+  if (tulsiCenterMesh) {
+    tulsiCenterMesh.rotation.y = Math.sin(elapsedTime * 0.6) * 0.04;
+  }
+  
+  // Highlight ring pulsating effect
+  const ringScale = 1.0 + Math.sin(elapsedTime * 2.2) * 0.04;
+  highlightRing.scale.set(ringScale, ringScale, ringScale);
+  ringMat.opacity = 0.65 + Math.sin(elapsedTime * 2.2) * 0.25;
+  tulsiGlowLight.intensity = 2.0 + Math.sin(elapsedTime * 2.2) * 0.6;
+
+  // Drift spores
+  const posAttr = sporeGeo.attributes.position;
+  for (let i = 0; i < sporeCount; i++) {
+    let y = posAttr.getY(i);
+    y += Math.sin(elapsedTime + i) * 0.003;
+    posAttr.setY(i, y);
+  }
+  posAttr.needsUpdate = true;
+
+  // Gentle camera idle orbit if not dragging
+  if (!isDragging) {
+    sphericalAngle.theta += 0.0006;
+    updateCameraPosition();
+  }
+
+  renderer.render(scene, camera);
+}
+animate();
+})();
+</script>
+</div>
+<!-- STITCH_THREEJS_END:ANIMATION_3 -->
+<!-- Vignette & Subtle Atmospheric Grid Lines -->
+<div class="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,transparent_35%,rgba(10,13,11,0.78)_100%)]"></div>
+<div class="absolute inset-0 pointer-events-none bg-[linear-gradient(to_right,rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:48px_48px]"></div>
+</div>
+<!-- HUD Master Overlay Layer (Pointer Events Managed Per Widget) -->
+<div class="relative z-10 w-full h-full p-6 flex flex-col justify-between pointer-events-none">
+<!-- TOP ROW: Environmental Telemetry & Viewport Controls -->
+<div class="flex items-start justify-between w-full">
+<!-- TOP-LEFT HUD WIDGET: Celestial & Microclimate Telemetry -->
+<div class="pointer-events-auto bg-bg-raised/85 backdrop-blur-md rounded-2xl p-4 w-[330px] border border-border-strong/70 shadow-[0_12px_32px_rgba(0,0,0,0.5)] transition-all duration-300">
+<div class="flex items-center justify-between pb-3 border-b border-border-subtle">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-accent-500 animate-pulse"></span>
+<span class="font-label-mono text-label-mono text-text-primary tracking-widest uppercase">SPRING · NOCTURNAL PHASE</span>
+</div>
+<span class="font-label-mono text-label-mono text-text-secondary">ZONE 7B</span>
+</div>
+<div class="mt-3 flex items-baseline justify-between">
+<div class="flex items-baseline gap-2">
+<span class="font-headline-md text-headline-md text-text-primary tracking-tight">16°C</span>
+<span class="font-data-mono text-data-mono text-text-secondary">78% RH</span>
+</div>
+<div class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-accent-tint border border-accent-600/30">
+<span class="material-symbols-outlined text-accent-400 text-[14px]">dew_point</span>
+<span class="font-label-mono text-label-mono text-accent-400 uppercase">Dewfall Peak</span>
+</div>
+</div>
+<!-- Celestial Nocturnal Arc Slider -->
+<div class="mt-4 pt-3 border-t border-border-subtle">
+<div class="flex justify-between items-center text-text-muted font-label-mono text-[10px] uppercase mb-1.5">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[13px] text-warning">wb_twilight</span> 19:40 DUSK</span>
+<span class="text-accent-400 font-semibold tracking-wider">22:45 NOCTURNAL PEAK</span>
+<span class="flex items-center gap-1">05:15 DAWN <span class="material-symbols-outlined text-[13px] text-tertiary">wb_sunny</span></span>
+</div>
+<div class="relative w-full h-7 flex items-center group cursor-pointer">
+<!-- Celestial Track -->
+<div class="w-full h-1 bg-surface-container-high rounded-full overflow-hidden relative">
+<div class="absolute inset-y-0 left-0 w-[68%] bg-gradient-to-r from-clay-500/40 via-accent-600/60 to-accent-500"></div>
+</div>
+<!-- Tick Marks -->
+<div class="absolute inset-x-0 flex justify-between px-1 pointer-events-none">
+<span class="w-0.5 h-1.5 bg-text-disabled"></span>
+<span class="w-0.5 h-1.5 bg-text-disabled"></span>
+<span class="w-0.5 h-2 bg-text-muted"></span>
+<span class="w-0.5 h-1.5 bg-text-disabled"></span>
+<span class="w-0.5 h-2.5 bg-accent-500"></span>
+<span class="w-0.5 h-1.5 bg-text-disabled"></span>
+<span class="w-0.5 h-1.5 bg-text-disabled"></span>
+</div>
+<!-- Moon Position Indicator Thumb -->
+<div class="absolute left-[68%] -translate-x-1/2 w-6 h-6 rounded-full bg-bg-surface border border-accent-400 flex items-center justify-center shadow-[0_0_12px_rgba(79,209,139,0.45)]">
+<span class="material-symbols-outlined text-accent-400 text-[14px]">nightlight</span>
+</div>
+</div>
+<div class="flex items-center justify-between mt-2 pt-2 border-t border-border-subtle/50 text-text-muted font-label-mono text-label-mono">
+<span>CYCLE 04 · LUNAR ILLUM 82%</span>
+<span class="text-text-secondary flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-clay-400"></span>
+              WAXING GIBBOUS
+            </span>
+</div>
+</div>
+</div>
+<!-- TOP-RIGHT HUD: Quality, Camera Mode & Soundscape Settings -->
+<div class="pointer-events-auto flex items-center gap-2 bg-bg-raised/85 backdrop-blur-md rounded-2xl p-2 border border-border-strong/70 shadow-[0_12px_32px_rgba(0,0,0,0.5)]">
+<!-- Render FPS Pill -->
+<div class="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-surface-container-low border border-border-subtle">
+<span class="w-1.5 h-1.5 rounded-full bg-accent-500 animate-ping"></span>
+<span class="font-label-mono text-label-mono text-text-primary tracking-wider uppercase">60 FPS · HIGH RES</span>
+</div>
+<!-- Camera Perspective Toggle -->
+<div aria-label="Camera Perspective" class="flex items-center bg-surface-container-low p-0.5 rounded-lg border border-border-subtle" role="radiogroup">
+<button aria-checked="true" class="px-3 py-1.5 rounded text-body-sm font-body-sm font-medium bg-bg-hover text-accent-400 border border-accent-600/40 shadow-sm transition-all" type="button">
+            ISOMETRIC
+          </button>
+<button aria-checked="false" class="px-3 py-1.5 rounded text-body-sm font-body-sm text-text-secondary hover:text-text-primary transition-colors" type="button">
+            ORBIT
+          </button>
+<button aria-checked="false" class="px-3 py-1.5 rounded text-body-sm font-body-sm text-text-secondary hover:text-text-primary transition-colors" type="button">
+            GROUND
+          </button>
+</div>
+<!-- Ambient Soundscape Controller -->
+<button class="flex items-center gap-2 px-3 py-2 rounded-lg bg-surface-container-low hover:bg-bg-hover border border-border-subtle text-text-primary transition-colors" title="Toggle audio stream" type="button">
+<span class="material-symbols-outlined text-[16px] text-accent-400">graphic_eq</span>
+<div class="flex items-center gap-0.5 h-3">
+<span class="w-0.5 h-2 bg-accent-500 animate-[pulse_1.1s_ease-in-out_infinite]"></span>
+<span class="w-0.5 h-3.5 bg-accent-400 animate-[pulse_0.8s_ease-in-out_infinite]"></span>
+<span class="w-0.5 h-1 bg-accent-500/80 animate-[pulse_1.4s_ease-in-out_infinite]"></span>
+<span class="w-0.5 h-2.5 bg-accent-400 animate-[pulse_0.9s_ease-in-out_infinite]"></span>
+</div>
+<span class="font-label-mono text-label-mono text-text-secondary uppercase hidden xl:inline">CRICKETS &amp; RAIN</span>
+</button>
+<button aria-label="Fullscreen" class="w-9 h-9 rounded-lg flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-bg-hover transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px]">fullscreen</span>
+</button>
+</div>
+</div>
+<!-- MIDDLE LAYER: Spatial Target Anchored Callout (Bed A / Tulsi Focus) -->
+<div class="relative w-full h-0 flex items-center justify-center pointer-events-none -mt-16">
+<!-- 3D Target Pinpoint Callout -->
+<div class="pointer-events-auto absolute left-[44%] top-[-70px] -translate-x-1/2 flex flex-col items-center group cursor-pointer">
+<!-- Floating Specimen Callout Pill -->
+<div class="flex items-center gap-3 px-3.5 py-2 rounded-xl bg-bg-raised/90 backdrop-blur-md border border-accent-500/40 shadow-[0_8px_32px_rgba(79,209,139,0.3)] hover:scale-105 transition-transform duration-200">
+<div class="relative flex items-center justify-center">
+<span class="w-2.5 h-2.5 rounded-full bg-accent-500 animate-ping absolute opacity-75"></span>
+<span class="w-2.5 h-2.5 rounded-full bg-accent-500 relative"></span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="font-headline-sm text-body-md font-semibold text-text-primary">Tulsi — Holy Basil</span>
+<span class="font-botanical-body text-body-sm italic text-accent-400">Ocimum tenuiflorum</span>
+</div>
+<div class="flex items-center gap-2 mt-0.5">
+<span class="font-label-mono text-label-mono text-accent-400 uppercase tracking-widest">HEALTH VIGOR 96%</span>
+<span class="text-text-disabled">·</span>
+<span class="font-label-mono text-label-mono text-clay-400 uppercase tracking-widest">HARVEST READY</span>
+</div>
+</div>
+<div class="pl-2 border-l border-border-subtle">
+<span class="material-symbols-outlined text-text-secondary group-hover:text-accent-400 transition-colors text-[18px]">read_more</span>
+</div>
+</div>
+<!-- Vertical Pointer Guide Line -->
+<div class="w-px h-10 bg-gradient-to-b from-accent-500 to-transparent"></div>
+<div class="w-3 h-3 rounded-full border border-accent-400/80 bg-accent-tint flex items-center justify-center shadow-[0_0_10px_rgba(79,209,139,0.5)]">
+<div class="w-1 h-1 rounded-full bg-accent-500"></div>
+</div>
+</div>
+</div>
+<!-- BOTTOM ROW: Radar Mini-Map, Inventory Quick Dock & Focused Specimen Inspector -->
+<div class="grid grid-cols-12 gap-4 items-end w-full">
+<!-- BOTTOM-LEFT HUD: Botanical Garden Radar Mini-Map (Col 1-3) -->
+<div class="col-span-3 pointer-events-auto bg-bg-raised/85 backdrop-blur-md rounded-2xl p-3.5 border border-border-strong/70 shadow-[0_12px_32px_rgba(0,0,0,0.5)] w-[240px]">
+<div class="flex items-center justify-between mb-2">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-accent-400 text-[16px]">radar</span>
+<span class="font-label-mono text-label-mono text-text-primary uppercase tracking-widest">PLOT TOPOLOGY</span>
+</div>
+<div class="flex items-center gap-1 font-label-mono text-[10px] text-text-muted">
+<span class="text-clay-400 font-semibold">N</span> 34°12'
+          </div>
+</div>
+<!-- Radar Tactical Canvas / SVG Garden Schematic -->
+<div class="relative w-full h-[148px] bg-bg-sunken/80 rounded-xl overflow-hidden border border-border-subtle flex items-center justify-center">
+<svg class="w-full h-full p-2" fill="none" viewBox="0 0 160 140" xmlns="http://www.w3.org/2000/svg">
+<!-- Concentric Range Bands -->
+<circle cx="80" cy="70" r="60" stroke="#1D251F" stroke-dasharray="3 3" stroke-width="1"></circle>
+<circle cx="80" cy="70" r="38" stroke="#1D251F" stroke-width="1"></circle>
+<circle cx="80" cy="70" r="16" stroke="#1D251F" stroke-width="1"></circle>
+<!-- Axis Crosshairs -->
+<line stroke="#171E19" stroke-width="1" x1="80" x2="80" y1="6" y2="134"></line>
+<line stroke="#171E19" stroke-width="1" x1="16" x2="144" y1="70" y2="70"></line>
+<!-- Winding Path Overlay -->
+<path d="M 20 120 Q 50 110 70 85 T 95 45 T 140 20" fill="none" stroke="#282b28" stroke-linecap="round" stroke-width="7"></path>
+<path d="M 20 120 Q 50 110 70 85 T 95 45 T 140 20" fill="none" stroke="#3d4a40" stroke-dasharray="2 3" stroke-width="1"></path>
+<!-- Plot Beds (5 Polygons) -->
+<!-- Bed A: Tulsi (Active Target) -->
+<rect class="animate-pulse" fill="#121713" height="20" rx="3" stroke="#4FD18B" stroke-width="1.5" width="28" x="58" y="52"></rect>
+<text fill="#4FD18B" font-family="JetBrains Mono" font-size="7" font-weight="600" text-anchor="middle" x="72" y="65">BED A</text>
+<!-- Bed B: Rosemary -->
+<rect fill="#121713" height="18" rx="3" stroke="#323533" stroke-width="1" width="26" x="94" y="32"></rect>
+<text fill="#6A7A6F" font-family="JetBrains Mono" font-size="6.5" text-anchor="middle" x="107" y="44">BED B</text>
+<!-- Bed C: Mint -->
+<rect fill="#121713" height="22" rx="3" stroke="#323533" stroke-width="1" width="24" x="30" y="78"></rect>
+<text fill="#6A7A6F" font-family="JetBrains Mono" font-size="6.5" text-anchor="middle" x="42" y="92">BED C</text>
+<!-- Bed D: Chamomile -->
+<rect fill="#121713" height="20" rx="3" stroke="#323533" stroke-width="1" width="28" x="96" y="82"></rect>
+<text fill="#6A7A6F" font-family="JetBrains Mono" font-size="6.5" text-anchor="middle" x="110" y="95">BED D</text>
+<!-- Bed E: Lavender -->
+<rect fill="#121713" height="18" rx="3" stroke="#323533" stroke-width="1" width="28" x="42" y="24"></rect>
+<text fill="#6A7A6F" font-family="JetBrains Mono" font-size="6.5" text-anchor="middle" x="56" y="36">BED E</text>
+<!-- Observer / Player Camera Frustum Cone -->
+<path d="M 80 125 L 68 85 L 92 85 Z" fill="rgba(79, 209, 139, 0.12)" stroke="#35A96D" stroke-dasharray="2 2" stroke-width="0.75"></path>
+<circle cx="80" cy="125" fill="#E6EDE8" r="2.5"></circle>
+<!-- Active Pulsing Target Dot on Bed A -->
+<circle class="animate-ping" cx="72" cy="62" fill="#4FD18B" opacity="0.6" r="3.5"></circle>
+<circle cx="72" cy="62" fill="#4FD18B" r="2"></circle>
+</svg>
+<!-- Compass Cardinal Marker -->
+<div class="absolute top-1.5 right-2 font-label-mono text-[9px] text-text-muted flex flex-col items-center">
+<span class="text-clay-400 font-bold">▲</span>
+<span>N</span>
+</div>
+</div>
+<div class="mt-2.5 flex items-center justify-between font-label-mono text-label-mono">
+<span class="text-text-muted">SECTOR 01: HERB SPIRAL</span>
+<span class="text-accent-400">BED A FOCUS</span>
+</div>
+</div>
+<!-- BOTTOM-CENTRE HUD: Inventory Botanical Dock (Col 4-8) -->
+<div class="col-span-5 pointer-events-auto flex flex-col items-center">
+<!-- Dock Bar Tray -->
+<div class="w-full bg-bg-raised/85 backdrop-blur-md rounded-2xl p-2 border border-border-strong/70 shadow-[0_12px_32px_rgba(0,0,0,0.5)]">
+<div class="flex items-center justify-between px-2 pb-1.5 border-b border-border-subtle/50 mb-2">
+<div class="flex items-center gap-2">
+<span class="font-label-mono text-label-mono text-text-primary uppercase tracking-wider">HERBARIUM DOCK</span>
+<span class="px-1.5 py-0.2 rounded bg-surface-container-high text-text-muted font-label-mono text-[10px]">6 SPECIMENS</span>
+</div>
+<div class="flex items-center gap-1 font-label-mono text-[10px] text-text-muted">
+<span>USE ARROWS OR SCROLL</span>
+<span class="material-symbols-outlined text-[12px]">keyboard_arrow_right</span>
+</div>
+</div>
+<!-- Horizontal Cards Scroll Row -->
+<div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+<!-- Card 1: Tulsi (Selected) -->
+<div class="flex-shrink-0 w-36 p-2 rounded-xl bg-bg-surface border border-accent-600 shadow-[0_0_16px_rgba(79,209,139,0.22)] cursor-pointer relative group">
+<div class="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-accent-500 shadow-[0_0_6px_#4FD18B]"></div>
+<div class="flex items-center gap-1.5 mb-1">
+<span class="material-symbols-outlined text-accent-400 text-[16px]">spa</span>
+<span class="font-headline-sm text-body-sm font-semibold text-text-primary truncate">Tulsi</span>
+</div>
+<p class="font-botanical-body text-[12px] italic text-accent-400 truncate">O. tenuiflorum</p>
+<div class="mt-2 pt-1 border-t border-border-subtle flex items-center justify-between font-label-mono text-[9px]">
+<span class="text-text-muted">STAGE 4</span>
+<span class="text-accent-400">HARVEST</span>
+</div>
+</div>
+<!-- Card 2: Rosemary -->
+<div class="flex-shrink-0 w-36 p-2 rounded-xl bg-bg-surface/70 hover:bg-bg-surface border border-border-subtle hover:border-border-strong cursor-pointer transition-all">
+<div class="flex items-center gap-1.5 mb-1">
+<span class="material-symbols-outlined text-text-secondary text-[16px]">psychology</span>
+<span class="font-headline-sm text-body-sm font-medium text-text-primary truncate">Rosemary</span>
+</div>
+<p class="font-botanical-body text-[12px] italic text-text-secondary truncate">S. rosmarinus</p>
+<div class="mt-2 pt-1 border-t border-border-subtle flex items-center justify-between font-label-mono text-[9px]">
+<span class="text-text-muted">STAGE 3</span>
+<span class="text-text-secondary">GROWTH</span>
+</div>
+</div>
+<!-- Card 3: Lavender -->
+<div class="flex-shrink-0 w-36 p-2 rounded-xl bg-bg-surface/70 hover:bg-bg-surface border border-border-subtle hover:border-border-strong cursor-pointer transition-all">
+<div class="flex items-center gap-1.5 mb-1">
+<span class="material-symbols-outlined text-text-secondary text-[16px]">bedtime</span>
+<span class="font-headline-sm text-body-sm font-medium text-text-primary truncate">Lavender</span>
+</div>
+<p class="font-botanical-body text-[12px] italic text-text-secondary truncate">L. angustifolia</p>
+<div class="mt-2 pt-1 border-t border-border-subtle flex items-center justify-between font-label-mono text-[9px]">
+<span class="text-text-muted">STAGE 2</span>
+<span class="text-clay-400">BLOOMING</span>
+</div>
+</div>
+<!-- Card 4: Chamomile -->
+<div class="flex-shrink-0 w-36 p-2 rounded-xl bg-bg-surface/70 hover:bg-bg-surface border border-border-subtle hover:border-border-strong cursor-pointer transition-all">
+<div class="flex items-center gap-1.5 mb-1">
+<span class="material-symbols-outlined text-text-secondary text-[16px]">self_improvement</span>
+<span class="font-headline-sm text-body-sm font-medium text-text-primary truncate">Chamomile</span>
+</div>
+<p class="font-botanical-body text-[12px] italic text-text-secondary truncate">M. chamomilla</p>
+<div class="mt-2 pt-1 border-t border-border-subtle flex items-center justify-between font-label-mono text-[9px]">
+<span class="text-text-muted">STAGE 4</span>
+<span class="text-accent-400">HARVEST</span>
+</div>
+</div>
+<!-- Card 5: Peppermint -->
+<div class="flex-shrink-0 w-36 p-2 rounded-xl bg-bg-surface/70 hover:bg-bg-surface border border-border-subtle hover:border-border-strong cursor-pointer transition-all">
+<div class="flex items-center gap-1.5 mb-1">
+<span class="material-symbols-outlined text-text-secondary text-[16px]">local_florist</span>
+<span class="font-headline-sm text-body-sm font-medium text-text-primary truncate">Peppermint</span>
+</div>
+<p class="font-botanical-body text-[12px] italic text-text-secondary truncate">M. × piperita</p>
+<div class="mt-2 pt-1 border-t border-border-subtle flex items-center justify-between font-label-mono text-[9px]">
+<span class="text-text-muted">STAGE 3</span>
+<span class="text-text-secondary">GROWTH</span>
+</div>
+</div>
+<!-- Card 6: White Sage -->
+<div class="flex-shrink-0 w-36 p-2 rounded-xl bg-bg-surface/70 hover:bg-bg-surface border border-border-subtle hover:border-border-strong cursor-pointer transition-all">
+<div class="flex items-center gap-1.5 mb-1">
+<span class="material-symbols-outlined text-text-secondary text-[16px]">clean_hands</span>
+<span class="font-headline-sm text-body-sm font-medium text-text-primary truncate">White Sage</span>
+</div>
+<p class="font-botanical-body text-[12px] italic text-text-secondary truncate">Salvia apiana</p>
+<div class="mt-2 pt-1 border-t border-border-subtle flex items-center justify-between font-label-mono text-[9px]">
+<span class="text-text-muted">STAGE 2</span>
+<span class="text-text-secondary">GROWTH</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- BOTTOM-RIGHT HUD: Floating Glass Inspector Panel (Col 9-12) -->
+<div class="col-span-4 pointer-events-auto bg-bg-raised/90 backdrop-blur-md rounded-2xl p-5 border border-border-strong shadow-[0_16px_40px_rgba(0,0,0,0.65)] relative">
+<!-- Top Hairline Highlight -->
+<div class="absolute inset-x-4 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/15 to-transparent"></div>
+<!-- Header: Specimen Status Pill & Controls -->
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-2 px-2.5 py-1 rounded-full bg-accent-tint border border-accent-600/30">
+<span class="w-1.5 h-1.5 rounded-full bg-accent-500 animate-pulse"></span>
+<span class="font-label-mono text-label-mono text-accent-400 uppercase tracking-wider">ACTIVE SPECIMEN · BED A</span>
+</div>
+<div class="flex items-center gap-1 text-text-secondary">
+<button class="w-7 h-7 rounded hover:bg-bg-hover flex items-center justify-center transition-colors" title="Pin Inspector" type="button">
+<span class="material-symbols-outlined text-[16px]">push_pin</span>
+</button>
+<button class="w-7 h-7 rounded hover:bg-bg-hover flex items-center justify-center transition-colors" title="Close" type="button">
+<span class="material-symbols-outlined text-[16px]">close</span>
+</button>
+</div>
+</div>
+<!-- Specimen Hero Row -->
+<div class="flex gap-4 items-start pb-4 border-b border-border-subtle">
+<!-- Specimen Visual Thumbnail with Line Watermark -->
+<div class="w-[72px] h-[72px] rounded-xl bg-bg-sunken border border-border-strong flex-shrink-0 relative overflow-hidden flex items-center justify-center">
+<img class="w-full h-full object-cover" data-alt="Nocturnal botanical macro photograph of Ocimum tenuiflorum holy basil leaves, illuminated with soft cool emerald rim light and moody deep shadows, dark moody natural atmosphere, 8k scientific fidelity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBA4zYyn2nuF31F1LdSjn50KNpw4J4tFCk-uk6v1t5GyDEWIrwdAcApKrW-iK935hvXr7SI2CBiuAWgnSeN8Vz4OD8a1yrmx2d8BrpLRlYDtAE_xEvSI53bYub0DeufR9mCIGaQKnlPB2ClfvzDr7djzZ9DR_I5lhue12yV0wec9wo5jCwmOGjahfSX40m0glqjzmKQ7tDReYFt-0QsLYUeTQW_5ksOhHOcuQ66IlYmexN_7PVQHBO5Uw">
+<div class="absolute inset-0 bg-gradient-to-t from-bg-sunken/80 via-transparent to-transparent"></div>
+</div>
+<div class="flex-1 min-w-0">
+<span class="font-label-mono text-label-mono uppercase tracking-widest text-accent-400">LAMIACEAE · ADAPTOGEN</span>
+<h3 class="font-headline-sm text-[20px] font-semibold text-text-primary leading-tight truncate mt-0.5">Tulsi (Holy Basil)</h3>
+<p class="font-botanical-body text-[17px] italic text-text-secondary mt-0.5">Ocimum tenuiflorum</p>
+</div>
+</div>
+<!-- Medicinal Actions Chips -->
+<div class="mt-3.5 flex flex-wrap gap-1.5">
+<span class="px-2.5 py-1 rounded-full bg-accent-tint text-accent-400 font-label-mono text-label-mono uppercase border border-accent-500/20">
+            RESPIRATORY HEALTH
+          </span>
+<span class="px-2.5 py-1 rounded-full bg-accent-tint text-accent-400 font-label-mono text-label-mono uppercase border border-accent-500/20">
+            CORTISOL BALANCE
+          </span>
+<span class="px-2.5 py-1 rounded-full bg-accent-tint text-accent-400 font-label-mono text-label-mono uppercase border border-accent-500/20">
+            IMMUNE VITALITY
+          </span>
+</div>
+<!-- Botanical Quick Stats Grid -->
+<div class="mt-4 grid grid-cols-2 gap-2 bg-surface-container-low/70 p-3 rounded-xl border border-border-subtle">
+<div>
+<span class="font-label-mono text-[10px] text-text-muted uppercase tracking-wider block">PLANTED DURATION</span>
+<span class="font-data-mono text-body-sm text-text-primary font-medium">42 DAYS AGO</span>
+</div>
+<div>
+<span class="font-label-mono text-[10px] text-text-muted uppercase tracking-wider block">SOIL MOISTURE</span>
+<span class="font-data-mono text-body-sm text-accent-400 font-medium">64% · OPTIMAL</span>
+</div>
+<div class="pt-2 border-t border-border-subtle/60">
+<span class="font-label-mono text-[10px] text-text-muted uppercase tracking-wider block">SUNLIGHT EXP</span>
+<span class="font-data-mono text-body-sm text-text-primary font-medium">SHADE HARVEST</span>
+</div>
+<div class="pt-2 border-t border-border-subtle/60">
+<span class="font-label-mono text-[10px] text-text-muted uppercase tracking-wider block">POTENCY SCORE</span>
+<span class="font-data-mono text-body-sm text-clay-400 font-medium">0.94 EU/g (PEAK)</span>
+</div>
+</div>
+<!-- Action CTAs -->
+<div class="mt-4 grid grid-cols-2 gap-2.5">
+<button class="h-11 rounded-[10px] bg-accent-500 hover:bg-accent-400 active:scale-[0.985] text-text-on-accent font-body-sm font-semibold flex items-center justify-center gap-1.5 transition-all shadow-[0_4px_16px_rgba(79,209,139,0.25)]" type="button">
+<span class="material-symbols-outlined text-[18px]">add_circle</span>
+<span>Plant this</span>
+</button>
+<button class="h-11 rounded-[10px] bg-transparent hover:bg-bg-hover active:scale-[0.985] text-text-primary border border-border-strong font-body-sm font-medium flex items-center justify-center gap-1.5 transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px] text-text-secondary">menu_book</span>
+<span>Read lesson</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+  // Specimen dock switcher micro-interaction
+  document.addEventListener('DOMContentLoaded', () => {
+    const dockCards = document.querySelectorAll('.overflow-x-auto > div');
+    dockCards.forEach(card => {
+      card.addEventListener('click', () => {
+        dockCards.forEach(c => {
+          c.classList.remove('border-accent-600', 'shadow-[0_0_16px_rgba(79,209,139,0.22)]');
+          c.classList.add('border-border-subtle');
+        });
+        card.classList.remove('border-border-subtle');
+        card.classList.add('border-accent-600', 'shadow-[0_0_16px_rgba(79,209,139,0.22)]');
+      });
+    });
+  });
+</script></main></body></html>

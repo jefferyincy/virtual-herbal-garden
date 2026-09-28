@@ -1,0 +1,744 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Public Shared Garden — Prajol's herb garden</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&amp;family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/threejs/r125/three.min.js"></script>
+
+  <style>
+    :root {
+      --bg-base: #0A0D0B;
+      --bg-sunken: #070A08;
+      --bg-surface: #121713;
+      --bg-raised: #171E19;
+      --bg-hover: #1D251F;
+      --accent-400: #7BE0A8;
+      --accent-500: #4FD18B;
+      --accent-600: #35A96D;
+      --clay-400: #E39A72;
+      --clay-500: #D9845F;
+      --text-primary: #E6EDE8;
+      --text-secondary: #9BACA0;
+      --text-muted: #6A7A6F;
+      --border-subtle: rgba(255, 255, 255, 0.06);
+      --border-strong: rgba(255, 255, 255, 0.11);
+      --accent-tint: rgba(79, 209, 139, 0.12);
+      --accent-glow: rgba(79, 209, 139, 0.28);
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .font-botanical {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-style: italic;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .glass-hud {
+      background: rgba(23, 30, 25, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-strong);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.65), 0 0 1px 1px rgba(255, 255, 255, 0.05);
+    }
+    .glass-banner {
+      background: rgba(10, 13, 11, 0.84);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .glow-curated {
+      box-shadow: 0 0 20px -3px rgba(79, 209, 139, 0.35), inset 0 0 12px rgba(79, 209, 139, 0.15);
+      border-color: rgba(79, 209, 139, 0.6) !important;
+    }
+    @keyframes pulse-subtle {
+      0%, 100% { opacity: 0.9; transform: scale(1); }
+      50% { opacity: 0.45; transform: scale(1.08); }
+    }
+    .animate-pulse-subtle {
+      animation: pulse-subtle 2.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes ring-glow {
+      0%, 100% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.06); opacity: 0.4; }
+    }
+    .animate-ring-glow {
+      animation: ring-glow 3s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="bg-[#070A08] text-[#E6EDE8] h-screen w-screen overflow-hidden select-none relative">
+
+  <!-- 3D Canvas Viewport -->
+  <div id="threejs-canvas" class="absolute inset-0 w-full h-full z-0"></div>
+
+  <!-- Subtle Vignette Scrim Overlay -->
+  <div class="pointer-events-none absolute inset-0 z-10 bg-radial-[circle_at_center,transparent_45%,rgba(7,10,8,0.78)_100%]"></div>
+  <div class="pointer-events-none absolute inset-0 z-10 bg-gradient-to-b from-[#0A0D0B]/70 via-transparent to-[#070A08]/85"></div>
+
+  <!-- SLIM TOP BANNER (Public Shared Garden Header, replaces full nav) -->
+  <header class="absolute top-0 left-0 right-0 z-30 h-16 px-6 flex items-center justify-between glass-banner">
+    <div class="flex items-center space-x-4">
+      <!-- Owner Avatar with 1px border-strong -->
+      <div class="relative w-10 h-10 rounded-full overflow-hidden border border-white/20 bg-[#171E19] flex-shrink-0 ring-1 ring-[#4FD18B]/30 shadow-sm">
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtJG6nRNcPjIyaIStZM8Mmvp0gDmqNOy17eBsS1wHB49kxn_0yN982znCUUOkGrwXiZBBZhtJKn6uJgQR4A3iXyWN-wDZYqc_LE6MLRSU6jXlqLBvZmuWjxgXFlQveXLm-o1RRwGObxr-tn5_it33xL2kQGnh875H_FNVzXOvRAezKM5K0FSEtkBCF5NgM_ILDInlpZ6YLrMnd-qQ0sFr4ljYCKEzNnntyqBYPOGilzcim-3Yc52mulA" alt="Prajol avatar" class="w-full h-full object-cover">
+        <div class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-[#4FD18B] ring-2 ring-[#0A0D0B]"></div>
+      </div>
+
+      <!-- Garden Title & Meta -->
+      <div class="flex flex-col">
+        <div class="flex items-center gap-2">
+          <h1 class="text-[17px] font-semibold tracking-[-0.01em] text-[#E6EDE8]">Prajol's herb garden</h1>
+          <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-mono uppercase bg-[#4FD18B]/10 border border-[#4FD18B]/25 text-[#4FD18B] tracking-wider font-medium">
+            <span class="w-1.5 h-1.5 rounded-full bg-[#4FD18B] animate-pulse"></span>
+            Live Sanctuary
+          </span>
+        </div>
+        <div class="flex items-center gap-2 text-[12px] font-mono text-[#9BACA0] tracking-wide mt-0.5">
+          <span class="text-[#7BE0A8] font-medium">Public</span>
+          <span class="text-white/20">•</span>
+          <span>38 plants</span>
+          <span class="text-white/20">•</span>
+          <span class="text-[#6A7A6F]">Zone 7B</span>
+          <span class="text-white/20">•</span>
+          <span class="text-[#6A7A6F] flex items-center gap-1">
+            <svg class="w-3 h-3 text-[#4FD18B]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+            </svg>
+            Read-only preview
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Action: Outlined "Make your own" Button -->
+    <div class="flex items-center gap-3">
+      <div class="hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.03] border border-white/[0.08] text-[11px] font-mono text-[#9BACA0]">
+        <span class="text-[#E0A458] font-semibold">★ Curated by Prajol</span>
+      </div>
+
+      <!-- Outlined Button: transparent, 1px border-strong, text-primary, 10px radius, hover bg-hover -->
+      <a href="#" class="inline-flex items-center gap-2 h-10 px-4 rounded-[10px] border border-white/20 hover:border-[#4FD18B]/70 bg-transparent hover:bg-[#1D251F] text-[#E6EDE8] hover:text-[#7BE0A8] text-[13px] font-medium transition-all duration-180 focus:outline-none focus:ring-2 focus:ring-[#4FD18B]/50 shadow-sm active:scale-[0.985]">
+        <svg class="w-4 h-4 text-[#4FD18B]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"></path>
+        </svg>
+        <span>Make your own</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- STRIPPED HUD: TOP-RIGHT PLANT-COUNT CHIP -->
+  <div class="absolute top-20 right-6 z-20 flex flex-col items-end gap-2 pointer-events-auto">
+    <!-- Live Plant-count Chip -->
+    <div class="glass-hud px-4 py-2.5 rounded-full flex items-center gap-3 border border-white/10 shadow-lg">
+      <div class="flex items-center gap-2">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#4FD18B] opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-[#4FD18B]"></span>
+        </span>
+        <span class="text-[11px] font-mono uppercase tracking-wider text-[#9BACA0]">Sanctuary Biomass</span>
+      </div>
+      <div class="h-3 w-px bg-white/10"></div>
+      <div class="flex items-baseline gap-1 font-mono">
+        <span class="text-[15px] font-bold text-[#E6EDE8]">38</span>
+        <span class="text-[12px] text-[#6A7A6F]">/ 40</span>
+        <span class="text-[11px] text-[#4FD18B] font-medium ml-1">PLANTS</span>
+      </div>
+    </div>
+
+    <!-- Sub-tag chip indicating interactive orbit mode -->
+    <div class="px-2.5 py-1 rounded-md bg-[#0A0D0B]/80 border border-white/5 text-[10px] font-mono text-[#6A7A6F] flex items-center gap-1.5 backdrop-blur-sm">
+      <svg class="w-3 h-3 text-[#9BACA0]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path>
+      </svg>
+      <span>Drag to orbit · Click plant marker to inspect</span>
+    </div>
+  </div>
+
+  <!-- 3D IN-WORLD CURATED SPECIMEN CALLOUT PIN (Tulsi Centerpiece with Star Icon & Soft Accent Glow) -->
+  <div class="absolute left-1/2 top-[34%] -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-auto cursor-pointer" onclick="selectPlant('tulsi')">
+    <div class="relative flex flex-col items-center">
+      <!-- Glow Ripple & Curated Pin -->
+      <div class="relative flex items-center justify-center">
+        <div class="absolute w-14 h-14 rounded-full bg-[#4FD18B]/20 animate-ping opacity-60 pointer-events-none"></div>
+        <div class="absolute w-10 h-10 rounded-full bg-[#4FD18B]/30 blur-md pointer-events-none"></div>
+        <div class="w-7 h-7 rounded-full bg-[#121713] border-2 border-[#4FD18B] flex items-center justify-center shadow-[0_0_16px_rgba(79,209,139,0.7)] ring-2 ring-[#4FD18B]/40 transition-transform duration-200 hover:scale-110">
+          <svg class="w-3.5 h-3.5 text-[#E0A458] fill-[#E0A458]" viewBox="0 0 20 20">
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Attached Plant Marker Pill -->
+      <div class="mt-2.5 px-3 py-1.5 rounded-full bg-[#171E19]/95 backdrop-blur-md border border-[#4FD18B]/60 shadow-[0_8px_24px_rgba(0,0,0,0.6),0_0_16px_rgba(79,209,139,0.25)] flex items-center gap-2 group hover:border-[#4FD18B] transition-colors">
+        <span class="w-1.5 h-1.5 rounded-full bg-[#4FD18B]"></span>
+        <span class="text-[13px] font-medium text-[#E6EDE8]">Tulsi</span>
+        <span class="text-white/20">•</span>
+        <span class="font-botanical text-[14px] text-[#9BACA0] tracking-normal">Ocimum tenuiflorum</span>
+        <span class="ml-1 text-[11px] text-[#E0A458] font-mono flex items-center gap-0.5">
+          ★ Curated
+        </span>
+      </div>
+
+      <!-- Stalk stem connector line to soil -->
+      <div class="w-px h-8 bg-gradient-to-b from-[#4FD18B]/80 via-[#4FD18B]/40 to-transparent mt-1"></div>
+      <div class="w-2.5 h-1 rounded-full bg-[#4FD18B]/60 blur-[1px]"></div>
+    </div>
+  </div>
+
+  <!-- SECONDARY CURATED MARKER PIN (French Lavender in background bed) -->
+  <div class="absolute left-[70%] top-[45%] -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-auto cursor-pointer" onclick="selectPlant('lavender')">
+    <div class="relative flex flex-col items-center">
+      <div class="w-6 h-6 rounded-full bg-[#121713] border border-[#7BE0A8]/80 flex items-center justify-center shadow-[0_0_12px_rgba(123,224,168,0.45)] hover:scale-110 transition-transform">
+        <svg class="w-3 h-3 text-[#E0A458] fill-[#E0A458]" viewBox="0 0 20 20">
+          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+        </svg>
+      </div>
+      <div class="mt-1.5 px-2.5 py-1 rounded-full bg-[#171E19]/90 backdrop-blur-md border border-white/10 text-[11px] flex items-center gap-1.5 shadow-md">
+        <span class="text-[#E6EDE8] font-medium">Lavender</span>
+        <span class="font-botanical text-[12px] text-[#9BACA0]">L. angustifolia</span>
+      </div>
+      <div class="w-px h-6 bg-gradient-to-b from-[#7BE0A8]/60 to-transparent"></div>
+    </div>
+  </div>
+
+  <!-- COMPACT GLASS INFO CARD (Appears when clicking a plant: Plant name, italic botanical name, view full profile link, NO "Plant this" button) -->
+  <div id="compact-info-card" class="absolute right-6 top-[152px] z-30 w-80 glass-hud rounded-[20px] p-5 shadow-2xl transition-all duration-300">
+    <!-- Header with Curated Star & Close icon -->
+    <div class="flex items-center justify-between pb-3 mb-3 border-b border-white/[0.07]">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono uppercase bg-[#D9845F]/15 border border-[#D9845F]/30 text-[#E39A72] font-semibold tracking-wider">
+          <svg class="w-3 h-3 text-[#E0A458] fill-[#E0A458]" viewBox="0 0 20 20">
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+          </svg>
+          Curated Specimen
+        </span>
+      </div>
+      <button onclick="dismissInfoCard()" class="text-[#6A7A6F] hover:text-[#E6EDE8] p-1 rounded-md hover:bg-white/5 transition-colors" title="Close inspector">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Plant Title & Italic Botanical Name -->
+    <div class="mb-3">
+      <div id="info-common-name" class="text-[20px] font-semibold text-[#E6EDE8] tracking-[-0.01em]">Tulsi (Holy Basil)</div>
+      <div id="info-latin-name" class="font-botanical text-[16px] text-[#7BE0A8] mt-0.5">Ocimum tenuiflorum</div>
+    </div>
+
+    <!-- Curated Note Callout Box with Star Accent -->
+    <div class="p-3 rounded-[12px] bg-[#121713]/80 border border-[#4FD18B]/20 mb-4 relative overflow-hidden">
+      <div class="absolute -top-6 -right-6 w-16 h-16 rounded-full bg-[#4FD18B]/10 blur-xl pointer-events-none"></div>
+      <div class="flex items-start gap-2.5">
+        <div class="w-5 h-5 rounded-full bg-[#D9845F]/15 border border-[#D9845F]/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+          <svg class="w-3 h-3 text-[#E0A458] fill-[#E0A458]" viewBox="0 0 20 20">
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+          </svg>
+        </div>
+        <div class="text-[12px] leading-relaxed text-[#9BACA0]">
+          <span class="text-[#E6EDE8] font-medium">Prajol's note:</span>
+          <span id="info-curator-note" class="italic ml-0.5">"Grown from heirloom Kashmiri seeds. Highly aromatic leaves harvested after dusk for adaptogenic tea infusions."</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Telemetry Chips (Mono data labels) -->
+    <div class="grid grid-cols-2 gap-2 mb-4 text-[11px] font-mono">
+      <div class="px-2.5 py-1.5 rounded-lg bg-white/[0.02] border border-white/5">
+        <span class="text-[#6A7A6F] block text-[9px] uppercase tracking-wider">Lamiaceae · Bed A</span>
+        <span id="info-status" class="text-[#4FD18B] font-medium">Stage 4 · Mature</span>
+      </div>
+      <div class="px-2.5 py-1.5 rounded-lg bg-white/[0.02] border border-white/5">
+        <span class="text-[#6A7A6F] block text-[9px] uppercase tracking-wider">Potency Rating</span>
+        <span class="text-[#E39A72] font-semibold">0.94 EU/g Peak</span>
+      </div>
+    </div>
+
+    <!-- Read-Only Action: "View full profile" Link (No "Plant this" button) -->
+    <div class="pt-2 border-t border-white/[0.07] flex items-center justify-between">
+      <div class="flex items-center gap-1.5 text-[11px] font-mono text-[#6A7A6F]">
+        <svg class="w-3.5 h-3.5 text-[#4FD18B]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+        </svg>
+        <span>Read-only</span>
+      </div>
+
+      <a id="info-view-link" href="#" class="inline-flex items-center gap-1.5 text-[13px] font-medium text-[#4FD18B] hover:text-[#7BE0A8] transition-colors group">
+        <span>View full profile</span>
+        <svg class="w-4 h-4 transform group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path>
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- BOTTOM BAR OF THREE READ-ONLY PLANT CARDS -->
+  <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 w-full max-w-4xl px-4 pointer-events-auto">
+    <div class="flex flex-col items-center">
+      <!-- Section label in micro mono uppercase -->
+      <div class="mb-2 flex items-center gap-2">
+        <span class="text-[10px] font-mono uppercase tracking-[0.08em] text-[#6A7A6F]">FEATURED BOTANICAL SPECIMENS</span>
+        <span class="text-white/20">•</span>
+        <span class="text-[10px] font-mono text-[#4FD18B]">CLICK CARD TO FOCUS IN 3D</span>
+      </div>
+
+      <!-- Grid of 3 Read-Only Plant Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 w-full">
+        
+        <!-- CARD 1: Tulsi (Curated with Star Icon & Subtle Accent Glow) -->
+        <div id="card-tulsi" onclick="selectPlant('tulsi')" class="glass-hud p-3.5 rounded-[16px] border border-[#4FD18B]/50 glow-curated cursor-pointer transition-all duration-200 hover:-translate-y-1 relative group">
+          <!-- Curated star badge top-right -->
+          <div class="absolute top-3 right-3 flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-[#E0A458]/15 border border-[#E0A458]/40 text-[#E0A458] text-[10px] font-mono">
+            <svg class="w-2.5 h-2.5 fill-current" viewBox="0 0 20 20">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+            </svg>
+            <span>Curated</span>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <!-- Stylized Botanical Icon Container -->
+            <div class="w-11 h-11 rounded-[12px] bg-[#121713] border border-[#4FD18B]/30 flex items-center justify-center flex-shrink-0 text-[#4FD18B] shadow-sm">
+              <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 21V11m0 0a4 4 0 004-4c0-2-2-4-4-4s-4 2-4 4a4 4 0 004 4zm0 0a6 6 0 01-6 6M12 11a6 6 0 006 6"></path>
+              </svg>
+            </div>
+            <div class="min-w-0 pr-12">
+              <div class="text-[14px] font-semibold text-[#E6EDE8] truncate group-hover:text-[#7BE0A8] transition-colors">Tulsi (Holy Basil)</div>
+              <div class="font-botanical text-[13px] text-[#9BACA0] truncate">Ocimum tenuiflorum</div>
+              <div class="text-[10px] font-mono text-[#6A7A6F] mt-1 flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#4FD18B]"></span>
+                <span>Active centerpiece</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 2: French Lavender (Curated with Star Icon & Subtle Accent Glow) -->
+        <div id="card-lavender" onclick="selectPlant('lavender')" class="glass-hud p-3.5 rounded-[16px] border border-white/10 hover:border-[#7BE0A8]/60 cursor-pointer transition-all duration-200 hover:-translate-y-1 relative group">
+          <div class="absolute top-3 right-3 flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-[#E0A458]/15 border border-[#E0A458]/40 text-[#E0A458] text-[10px] font-mono">
+            <svg class="w-2.5 h-2.5 fill-current" viewBox="0 0 20 20">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+            </svg>
+            <span>Curated</span>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-[12px] bg-[#121713] border border-white/10 flex items-center justify-center flex-shrink-0 text-[#9D82DB] shadow-sm">
+              <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v18m-4-12c2 1 2 3 4 3 2 0 2-2 4-3m-8 6c2 1 2 3 4 3 2 0 2-2 4-3"></path>
+              </svg>
+            </div>
+            <div class="min-w-0 pr-12">
+              <div class="text-[14px] font-semibold text-[#E6EDE8] truncate group-hover:text-[#7BE0A8] transition-colors">French Lavender</div>
+              <div class="font-botanical text-[13px] text-[#9BACA0] truncate">Lavandula angustifolia</div>
+              <div class="text-[10px] font-mono text-[#6A7A6F] mt-1 flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#9D82DB]"></span>
+                <span>Terrace Bed E · 8 plants</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 3: German Chamomile (Standard Read-Only Card) -->
+        <div id="card-chamomile" onclick="selectPlant('chamomile')" class="glass-hud p-3.5 rounded-[16px] border border-white/10 hover:border-white/25 cursor-pointer transition-all duration-200 hover:-translate-y-1 relative group">
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-[12px] bg-[#121713] border border-white/10 flex items-center justify-center flex-shrink-0 text-[#E0A458] shadow-sm">
+              <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6a3 3 0 100 6 3 3 0 000-6zm0 0v-4m0 10v4m6-6h4M2 12h4m11.243-4.243l2.828-2.828M4.929 19.071l2.828-2.828m0-8.486L4.929 4.929m14.142 14.142l-2.828-2.828"></path>
+              </svg>
+            </div>
+            <div class="min-w-0">
+              <div class="text-[14px] font-semibold text-[#E6EDE8] truncate group-hover:text-[#7BE0A8] transition-colors">German Chamomile</div>
+              <div class="font-botanical text-[13px] text-[#9BACA0] truncate">Matricaria chamomilla</div>
+              <div class="text-[10px] font-mono text-[#6A7A6F] mt-1 flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#4FD18B]"></span>
+                <span>Plot Bed D · Infusion Grade</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- THREE.JS INTERACTIVE 3D SCRIPT -->
+  <script>
+    const plantDatabase = {
+      tulsi: {
+        commonName: "Tulsi (Holy Basil)",
+        latinName: "Ocimum tenuiflorum",
+        status: "Stage 4 · Mature",
+        note: '"Grown from heirloom Kashmiri seeds. Highly aromatic leaves harvested after dusk for adaptogenic tea infusions."',
+        link: "#tulsi-profile",
+        isCurated: true,
+        targetCoord: { x: -6, y: 1.6, z: 2 }
+      },
+      lavender: {
+        commonName: "French Lavender",
+        latinName: "Lavandula angustifolia",
+        status: "Stage 3 · Blooming",
+        note: '"Curated along the southern stone terrace. High linalool content calibrated for evening sleep tinctures."',
+        link: "#lavender-profile",
+        isCurated: true,
+        targetCoord: { x: -1, y: 1.5, z: -14 }
+      },
+      chamomile: {
+        commonName: "German Chamomile",
+        latinName: "Matricaria chamomilla",
+        status: "Stage 2 · Flower Bud",
+        note: '"Compact blossoms with high apigenin concentration. Companion planted next to Pot Marigold."',
+        link: "#chamomile-profile",
+        isCurated: false,
+        targetCoord: { x: 6, y: 1.5, z: -7 }
+      }
+    };
+
+    function selectPlant(key) {
+      const data = plantDatabase[key];
+      if (!data) return;
+
+      // Update Info Card
+      document.getElementById('compact-info-card').style.opacity = '1';
+      document.getElementById('compact-info-card').style.pointerEvents = 'auto';
+      document.getElementById('compact-info-card').style.transform = 'translateY(0)';
+      document.getElementById('info-common-name').textContent = data.commonName;
+      document.getElementById('info-latin-name').textContent = data.latinName;
+      document.getElementById('info-status').textContent = data.status;
+      document.getElementById('info-curator-note').textContent = data.note;
+      document.getElementById('info-view-link').href = data.link;
+
+      // Card highlight borders
+      ['tulsi', 'lavender', 'chamomile'].forEach(id => {
+        const el = document.getElementById('card-' + id);
+        if (el) {
+          if (id === key) {
+            el.classList.add('glow-curated');
+            el.style.borderColor = '#4FD18B';
+          } else {
+            el.classList.remove('glow-curated');
+            el.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+          }
+        }
+      });
+
+      // Smooth camera pan toward target plant
+      if (window.cameraControls) {
+        window.cameraControls.panTo(data.targetCoord.x, data.targetCoord.y, data.targetCoord.z);
+      }
+    }
+
+    function dismissInfoCard() {
+      const card = document.getElementById('compact-info-card');
+      card.style.opacity = '0.15';
+      card.style.transform = 'translateY(-8px)';
+    }
+
+    // Initialize Three.js Garden View (Matching Scene from SCREEN_12 / DESIGN.md)
+    (function init3DGarden() {
+      const container = document.getElementById('threejs-canvas');
+      const width = container.clientWidth || window.innerWidth;
+      const height = container.clientHeight || window.innerHeight;
+
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x070A08);
+      scene.fog = new THREE.FogExp2(0x070A08, 0.022);
+
+      const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+      camera.position.set(0, 14, 22);
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.15;
+      container.appendChild(renderer.domElement);
+
+      // Lights
+      const ambientLight = new THREE.AmbientLight(0x0e1711, 1.8);
+      scene.add(ambientLight);
+
+      const keyLight = new THREE.DirectionalLight(0xffecd0, 2.4); // Warm key
+      keyLight.position.set(16, 26, 12);
+      keyLight.castShadow = true;
+      scene.add(keyLight);
+
+      const rimLight = new THREE.DirectionalLight(0x4fd18b, 3.2); // Green rim light
+      rimLight.position.set(-18, 16, -16);
+      scene.add(rimLight);
+
+      const fillLight = new THREE.PointLight(0xd9845f, 1.2, 35); // Warm terracotta fill
+      fillLight.position.set(0, 6, 8);
+      scene.add(fillLight);
+
+      // Ground plane
+      const ground = new THREE.Mesh(
+        new THREE.PlaneGeometry(60, 60, 32, 32),
+        new THREE.MeshLambertMaterial({ color: 0x090d0a })
+      );
+      ground.rotation.x = -Math.PI / 2;
+      ground.receiveShadow = true;
+      scene.add(ground);
+
+      // Meandering Path
+      const pathMat = new THREE.MeshLambertMaterial({ color: 0x141812, roughness: 0.9 });
+      const pathCurve = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(-18, 0.04, 18),
+        new THREE.Vector3(-8, 0.04, 8),
+        new THREE.Vector3(0, 0.04, 2),
+        new THREE.Vector3(6, 0.04, -6),
+        new THREE.Vector3(14, 0.04, -18)
+      ]);
+      const pathPoints = pathCurve.getPoints(36);
+      for (let i = 0; i < pathPoints.length - 1; i++) {
+        const p1 = pathPoints[i];
+        const p2 = pathPoints[i + 1];
+        const dist = p1.distanceTo(p2);
+        const tile = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.05, dist + 0.3), pathMat);
+        tile.position.copy(p1.clone().add(p2).multiplyScalar(0.5));
+        tile.lookAt(p2.x, 0.04, p2.z);
+        tile.receiveShadow = true;
+        scene.add(tile);
+      }
+
+      // Timber Plot Beds
+      const timberMat = new THREE.MeshLambertMaterial({ color: 0x1f1813 });
+      const soilMat = new THREE.MeshLambertMaterial({ color: 0x0f1410, roughness: 0.95 });
+
+      function createPlot(x, z, w, l, rot) {
+        const group = new THREE.Group();
+        const soil = new THREE.Mesh(new THREE.BoxGeometry(w - 0.2, 0.35, l - 0.2), soilMat);
+        soil.position.y = 0.18;
+        soil.receiveShadow = true;
+        group.add(soil);
+
+        const bH = 0.45, bT = 0.22;
+        const b1 = new THREE.Mesh(new THREE.BoxGeometry(w, bH, bT), timberMat);
+        b1.position.set(0, bH/2, l/2 - bT/2);
+        const b2 = b1.clone();
+        b2.position.set(0, bH/2, -l/2 + bT/2);
+        const b3 = new THREE.Mesh(new THREE.BoxGeometry(bT, bH, l), timberMat);
+        b3.position.set(w/2 - bT/2, bH/2, 0);
+        const b4 = b3.clone();
+        b4.position.set(-w/2 + bT/2, bH/2, 0);
+        group.add(b1, b2, b3, b4);
+
+        group.position.set(x, 0, z);
+        group.rotation.y = rot;
+        scene.add(group);
+      }
+
+      createPlot(-6, 2, 5.2, 8, 0.15); // Bed A (Tulsi Centerpiece)
+      createPlot(6, 4, 5.2, 7.5, -0.1); // Bed B (Rosemary)
+      createPlot(-7, -8, 5.5, 6.5, -0.08); // Bed C (Mint)
+      createPlot(7, -6, 5, 7.5, 0.22); // Bed D (Chamomile)
+      createPlot(0, -14, 7, 4.5, 0); // Bed E (Lavender)
+
+      // Plant Geometries & Materials
+      const stemMat = new THREE.MeshLambertMaterial({ color: 0x22492f, flatShading: true });
+      const tulsiLeafMat = new THREE.MeshLambertMaterial({ color: 0x4fd18b, flatShading: true });
+      const purpleTulsiMat = new THREE.MeshLambertMaterial({ color: 0xa988cc, flatShading: true });
+      const lavenderMat = new THREE.MeshLambertMaterial({ color: 0x9d82db, flatShading: true });
+      const chamomileMat = new THREE.MeshLambertMaterial({ color: 0xedebe4, flatShading: true });
+      const goldMat = new THREE.MeshLambertMaterial({ color: 0xe0a458, flatShading: true });
+
+      let centerpieceTulsi = null;
+
+      function createTulsi(x, z, scale = 1.0, isMain = false) {
+        const plant = new THREE.Group();
+        plant.position.set(x, 0.35, z);
+        plant.scale.set(scale, scale, scale);
+
+        const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.08, 1.8, 5), stemMat);
+        stem.position.y = 0.9;
+        plant.add(stem);
+
+        const leafGeo = new THREE.ConeGeometry(0.22, 0.55, 4);
+        leafGeo.rotateX(Math.PI / 2);
+
+        for (let i = 0; i < 6; i++) {
+          const y = 0.4 + i * 0.25;
+          for (let j = 0; j < 4; j++) {
+            const angle = (j * Math.PI / 2) + (i * 0.5);
+            const leaf = new THREE.Mesh(leafGeo, tulsiLeafMat);
+            leaf.scale.set(1 - i * 0.08, 1, 1 - i * 0.08);
+            leaf.position.set(Math.cos(angle)*(0.28 + i*0.04), y, Math.sin(angle)*(0.28 + i*0.04));
+            leaf.rotation.set(0.4, angle, 0.25);
+            plant.add(leaf);
+          }
+        }
+
+        const raceme = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.65, 5), purpleTulsiMat);
+        raceme.position.y = 1.9;
+        plant.add(raceme);
+
+        scene.add(plant);
+        if (isMain) centerpieceTulsi = plant;
+        return plant;
+      }
+
+      function createShrub(x, z, col = lavenderMat) {
+        const g = new THREE.Group();
+        g.position.set(x, 0.35, z);
+        for (let s = 0; s < 7; s++) {
+          const ang = (s / 7) * Math.PI * 2;
+          const h = 1.1 + Math.random()*0.5;
+          const st = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.05, h, 4), stemMat);
+          st.position.set(Math.cos(ang)*0.25, h/2, Math.sin(ang)*0.25);
+          g.add(st);
+          const fl = new THREE.Mesh(new THREE.ConeGeometry(0.09, 0.45, 5), col);
+          fl.position.set(st.position.x, h + 0.15, st.position.z);
+          g.add(fl);
+        }
+        scene.add(g);
+      }
+
+      function createDaisy(x, z) {
+        const g = new THREE.Group();
+        g.position.set(x, 0.35, z);
+        const st = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.05, 1.1, 4), stemMat);
+        st.position.y = 0.55;
+        g.add(st);
+        const disk = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.05, 6), goldMat);
+        disk.position.y = 1.15;
+        g.add(disk);
+        for (let p = 0; p < 6; p++) {
+          const pAng = (p / 6) * Math.PI * 2;
+          const petal = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.03, 0.32), chamomileMat);
+          petal.position.set(Math.cos(pAng)*0.24, 1.14, Math.sin(pAng)*0.24);
+          petal.rotation.y = -pAng;
+          g.add(petal);
+        }
+        scene.add(g);
+      }
+
+      // Populate garden plots
+      createTulsi(-6, 2, 1.35, true); // Main Tulsi
+      createTulsi(-7.2, 0.8, 0.95);
+      createTulsi(-4.8, 1.2, 1.05);
+      createTulsi(-6.5, 3.4, 0.9);
+
+      // Glowing selection ring on Curated Tulsi
+      const ring = new THREE.Mesh(
+        new THREE.RingGeometry(1.0, 1.22, 32),
+        new THREE.MeshBasicMaterial({ color: 0x4fd18b, side: THREE.DoubleSide, transparent: true, opacity: 0.85 })
+      );
+      ring.rotation.x = -Math.PI / 2;
+      ring.position.set(-6, 0.42, 2);
+      scene.add(ring);
+
+      const tulsiGlow = new THREE.PointLight(0x7be0a8, 2.4, 6.0);
+      tulsiGlow.position.set(-6, 1.7, 2);
+      scene.add(tulsiGlow);
+
+      // Lavender & Chamomile
+      for (let i = 0; i < 7; i++) {
+        createShrub(-2.8 + i * 0.95, -14 + (Math.random()-0.5)*0.5, lavenderMat);
+      }
+      for (let i = 0; i < 6; i++) {
+        createDaisy(5.2 + (i % 3)*1.5, -8.5 + Math.floor(i/3)*1.9);
+      }
+
+      // Floating Spores
+      const sporeCount = 45;
+      const sporeGeo = new THREE.BufferGeometry();
+      const sporePos = new Float32Array(sporeCount * 3);
+      for (let i = 0; i < sporeCount * 3; i += 3) {
+        sporePos[i] = (Math.random() - 0.5) * 26;
+        sporePos[i + 1] = 0.5 + Math.random() * 6.5;
+        sporePos[i + 2] = (Math.random() - 0.5) * 26;
+      }
+      sporeGeo.setAttribute('position', new THREE.BufferAttribute(sporePos, 3));
+      const spores = new THREE.Points(
+        sporeGeo,
+        new THREE.PointsMaterial({ color: 0x7be0a8, size: 0.16, transparent: true, opacity: 0.75, blending: THREE.AdditiveBlending })
+      );
+      scene.add(spores);
+
+      // Camera Orbit Controls
+      let isDragging = false;
+      let prevMouseX = 0, prevMouseY = 0;
+      let sphericalAngle = { theta: 0.22, phi: 0.58, radius: 26 };
+      let targetLookAt = new THREE.Vector3(-1, 1.5, 0);
+
+      function updateCamera() {
+        camera.position.x = targetLookAt.x + sphericalAngle.radius * Math.sin(sphericalAngle.phi) * Math.sin(sphericalAngle.theta);
+        camera.position.y = targetLookAt.y + sphericalAngle.radius * Math.cos(sphericalAngle.phi);
+        camera.position.z = targetLookAt.z + sphericalAngle.radius * Math.sin(sphericalAngle.phi) * Math.cos(sphericalAngle.theta);
+        camera.lookAt(targetLookAt);
+      }
+      updateCamera();
+
+      window.cameraControls = {
+        panTo: function(x, y, z) {
+          targetLookAt.set(x, y, z);
+          updateCamera();
+        }
+      };
+
+      container.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        prevMouseX = e.clientX;
+        prevMouseY = e.clientY;
+      });
+      window.addEventListener('mouseup', () => { isDragging = false; });
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const dx = e.clientX - prevMouseX;
+        const dy = e.clientY - prevMouseY;
+        prevMouseX = e.clientX;
+        prevMouseY = e.clientY;
+
+        sphericalAngle.theta -= dx * 0.005;
+        sphericalAngle.phi = Math.max(0.25, Math.min(Math.PI / 2.1, sphericalAngle.phi - dy * 0.005));
+        updateCamera();
+      });
+
+      window.addEventListener('resize', () => {
+        const w = container.clientWidth || window.innerWidth;
+        const h = container.clientHeight || window.innerHeight;
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h);
+      });
+
+      // Animation Loop
+      const clock = new THREE.Clock();
+      function animate() {
+        requestAnimationFrame(animate);
+        const t = clock.getElapsedTime();
+
+        if (centerpieceTulsi) {
+          centerpieceTulsi.rotation.y = Math.sin(t * 0.6) * 0.04;
+        }
+
+        const ringS = 1.0 + Math.sin(t * 2.2) * 0.04;
+        ring.scale.set(ringS, ringS, ringS);
+        ring.material.opacity = 0.65 + Math.sin(t * 2.2) * 0.25;
+        tulsiGlow.intensity = 2.0 + Math.sin(t * 2.2) * 0.6;
+
+        if (!isDragging) {
+          sphericalAngle.theta += 0.0006;
+          updateCamera();
+        }
+
+        renderer.render(scene, camera);
+      }
+      animate();
+    })();
+  </script>
+
+
+</body></html>

@@ -1,0 +1,449 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width,initial-scale=1.0" name="viewport">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+    }
+  </style>
+</head>
+<body>
+<!-- STITCH_THREEJS_START:ANIMATION_3 class="fixed inset-0 w-full h-full bg-transparent" -->
+<div class="fixed inset-0 w-full h-full bg-transparent" style="display:block;">
+<script src="https://ajax.googleapis.com/ajax/libs/threejs/r125/three.min.js"></script>
+<div id="threejs-container-ANIMATION_3" style="width:100%;height:100%"></div>
+<script>
+(function() {
+  const container = document.getElementById('threejs-container-ANIMATION_3');
+  const devicePixelRatio = window.devicePixelRatio || 1;
+  // Three.js Interactive Botanical Herbal Garden View
+// Palette matching DESIGN.md: Dark near-black greens (#0A0D0B, #070A08), warm terracotta key, green rim (#4FD18B)
+
+const width = container.clientWidth || window.innerWidth;
+const height = container.clientHeight || window.innerHeight;
+
+// Scene, Camera, Renderer
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x070A08);
+scene.fog = new THREE.FogExp2(0x070A08, 0.022);
+
+const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+camera.position.set(0, 14, 22);
+camera.lookAt(0, 0, 0);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+renderer.setSize(width, height);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.15;
+container.appendChild(renderer.domElement);
+
+// Lighting setup (Warm key light + living green rim light on near-black scene)
+const ambientLight = new THREE.AmbientLight(0x0e1711, 1.8);
+scene.add(ambientLight);
+
+const keyLight = new THREE.DirectionalLight(0xffecd0, 2.4); // Warm key
+keyLight.position.set(16, 26, 12);
+keyLight.castShadow = true;
+keyLight.shadow.mapSize.width = 2048;
+keyLight.shadow.mapSize.height = 2048;
+keyLight.shadow.camera.near = 0.5;
+keyLight.shadow.camera.far = 60;
+keyLight.shadow.camera.left = -20;
+keyLight.shadow.camera.right = 20;
+keyLight.shadow.camera.top = 20;
+keyLight.shadow.camera.bottom = -20;
+scene.add(keyLight);
+
+const rimLight = new THREE.DirectionalLight(0x4fd18b, 3.2); // Green rim light
+rimLight.position.set(-18, 16, -16);
+scene.add(rimLight);
+
+const fillLight = new THREE.PointLight(0xd9845f, 1.2, 35); // Warm terracotta fill
+fillLight.position.set(0, 6, 8);
+scene.add(fillLight);
+
+// Ground Plane (Near-black soil base)
+const groundGeo = new THREE.PlaneGeometry(60, 60, 32, 32);
+const groundMat = new THREE.MeshLambertMaterial({ color: 0x090d0a });
+const ground = new THREE.Mesh(groundGeo, groundMat);
+ground.rotation.x = -Math.PI / 2;
+ground.receiveShadow = true;
+scene.add(ground);
+
+// Dirt Garden Path (Meandering low-poly winding dirt path)
+const pathMat = new THREE.MeshLambertMaterial({ color: 0x141812, roughness: 0.9 });
+const pathCurve = new THREE.CatmullRomCurve3([
+  new THREE.Vector3(-18, 0.04, 18),
+  new THREE.Vector3(-8, 0.04, 8),
+  new THREE.Vector3(0, 0.04, 2),
+  new THREE.Vector3(6, 0.04, -6),
+  new THREE.Vector3(14, 0.04, -18)
+]);
+const pathPoints = pathCurve.getPoints(40);
+for (let i = 0; i < pathPoints.length - 1; i++) {
+  const p1 = pathPoints[i];
+  const p2 = pathPoints[i + 1];
+  const dist = p1.distanceTo(p2);
+  const pathTile = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.05, dist + 0.3), pathMat);
+  pathTile.position.copy(p1.clone().add(p2).multiplyScalar(0.5));
+  pathTile.lookAt(p2.x, 0.04, p2.z);
+  pathTile.receiveShadow = true;
+  scene.add(pathTile);
+}
+
+// Low-poly Stepping Stones along path
+const stoneMat = new THREE.MeshLambertMaterial({ color: 0x222a24, flatShading: true });
+for (let i = 0; i < 18; i++) {
+  const stone = new THREE.Mesh(new THREE.CylinderGeometry(0.4 + Math.random()*0.25, 0.5 + Math.random()*0.25, 0.08, 6), stoneMat);
+  const pt = pathCurve.getPoint(i / 18);
+  stone.position.set(pt.x + (Math.random()-0.5)*0.8, 0.06, pt.z + (Math.random()-0.5)*0.8);
+  stone.rotation.y = Math.random() * Math.PI;
+  scene.add(stone);
+}
+
+// Garden Plot Beds (Raised wooden planter borders + dark nutrient-rich loam)
+const bedTimberMat = new THREE.MeshLambertMaterial({ color: 0x1f1813 });
+const soilMat = new THREE.MeshLambertMaterial({ color: 0x0f1410, roughness: 0.95 });
+
+function createPlotBed(x, z, width, length, rotation = 0) {
+  const group = new THREE.Group();
+  
+  // Bed soil
+  const soil = new THREE.Mesh(new THREE.BoxGeometry(width - 0.2, 0.35, length - 0.2), soilMat);
+  soil.position.y = 0.18;
+  soil.receiveShadow = true;
+  group.add(soil);
+
+  // Border beams
+  const beamThick = 0.22;
+  const beamH = 0.45;
+  const b1 = new THREE.Mesh(new THREE.BoxGeometry(width, beamH, beamThick), bedTimberMat);
+  b1.position.set(0, beamH/2, length/2 - beamThick/2);
+  b1.castShadow = true;
+  const b2 = b1.clone();
+  b2.position.set(0, beamH/2, -length/2 + beamThick/2);
+  const b3 = new THREE.Mesh(new THREE.BoxGeometry(beamThick, beamH, length), bedTimberMat);
+  b3.position.set(width/2 - beamThick/2, beamH/2, 0);
+  b3.castShadow = true;
+  const b4 = b3.clone();
+  b4.position.set(-width/2 + beamThick/2, beamH/2, 0);
+
+  group.add(b1, b2, b3, b4);
+  group.position.set(x, 0, z);
+  group.rotation.y = rotation;
+  scene.add(group);
+  return group;
+}
+
+// Place 5 primary garden plot beds
+createPlotBed(-6, 2, 5.2, 8, 0.15); // Herb Bed A (Tulsi / Basil sanctuary)
+createPlotBed(6, 4, 5.2, 7.5, -0.1); // Herb Bed B (Rosemary, Thyme, Sage)
+createPlotBed(-7, -8, 5.5, 6.5, -0.08); // Herb Bed C (Mint, Lemon Balm)
+createPlotBed(7, -6, 5, 7.5, 0.22); // Herb Bed D (Chamomile, Calendula)
+createPlotBed(0, -14, 7, 4.5, 0); // Herb Bed E (Lavender Terrace)
+
+// Botanical Plant Builder (Stylized low-poly herbs)
+const plantsGroup = new THREE.Group();
+scene.add(plantsGroup);
+
+// Leaf & Stem Materials
+const stemMat = new THREE.MeshLambertMaterial({ color: 0x22492f, flatShading: true });
+const greenMat = new THREE.MeshLambertMaterial({ color: 0x3aa76b, flatShading: true });
+const tulsiLeafMat = new THREE.MeshLambertMaterial({ color: 0x4fd18b, flatShading: true }); // Living green
+const purpleTulsiFlowerMat = new THREE.MeshLambertMaterial({ color: 0xa988cc, flatShading: true });
+const lavenderMat = new THREE.MeshLambertMaterial({ color: 0x9d82db, flatShading: true });
+const chamomileFlowerMat = new THREE.MeshLambertMaterial({ color: 0xedebe4, flatShading: true });
+const goldFlowerMat = new THREE.MeshLambertMaterial({ color: 0xe0a458, flatShading: true });
+const terracottaClayPotMat = new THREE.MeshLambertMaterial({ color: 0xd9845f, flatShading: true });
+
+// Function: Build Low-poly Tulsi Plant (Holy Basil)
+let tulsiCenterMesh = null;
+function createTulsiPlant(x, z, scale = 1.0, isMain = false) {
+  const plant = new THREE.Group();
+  plant.position.set(x, 0.35, z);
+  plant.scale.set(scale, scale, scale);
+
+  // Main Stems
+  const stemGeo = new THREE.CylinderGeometry(0.04, 0.08, 1.8, 5);
+  const mainStem = new THREE.Mesh(stemGeo, stemMat);
+  mainStem.position.y = 0.9;
+  mainStem.castShadow = true;
+  plant.add(mainStem);
+
+  // Branched Stalks with opposing leaves
+  const leafGeo = new THREE.ConeGeometry(0.22, 0.55, 4);
+  leafGeo.rotateX(Math.PI / 2);
+
+  const tiers = 6;
+  for (let i = 0; i < tiers; i++) {
+    const y = 0.4 + i * 0.25;
+    const leafCount = 4;
+    for (let j = 0; j < leafCount; j++) {
+      const angle = (j * Math.PI / 2) + (i * 0.5);
+      const leaf = new THREE.Mesh(leafGeo, isMain ? tulsiLeafMat : greenMat);
+      leaf.scale.set(1 - i * 0.08, 1, 1 - i * 0.08);
+      leaf.position.set(Math.cos(angle) * (0.28 + i*0.04), y, Math.sin(angle) * (0.28 + i*0.04));
+      leaf.rotation.set(0.4, angle, 0.25);
+      leaf.castShadow = true;
+      plant.add(leaf);
+    }
+  }
+
+  // Flower Inflorescence spikes (Tulsi purple-green racemes)
+  const racemeGeo = new THREE.ConeGeometry(0.12, 0.65, 5);
+  const raceme = new THREE.Mesh(racemeGeo, purpleTulsiFlowerMat);
+  raceme.position.y = 1.9;
+  plant.add(raceme);
+
+  for (let b = 0; b < 3; b++) {
+    const bAngle = (b * Math.PI * 2) / 3;
+    const sideRaceme = new THREE.Mesh(racemeGeo, purpleTulsiFlowerMat);
+    sideRaceme.scale.set(0.65, 0.65, 0.65);
+    sideRaceme.position.set(Math.cos(bAngle)*0.35, 1.6, Math.sin(bAngle)*0.35);
+    sideRaceme.rotation.z = Math.sin(bAngle) * 0.35;
+    plant.add(sideRaceme);
+  }
+
+  if (isMain) {
+    tulsiCenterMesh = plant;
+  }
+
+  plantsGroup.add(plant);
+  return plant;
+}
+
+// Function: Build Rosemary / Lavender Shrub
+function createHerbalShrub(x, z, flowerColor = lavenderMat, scale = 1.0) {
+  const shrub = new THREE.Group();
+  shrub.position.set(x, 0.35, z);
+  shrub.scale.set(scale, scale, scale);
+
+  const stemCount = 9;
+  for (let s = 0; s < stemCount; s++) {
+    const angle = (s / stemCount) * Math.PI * 2 + Math.random()*0.3;
+    const rad = 0.2 + Math.random()*0.3;
+    const h = 1.0 + Math.random()*0.6;
+    const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.05, h, 4), stemMat);
+    stem.position.set(Math.cos(angle)*rad, h/2, Math.sin(angle)*rad);
+    stem.rotation.x = (Math.random()-0.5)*0.35;
+    stem.rotation.z = (Math.random()-0.5)*0.35;
+    shrub.add(stem);
+
+    // Tip flower
+    const tip = new THREE.Mesh(new THREE.ConeGeometry(0.09, 0.45, 5), flowerColor);
+    tip.position.set(stem.position.x, h + 0.15, stem.position.z);
+    shrub.add(tip);
+  }
+  plantsGroup.add(shrub);
+  return shrub;
+}
+
+// Function: Build Chamomile / Calendula Plant
+function createDaisyHerb(x, z, petalsMat = chamomileFlowerMat, scale = 1.0) {
+  const herb = new THREE.Group();
+  herb.position.set(x, 0.35, z);
+  herb.scale.set(scale, scale, scale);
+
+  const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.05, 1.1, 4), stemMat);
+  stem.position.y = 0.55;
+  herb.add(stem);
+
+  // Blossom
+  const disk = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.05, 6), goldFlowerMat);
+  disk.position.y = 1.15;
+  herb.add(disk);
+
+  for (let p = 0; p < 7; p++) {
+    const pAng = (p / 7) * Math.PI * 2;
+    const petal = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.03, 0.32), petalsMat);
+    petal.position.set(Math.cos(pAng)*0.24, 1.14, Math.sin(pAng)*0.24);
+    petal.rotation.y = -pAng;
+    herb.add(petal);
+  }
+  plantsGroup.add(herb);
+  return herb;
+}
+
+// Populate Herb Bed A (Centerpiece: Tulsi Sanctum)
+const mainTulsi = createTulsiPlant(-6, 2, 1.35, true); // Primary selected Tulsi
+createTulsiPlant(-7.2, 0.8, 0.95);
+createTulsiPlant(-4.8, 1.2, 1.05);
+createTulsiPlant(-6.5, 3.4, 0.9);
+createTulsiPlant(-5.2, 4.2, 1.1);
+
+// Highlight Ring & Soft Living Green Glow for Tulsi
+const ringGeo = new THREE.RingGeometry(1.0, 1.18, 32);
+const ringMat = new THREE.MeshBasicMaterial({ 
+  color: 0x4fd18b, 
+  side: THREE.DoubleSide, 
+  transparent: true, 
+  opacity: 0.85 
+});
+const highlightRing = new THREE.Mesh(ringGeo, ringMat);
+highlightRing.rotation.x = -Math.PI / 2;
+highlightRing.position.set(-6, 0.42, 2);
+scene.add(highlightRing);
+
+// Plant Glow light
+const tulsiGlowLight = new THREE.PointLight(0x7be0a8, 2.2, 5.5);
+tulsiGlowLight.position.set(-6, 1.6, 2);
+scene.add(tulsiGlowLight);
+
+// Populate Herb Bed B (Rosemary & Thyme)
+for (let i = 0; i < 8; i++) {
+  const rx = 4.5 + (i % 3) * 1.3 + (Math.random()-0.5)*0.4;
+  const rz = 1.5 + Math.floor(i / 3) * 2.1 + (Math.random()-0.5)*0.4;
+  createHerbalShrub(rx, rz, lavenderMat, 0.9 + Math.random()*0.3);
+}
+
+// Populate Herb Bed C (Mint & Lemon Balm)
+for (let i = 0; i < 6; i++) {
+  const mx = -8.2 + (i % 2) * 2.2 + (Math.random()-0.5)*0.5;
+  const mz = -9.5 + Math.floor(i / 2) * 2.2 + (Math.random()-0.5)*0.5;
+  createTulsiPlant(mx, mz, 0.85 + Math.random()*0.2);
+}
+
+// Populate Herb Bed D (Chamomile & Calendula)
+for (let i = 0; i < 9; i++) {
+  const cx = 5.2 + (i % 3) * 1.5 + (Math.random()-0.5)*0.4;
+  const cz = -8.5 + Math.floor(i / 3) * 1.9 + (Math.random()-0.5)*0.4;
+  createDaisyHerb(cx, cz, i % 2 === 0 ? chamomileFlowerMat : goldFlowerMat, 0.85 + Math.random()*0.3);
+}
+
+// Populate Herb Bed E (Lavender Terrace)
+for (let i = 0; i < 7; i++) {
+  const lx = -2.8 + i * 0.95;
+  const lz = -14 + (Math.random()-0.5)*0.5;
+  createHerbalShrub(lx, lz, lavenderMat, 1.05 + Math.random()*0.2);
+}
+
+// Terracotta Clay Planter Pots around garden
+const potGeo = new THREE.CylinderGeometry(0.48, 0.34, 0.65, 8);
+function placePot(x, z, rotation = 0) {
+  const pot = new THREE.Mesh(potGeo, terracottaClayPotMat);
+  pot.position.set(x, 0.32, z);
+  pot.rotation.y = rotation;
+  pot.castShadow = true;
+  scene.add(pot);
+  // soil inside pot
+  const potSoil = new THREE.Mesh(new THREE.CylinderGeometry(0.44, 0.44, 0.05, 8), soilMat);
+  potSoil.position.set(x, 0.6, z);
+  scene.add(potSoil);
+}
+placePot(-3.2, 5.8, 0.4);
+placePot(-2.4, 6.2, 1.2);
+placePot(3.2, 0.2, 0.7);
+
+// Floating Botanical Spores / Fireflies (Living Green Ambient Particles)
+const sporeCount = 45;
+const sporeGeo = new THREE.BufferGeometry();
+const sporePositions = new Float32Array(sporeCount * 3);
+for (let i = 0; i < sporeCount * 3; i += 3) {
+  sporePositions[i] = (Math.random() - 0.5) * 26;
+  sporePositions[i + 1] = 0.5 + Math.random() * 6.5;
+  sporePositions[i + 2] = (Math.random() - 0.5) * 26;
+}
+sporeGeo.setAttribute('position', new THREE.BufferAttribute(sporePositions, 3));
+const sporeMat = new THREE.PointsMaterial({
+  color: 0x7be0a8,
+  size: 0.16,
+  transparent: true,
+  opacity: 0.75,
+  blending: THREE.AdditiveBlending
+});
+const spores = new THREE.Points(sporeGeo, sporeMat);
+scene.add(spores);
+
+// Camera Orbit / Gentle Pan interaction
+let isDragging = false;
+let prevMouseX = 0;
+let prevMouseY = 0;
+let sphericalAngle = { theta: 0.18, phi: 0.58, radius: 26 };
+
+function updateCameraPosition() {
+  camera.position.x = sphericalAngle.radius * Math.sin(sphericalAngle.phi) * Math.sin(sphericalAngle.theta);
+  camera.position.y = sphericalAngle.radius * Math.cos(sphericalAngle.phi);
+  camera.position.z = sphericalAngle.radius * Math.sin(sphericalAngle.phi) * Math.cos(sphericalAngle.theta);
+  camera.lookAt(-1, 1.5, 0);
+}
+updateCameraPosition();
+
+container.addEventListener('mousedown', (e) => {
+  isDragging = true;
+  prevMouseX = e.clientX;
+  prevMouseY = e.clientY;
+});
+
+window.addEventListener('mouseup', () => { isDragging = false; });
+window.addEventListener('mousemove', (e) => {
+  if (!isDragging) return;
+  const deltaX = e.clientX - prevMouseX;
+  const deltaY = e.clientY - prevMouseY;
+  prevMouseX = e.clientX;
+  prevMouseY = e.clientY;
+
+  sphericalAngle.theta -= deltaX * 0.005;
+  sphericalAngle.phi = Math.max(0.25, Math.min(Math.PI / 2.1, sphericalAngle.phi - deltaY * 0.005));
+  updateCameraPosition();
+});
+
+// Resize Listener
+function onResize() {
+  const w = container.clientWidth || window.innerWidth;
+  const h = container.clientHeight || window.innerHeight;
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h);
+}
+window.addEventListener('resize', onResize);
+
+// Animation Loop
+let clock = new THREE.Clock();
+function animate() {
+  requestAnimationFrame(animate);
+  const elapsedTime = clock.getElapsedTime();
+
+  // Subtle breathing motion for plants
+  if (tulsiCenterMesh) {
+    tulsiCenterMesh.rotation.y = Math.sin(elapsedTime * 0.6) * 0.04;
+  }
+  
+  // Highlight ring pulsating effect
+  const ringScale = 1.0 + Math.sin(elapsedTime * 2.2) * 0.04;
+  highlightRing.scale.set(ringScale, ringScale, ringScale);
+  ringMat.opacity = 0.65 + Math.sin(elapsedTime * 2.2) * 0.25;
+  tulsiGlowLight.intensity = 2.0 + Math.sin(elapsedTime * 2.2) * 0.6;
+
+  // Drift spores
+  const posAttr = sporeGeo.attributes.position;
+  for (let i = 0; i < sporeCount; i++) {
+    let y = posAttr.getY(i);
+    y += Math.sin(elapsedTime + i) * 0.003;
+    posAttr.setY(i, y);
+  }
+  posAttr.needsUpdate = true;
+
+  // Gentle camera idle orbit if not dragging
+  if (!isDragging) {
+    sphericalAngle.theta += 0.0006;
+    updateCameraPosition();
+  }
+
+  renderer.render(scene, camera);
+}
+animate();
+})();
+</script>
+</div>
+<!-- STITCH_THREEJS_END:ANIMATION_3 -->
+
+
+</body></html>

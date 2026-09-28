@@ -1,0 +1,646 @@
+<!DOCTYPE html><html class="dark" lang="en"><svg class="inline-defs-container" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden"></svg><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Botanica Admin — Overview</title>
+<!-- Google Fonts: Inter, Instrument Serif, JetBrains Mono, Noto Serif -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Noto+Serif:ital,wght@0,400;0,600;1,400&amp;display=swap" rel="stylesheet">
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-surface-variant": "#bccabd",
+            "tertiary-container": "#ffa37f",
+            "on-primary-fixed-variant": "#00522f",
+            "text-on-accent": "#06110B",
+            "secondary-fixed-dim": "#ffb597",
+            "danger": "#D9645C",
+            "surface-container-high": "#282b28",
+            "on-tertiary-container": "#78371b",
+            "inverse-primary": "#006d40",
+            "clay-400": "#E39A72",
+            "tertiary": "#ffcab7",
+            "surface-variant": "#323533",
+            "surface-container-lowest": "#0c0f0d",
+            "error-container": "#93000a",
+            "primary-fixed": "#7bfbb1",
+            "tertiary-fixed-dim": "#ffb599",
+            "on-primary-container": "#005631",
+            "bg-raised": "#171E19",
+            "on-secondary": "#571f02",
+            "on-secondary-fixed-variant": "#743416",
+            "text-primary": "#E6EDE8",
+            "primary-fixed-dim": "#5dde96",
+            "border-subtle": "rgba(255, 255, 255, 0.06)",
+            "on-tertiary-fixed-variant": "#743418",
+            "bg-hover": "#1D251F",
+            "clay-500": "#D9845F",
+            "surface-tint": "#5dde96",
+            "on-secondary-fixed": "#360f00",
+            "on-primary-fixed": "#002110",
+            "inverse-on-surface": "#2e312f",
+            "background": "#111412",
+            "surface": "#111412",
+            "text-secondary": "#9BACA0",
+            "on-error-container": "#ffdad6",
+            "bg-surface": "#121713",
+            "on-tertiary": "#571e04",
+            "on-background": "#e1e3df",
+            "clay-tint": "rgba(217, 132, 95, 0.12)",
+            "accent-tint": "rgba(79, 209, 139, 0.12)",
+            "bg-sunken": "#070A08",
+            "tertiary-fixed": "#ffdbce",
+            "inverse-surface": "#e1e3df",
+            "primary-container": "#4fd18b",
+            "on-secondary-container": "#fda27b",
+            "text-disabled": "#47524A",
+            "text-muted": "#6A7A6F",
+            "danger-tint": "rgba(217, 100, 92, 0.12)",
+            "bg-base": "#0A0D0B",
+            "border-strong": "rgba(255, 255, 255, 0.11)",
+            "surface-container": "#1d201e",
+            "surface-bright": "#373a37",
+            "primary": "#6eeea5",
+            "secondary": "#ffb597",
+            "error": "#ffb4ab",
+            "secondary-fixed": "#ffdbcd",
+            "outline": "#879489",
+            "on-tertiary-fixed": "#370e00",
+            "accent-glow": "rgba(79, 209, 139, 0.28)",
+            "on-primary": "#00391f",
+            "on-surface": "#e1e3df",
+            "accent-400": "#7BE0A8",
+            "success": "#4FD18B",
+            "secondary-container": "#773618",
+            "outline-variant": "#3d4a40",
+            "surface-container-low": "#191c1a",
+            "on-error": "#690005",
+            "accent-500": "#4FD18B",
+            "accent-600": "#35A96D",
+            "surface-container-highest": "#323533",
+            "surface-dim": "#111412",
+            "warning": "#E0A458"
+          },
+          borderRadius: {
+            DEFAULT: "0.25rem",
+            lg: "0.5rem",
+            xl: "0.75rem",
+            "2xl": "1rem",
+            full: "9999px"
+          },
+          fontFamily: {
+            "label-mono": ["JetBrains Mono", "monospace"],
+            "data-mono": ["JetBrains Mono", "monospace"],
+            "body-sm": ["Inter", "sans-serif"],
+            "body-md": ["Inter", "sans-serif"],
+            "body-lg": ["Inter", "sans-serif"],
+            "display": ["Inter", "sans-serif"],
+            "headline-lg": ["Inter", "sans-serif"],
+            "headline-md": ["Inter", "sans-serif"],
+            "headline-sm": ["Inter", "sans-serif"],
+            "latin-botanical": ["Instrument Serif", "Georgia", "serif"],
+            "botanical-title": ["Noto Serif", "serif"],
+            "botanical-body": ["Noto Serif", "serif"]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+      font-size: 18px;
+      line-height: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .card-highlight {
+      position: relative;
+    }
+    .card-highlight::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      top: 0;
+      left: 12px;
+      right: 12px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.09) 50%, transparent 100%);
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body class="bg-bg-base font-body-md text-body-md text-text-primary min-h-screen selection:bg-accent-tint selection:text-primary"><aside class="fixed left-0 top-0 bottom-0 w-[248px] bg-bg-surface z-50 flex flex-col justify-between shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex flex-col flex-1 min-h-0"><div class="px-space-lg pt-space-lg pb-space-md flex flex-col gap-space-xs"><div class="flex items-center gap-space-sm"><div class="w-7 h-7 rounded-lg bg-surface-container-high flex items-center justify-center"><span class="material-symbols-outlined text-accent-500 text-[18px]">spa</span></div><span class="font-botanical-title text-botanical-title italic tracking-tight text-text-primary">Herbarium Noctis</span></div><span class="font-label-mono text-label-mono uppercase tracking-widest text-text-muted pl-9">EXPEDITION / ARCHIVE CMS</span></div><div class="px-space-lg pt-space-md pb-space-xs"><span class="font-label-mono text-label-mono uppercase tracking-wider text-text-muted">ADMIN</span></div><nav class="flex-1 px-space-sm space-y-1 overflow-y-auto" data-active-classes="bg-accent-tint text-accent-400 font-semibold"><a aria-current="page" class="flex items-center justify-between px-space-md py-2.5 rounded-lg transition-all duration-150 bg-accent-tint text-accent-400 font-semibold" data-path="dashboard" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">grid_view</span><span class="font-body-sm text-body-sm">Dashboard</span></div></a><a class="flex items-center justify-between px-space-md py-2.5 rounded-lg text-text-secondary hover:bg-bg-hover hover:text-text-primary transition-all duration-150" data-path="plants" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">psychiatry</span><span class="font-body-sm text-body-sm">Plants</span></div></a><a class="flex items-center justify-between px-space-md py-2.5 rounded-lg text-text-secondary hover:bg-bg-hover hover:text-text-primary transition-all duration-150" data-path="moderation" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">verified_user</span><span class="font-body-sm text-body-sm">Moderation</span></div><span class="font-label-mono text-label-mono px-1.5 py-0.5 rounded-full bg-clay-tint text-warning font-semibold">14</span></a><a class="flex items-center justify-between px-space-md py-2.5 rounded-lg text-text-secondary hover:bg-bg-hover hover:text-text-primary transition-all duration-150" data-path="users" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">group</span><span class="font-body-sm text-body-sm">Users</span></div></a><a class="flex items-center justify-between px-space-md py-2.5 rounded-lg text-text-secondary hover:bg-bg-hover hover:text-text-primary transition-all duration-150" data-path="quizzes" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">quiz</span><span class="font-body-sm text-body-sm">Quizzes</span></div></a><a class="flex items-center justify-between px-space-md py-2.5 rounded-lg text-text-secondary hover:bg-bg-hover hover:text-text-primary transition-all duration-150" data-path="badges" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">military_tech</span><span class="font-body-sm text-body-sm">Badges</span></div></a></nav></div><div class="p-space-sm flex flex-col gap-space-xs bg-bg-surface"><nav class="space-y-1" data-active-classes="bg-accent-tint text-accent-400 font-semibold"><a class="flex items-center gap-space-sm px-space-md py-2 rounded-lg text-text-secondary hover:bg-bg-hover hover:text-text-primary transition-all duration-150" data-path="system-telemetry" href="#"><span class="material-symbols-outlined text-[18px]">terminal</span><span class="font-body-sm text-body-sm">System Telemetry</span></a><a class="flex items-center gap-space-sm px-space-md py-2 rounded-lg text-text-secondary hover:bg-bg-hover hover:text-text-primary transition-all duration-150" data-path="settings" href="#"><span class="material-symbols-outlined text-[18px]">tune</span><span class="font-body-sm text-body-sm">Settings</span></a></nav><div class="mt-space-xs p-space-sm rounded-lg bg-bg-raised flex items-center gap-space-sm"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="flex flex-col min-w-0"><span class="font-body-sm text-body-sm font-semibold text-text-primary truncate">Eleanor Vance</span><span class="font-label-mono text-label-mono text-text-muted truncate">Admin / Curator</span></div></div></div></aside><div class="pl-[248px]"><header class="fixed top-0 left-[248px] right-0 h-16 bg-bg-base/80 backdrop-blur-xl z-40 shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 w-full px-space-xl flex items-center justify-between"><div class="flex items-center gap-space-md flex-1 max-w-md"><div class="relative w-full"><span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[18px] text-text-muted">search</span><input class="w-full h-11 pl-10 pr-4 bg-bg-surface rounded-lg text-body-sm font-body-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-accent-500/40 transition-all" placeholder="Search specimens, collectors, taxa..." type="text"></div></div><div class="flex items-center gap-space-lg"><div class="flex items-center gap-2 px-3 py-1 rounded-full bg-bg-raised"><span class="w-2 h-2 rounded-full bg-accent-500 animate-pulse"></span><span class="font-data-mono text-data-mono uppercase tracking-wider text-accent-400">ENGINE 4.2 ONLINE</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-16 bg-bg-base min-h-screen"><div class="w-full p-space-xl"><div class="flex flex-col w-full space-y-space-xl">
+<!-- TOP HEADER / TELEMETRY STATUS BAR -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-space-md">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<span class="font-label-mono text-label-mono uppercase tracking-widest text-text-muted">CURATORIAL ARCHIVE OVERVIEW</span>
+<span class="inline-block w-1.5 h-1.5 rounded-full bg-accent-500"></span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-text-primary tracking-tight">Overview</h1>
+</div>
+<div class="flex flex-wrap items-center gap-space-sm">
+<!-- Date Range Selector Pill -->
+<div class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-bg-surface text-text-secondary hover:text-text-primary transition-colors cursor-pointer shadow-sm">
+<span class="material-symbols-outlined text-[17px] text-accent-400">calendar_today</span>
+<span class="font-label-mono text-label-mono uppercase tracking-wider text-text-primary">OCT 01 — OCT 30, 2025</span>
+<span class="material-symbols-outlined text-[16px] text-text-muted">arrow_drop_down</span>
+</div>
+<!-- Live Telemetry Sync Indicator -->
+<div class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-bg-raised text-text-muted shadow-sm">
+<span class="w-2 h-2 rounded-full bg-accent-500 animate-pulse"></span>
+<span class="font-label-mono text-label-mono uppercase tracking-widest text-text-secondary">LAST REFRESH: 2M AGO · LIVE</span>
+</div>
+<!-- Quick Action: Export / Monograph Dispatch -->
+<button class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-accent-tint text-accent-400 hover:bg-accent-500 hover:text-text-on-accent transition-all duration-150">
+<span class="material-symbols-outlined text-[16px]">file_download</span>
+<span class="font-label-mono text-label-mono uppercase font-semibold">EXPORT REPORT</span>
+</button>
+</div>
+</div>
+<!-- ROW 1: 4 STAT METRIC CARDS -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md">
+<!-- Stat 1: Total Users -->
+<div class="relative bg-bg-surface rounded-xl p-space-md flex flex-col justify-between shadow-sm overflow-hidden group hover:bg-bg-hover transition-colors">
+<div class="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+<div class="flex items-center justify-between">
+<span class="font-label-mono text-label-mono uppercase tracking-wider text-text-muted">TOTAL USERS</span>
+<span class="material-symbols-outlined text-[18px] text-text-muted group-hover:text-accent-400 transition-colors">group</span>
+</div>
+<div class="mt-3 flex items-baseline justify-between">
+<span class="font-headline-md text-headline-md text-text-primary font-semibold">4,182</span>
+<span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-accent-tint text-accent-400 font-label-mono text-label-mono">
+<span class="material-symbols-outlined text-[13px]">trending_up</span>
+          +12%
+        </span>
+</div>
+<div class="mt-2 text-body-sm font-body-sm text-text-muted">vs. last month period</div>
+</div>
+<!-- Stat 2: Published Plants -->
+<div class="relative bg-bg-surface rounded-xl p-space-md flex flex-col justify-between shadow-sm overflow-hidden group hover:bg-bg-hover transition-colors">
+<div class="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+<div class="flex items-center justify-between">
+<span class="font-label-mono text-label-mono uppercase tracking-wider text-text-muted">PUBLISHED PLANTS</span>
+<span class="material-symbols-outlined text-[18px] text-text-muted group-hover:text-accent-400 transition-colors">psychiatry</span>
+</div>
+<div class="mt-3 flex items-baseline justify-between">
+<span class="font-headline-md text-headline-md text-text-primary font-semibold">240</span>
+<span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-accent-tint text-accent-400 font-label-mono text-label-mono">
+<span class="material-symbols-outlined text-[13px]">add</span>
+          3 this week
+        </span>
+</div>
+<div class="mt-2 text-body-sm font-body-sm text-text-muted">48 cataloged taxa families</div>
+</div>
+<!-- Stat 3: Daily Active Users with Sparkline -->
+<div class="relative bg-bg-surface rounded-xl p-space-md flex flex-col justify-between shadow-sm overflow-hidden group hover:bg-bg-hover transition-colors">
+<div class="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+<div class="flex items-center justify-between">
+<span class="font-label-mono text-label-mono uppercase tracking-wider text-text-muted">DAILY ACTIVE USERS (DAU)</span>
+<span class="material-symbols-outlined text-[18px] text-text-muted group-hover:text-accent-400 transition-colors">monitoring</span>
+</div>
+<div class="mt-2 flex items-center justify-between">
+<div>
+<span class="font-headline-md text-headline-md text-text-primary font-semibold">612</span>
+<div class="text-body-sm font-body-sm text-accent-400 mt-0.5">+8.4% rolling 7d</div>
+</div>
+<!-- Sparkline SVG -->
+<div class="w-24 h-10">
+<svg class="w-full h-full overflow-visible" fill="none" viewBox="0 0 96 40">
+<defs>
+<linearGradient gradientUnits="userSpaceOnUse" id="sparklineGrad" x1="0" x2="0" y1="0" y2="40">
+<stop offset="0%" stop-color="#4FD18B" stop-opacity="0.3"></stop>
+<stop offset="100%" stop-color="#4FD18B" stop-opacity="0"></stop>
+</linearGradient>
+</defs>
+<path d="M 2 32 Q 16 28 28 20 T 56 16 T 76 8 T 94 4 L 94 38 L 2 38 Z" fill="url(#sparklineGrad)"></path>
+<path d="M 2 32 Q 16 28 28 20 T 56 16 T 76 8 T 94 4" stroke="#4FD18B" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<circle class="animate-ping" cx="94" cy="4" fill="#4FD18B" r="3" style="transform-origin: 94px 4px; animation-duration: 2.5s;"></circle>
+<circle cx="94" cy="4" fill="#E6EDE8" r="2.5"></circle>
+</svg>
+</div>
+</div>
+<div class="mt-2 text-body-sm font-body-sm text-text-muted">Sustained peak: 842 DAU</div>
+</div>
+<!-- Stat 4: Pending Moderation -->
+<div class="relative bg-bg-surface rounded-xl p-space-md flex flex-col justify-between shadow-sm overflow-hidden group hover:bg-bg-hover transition-colors">
+<div class="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+<div class="flex items-center justify-between">
+<span class="font-label-mono text-label-mono uppercase tracking-wider text-text-muted">PENDING MODERATION</span>
+<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-clay-tint text-warning">
+<span class="material-symbols-outlined text-[15px]">report</span>
+</span>
+</div>
+<div class="mt-3 flex items-baseline justify-between">
+<span class="font-headline-md text-headline-md text-warning font-semibold">14</span>
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-clay-tint text-warning font-label-mono text-label-mono">
+          ACTION REQ.
+        </span>
+</div>
+<div class="mt-2 flex items-center justify-between">
+<span class="text-body-sm font-body-sm text-text-muted">4 safety flags</span>
+<a class="font-label-mono text-label-mono text-warning hover:underline flex items-center gap-0.5" href="#moderation-queue">
+          Review queue <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+<!-- ROW 2: ACTIVE USERS 30-DAY CHART (2/3) + MOST VIEWED PLANTS (1/3) -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-space-md">
+<!-- Active users 30 days area chart (2 cols desktop) -->
+<div class="lg:col-span-2 relative bg-bg-surface rounded-xl p-space-lg shadow-sm flex flex-col justify-between overflow-hidden">
+<div class="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+<!-- Chart Topbar Header -->
+<div class="flex flex-wrap items-center justify-between gap-space-sm pb-space-md">
+<div>
+<div class="flex items-center gap-2">
+<h2 class="font-headline-sm text-headline-sm text-text-primary">Active users · 30 days</h2>
+<span class="font-label-mono text-label-mono px-2 py-0.5 rounded-full bg-accent-tint text-accent-400">TELEMETRY EXP-7</span>
+</div>
+<p class="font-body-sm text-body-sm text-text-muted mt-0.5">Field observation syncs, monograph queries &amp; specimen validations</p>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-1 px-1.5 py-1 rounded-lg bg-bg-raised">
+<button class="px-2.5 py-1 rounded font-label-mono text-label-mono uppercase tracking-wider bg-accent-500 text-text-on-accent font-semibold transition-all shadow-sm">DAILY</button>
+<button class="px-2.5 py-1 rounded font-label-mono text-label-mono uppercase tracking-wider text-text-secondary hover:text-text-primary transition-all">WEEKLY</button>
+</div>
+<div class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-high">
+<span class="w-1.5 h-1.5 rounded-full bg-accent-500"></span>
+<span class="font-label-mono text-label-mono uppercase text-accent-400">PEAK: 842 DAU</span>
+</div>
+</div>
+</div>
+<!-- Rich Area Chart SVG Container -->
+<div class="relative w-full h-64 sm:h-72 my-2 select-none">
+<!-- Y-Axis Numeric Labels -->
+<div class="absolute left-0 inset-y-0 w-10 flex flex-col justify-between py-1 text-right pointer-events-none">
+<span class="font-data-mono text-data-mono text-text-muted">1,000</span>
+<span class="font-data-mono text-data-mono text-text-muted">750</span>
+<span class="font-data-mono text-data-mono text-text-muted">500</span>
+<span class="font-data-mono text-data-mono text-text-muted">250</span>
+<span class="font-data-mono text-data-mono text-text-muted">0</span>
+</div>
+<!-- Chart Canvas -->
+<div class="ml-12 h-full relative">
+<svg class="w-full h-full overflow-visible" preserveAspectRatio="none" viewBox="0 0 700 240">
+<defs>
+<linearGradient gradientUnits="userSpaceOnUse" id="areaGradient" x1="0" x2="0" y1="0" y2="240">
+<stop offset="0%" stop-color="#4FD18B" stop-opacity="0.24"></stop>
+<stop offset="65%" stop-color="#4FD18B" stop-opacity="0.06"></stop>
+<stop offset="100%" stop-color="#4FD18B" stop-opacity="0.00"></stop>
+</linearGradient>
+</defs>
+<!-- Dashed Horizontal Grid Lines -->
+<line stroke="rgba(255, 255, 255, 0.05)" stroke-dasharray="4 4" stroke-width="1" x1="0" x2="700" y1="10" y2="10"></line>
+<line stroke="rgba(255, 255, 255, 0.05)" stroke-dasharray="4 4" stroke-width="1" x1="0" x2="700" y1="65" y2="65"></line>
+<line stroke="rgba(255, 255, 255, 0.05)" stroke-dasharray="4 4" stroke-width="1" x1="0" x2="700" y1="120" y2="120"></line>
+<line stroke="rgba(255, 255, 255, 0.05)" stroke-dasharray="4 4" stroke-width="1" x1="0" x2="700" y1="175" y2="175"></line>
+<line stroke="rgba(255, 255, 255, 0.08)" stroke-width="1" x1="0" x2="700" y1="230" y2="230"></line>
+<!-- Vertical Guides at markers -->
+<line stroke="rgba(79, 209, 139, 0.25)" stroke-dasharray="2 2" stroke-width="1" x1="560" x2="560" y1="10" y2="230"></line>
+<!-- Main Area Path -->
+<path d="M 0 190
+                     C 40 185, 70 170, 110 160
+                     C 150 150, 180 165, 220 145
+                     C 260 125, 290 135, 330 110
+                     C 370 85, 410 130, 450 100
+                     C 490 70, 520 80, 560 38
+                     C 600 80, 640 65, 700 85
+                     L 700 230 L 0 230 Z" fill="url(#areaGradient)"></path>
+<!-- Smooth Trend Line Curve -->
+<path d="M 0 190
+                     C 40 185, 70 170, 110 160
+                     C 150 150, 180 165, 220 145
+                     C 260 125, 290 135, 330 110
+                     C 370 85, 410 130, 450 100
+                     C 490 70, 520 80, 560 38
+                     C 600 80, 640 65, 700 85" fill="none" stroke="#4FD18B" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+<!-- Data Point Markers along Curve -->
+<circle cx="110" cy="160" fill="#121713" r="3" stroke="#4FD18B" stroke-width="2"></circle>
+<circle cx="220" cy="145" fill="#121713" r="3" stroke="#4FD18B" stroke-width="2"></circle>
+<circle cx="330" cy="110" fill="#121713" r="3" stroke="#4FD18B" stroke-width="2"></circle>
+<circle cx="450" cy="100" fill="#121713" r="3" stroke="#4FD18B" stroke-width="2"></circle>
+<!-- Peak Indicator Point at OCT 24 (X: 560, Y: 38) -->
+<circle class="animate-pulse" cx="560" cy="38" fill="#4FD18B" fill-opacity="0.25" r="7"></circle>
+<circle cx="560" cy="38" fill="#4FD18B" r="4.5" stroke="#0A0D0B" stroke-width="1.5"></circle>
+</svg>
+<!-- Floating Peak Data Tooltip Chip -->
+<div class="absolute left-[72%] sm:left-[76%] top-2 -translate-x-1/2 px-2.5 py-1.5 rounded-lg bg-bg-raised border-strong shadow-xl flex items-center gap-2 pointer-events-none">
+<span class="w-1.5 h-1.5 rounded-full bg-accent-500"></span>
+<div class="flex flex-col">
+<span class="font-label-mono text-label-mono text-accent-400 font-semibold leading-tight">OCT 24 · 842 USERS</span>
+<span class="font-label-mono text-[9px] text-text-muted uppercase">Global Expedition Surge</span>
+</div>
+</div>
+</div>
+</div>
+<!-- X-Axis Timeline Labels -->
+<div class="ml-12 pt-2 flex items-center justify-between text-text-muted border-t border-white/5">
+<span class="font-data-mono text-data-mono">OCT 01</span>
+<span class="font-data-mono text-data-mono">OCT 08</span>
+<span class="font-data-mono text-data-mono">OCT 15</span>
+<span class="font-data-mono text-data-mono">OCT 22</span>
+<span class="font-data-mono text-data-mono text-accent-400 font-semibold">OCT 24 (PEAK)</span>
+<span class="font-data-mono text-data-mono">OCT 29</span>
+</div>
+</div>
+<!-- Most viewed plants (1 col desktop) -->
+<div class="relative bg-bg-surface rounded-xl p-space-lg shadow-sm flex flex-col justify-between overflow-hidden">
+<div class="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+<!-- Header -->
+<div class="flex items-center justify-between pb-space-sm">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-text-primary">Most viewed plants</h2>
+<span class="font-label-mono text-label-mono uppercase tracking-wider text-text-muted">RANKED BY 30-DAY MONOGRAPH VISITS</span>
+</div>
+<span class="material-symbols-outlined text-[20px] text-text-muted">local_florist</span>
+</div>
+<!-- Ranked List (6 items) -->
+<div class="divide-y divide-white/5 flex flex-col gap-1">
+<!-- Row 1: Holy Basil -->
+<div class="relative py-2 px-1.5 rounded-lg flex items-center justify-between group hover:bg-bg-hover transition-colors overflow-hidden">
+<div class="absolute inset-y-0 left-0 bg-accent-500/10 w-[95%] pointer-events-none rounded-lg"></div>
+<div class="flex items-center gap-space-sm z-10 min-w-0">
+<span class="font-data-mono text-data-mono text-accent-400 font-semibold w-5">01</span>
+<img alt="Holy Basil (Ocimum tenuiflorum)" class="w-9 h-9 rounded-lg object-cover bg-bg-raised shrink-0" src="https://lh3.googleusercontent.com/aida/AEtjO1UTX-5KQM3rbXPZC9w-PevEkmeRulXquSZWPlwa_KXTTHt5lmaKR6u6aJFHDQ72QZj3lwJtpBqEol5SWMO6zOJ0gTsZQVNpW9-QTLzXJTYySMKM9v0uJ80MdXn28T3ppxF75RVb5WphNMDp4DGcinuq7Ystz2gyrTPgM5iKMZofnjZNzYli0FcYOvRptRt-hoo4l9yy-baCbIXMOuKt-QUFOxxm4ip3owXWo8rsKzOg53avpCMw7fgE1aPq">
+<div class="flex flex-col min-w-0 truncate">
+<span class="font-body-sm text-body-sm font-semibold text-text-primary truncate">Holy Basil (Tulsi)</span>
+<span class="font-botanical-body text-[13px] italic text-text-muted leading-tight truncate">Ocimum tenuiflorum</span>
+</div>
+</div>
+<div class="z-10 pl-2 text-right shrink-0">
+<span class="font-data-mono text-data-mono text-text-primary font-medium">8,940</span>
+<span class="font-label-mono text-[10px] block text-accent-400">95%</span>
+</div>
+</div>
+<!-- Row 2: Garden Sage -->
+<div class="relative py-2 px-1.5 rounded-lg flex items-center justify-between group hover:bg-bg-hover transition-colors overflow-hidden">
+<div class="absolute inset-y-0 left-0 bg-accent-500/10 w-[78%] pointer-events-none rounded-lg"></div>
+<div class="flex items-center gap-space-sm z-10 min-w-0">
+<span class="font-data-mono text-data-mono text-text-muted w-5">02</span>
+<img alt="Garden Sage (Salvia officinalis)" class="w-9 h-9 rounded-lg object-cover bg-bg-raised shrink-0" src="https://lh3.googleusercontent.com/aida/AEtjO1UBmKj3eHRY0T5c_lf2Au4F8GQRH9kXvrKk1FRact208pn4KxK9WTjATVKzkncqPKXktIbrM28CcuItcHcV5ecGr6mOA4FjemY9s6Z18dzBui7obUA5PVYZ7qCL3Bq3enKExvOKoJzdnhEVS2zqlIWQWubWWWCnWVjbpD-B7mPB60zUDUEuq3yu-w7XgpIQm2cAYlN7-AdBT1mRWBOn3DisMCSmC1Doyb2tuEqh61IffaxvcluwS2YnSSX9">
+<div class="flex flex-col min-w-0 truncate">
+<span class="font-body-sm text-body-sm font-semibold text-text-primary truncate">Garden Sage</span>
+<span class="font-botanical-body text-[13px] italic text-text-muted leading-tight truncate">Salvia officinalis</span>
+</div>
+</div>
+<div class="z-10 pl-2 text-right shrink-0">
+<span class="font-data-mono text-data-mono text-text-primary font-medium">6,820</span>
+<span class="font-label-mono text-[10px] block text-text-muted">78%</span>
+</div>
+</div>
+<!-- Row 3: Licorice Root -->
+<div class="relative py-2 px-1.5 rounded-lg flex items-center justify-between group hover:bg-bg-hover transition-colors overflow-hidden">
+<div class="absolute inset-y-0 left-0 bg-accent-500/10 w-[62%] pointer-events-none rounded-lg"></div>
+<div class="flex items-center gap-space-sm z-10 min-w-0">
+<span class="font-data-mono text-data-mono text-text-muted w-5">03</span>
+<img alt="Licorice Root (Glycyrrhiza glabra)" class="w-9 h-9 rounded-lg object-cover bg-bg-raised shrink-0" src="https://lh3.googleusercontent.com/aida/AEtjO1VUWr--mcJfBZrQ7R_X78B92e7hzSo-LCCWcmr1IbbV2dnZ6ol4gXChIhDCEFrOQP9bsyrjiZ_nF-iXSJImzDJSthLqBzbnCgtlMHH-i50X6KLEM3xNOpjfbgYKw-uEG7KzPMTDbRTZQbokfYNA6Crl5UwY4g7e5MZDyK7Jnhhz80CJ02yzaixaT_e5uOkv_j9rOoD6Il79dyP_wXvShUlZ_w6w0hQSk4uuqLLBqnJZadIVUozkHo7saJVh">
+<div class="flex flex-col min-w-0 truncate">
+<span class="font-body-sm text-body-sm font-semibold text-text-primary truncate">Licorice Root</span>
+<span class="font-botanical-body text-[13px] italic text-text-muted leading-tight truncate">Glycyrrhiza glabra</span>
+</div>
+</div>
+<div class="z-10 pl-2 text-right shrink-0">
+<span class="font-data-mono text-data-mono text-text-primary font-medium">5,410</span>
+<span class="font-label-mono text-[10px] block text-text-muted">62%</span>
+</div>
+</div>
+<!-- Row 4: Marshmallow Root -->
+<div class="relative py-2 px-1.5 rounded-lg flex items-center justify-between group hover:bg-bg-hover transition-colors overflow-hidden">
+<div class="absolute inset-y-0 left-0 bg-accent-500/10 w-[48%] pointer-events-none rounded-lg"></div>
+<div class="flex items-center gap-space-sm z-10 min-w-0">
+<span class="font-data-mono text-data-mono text-text-muted w-5">04</span>
+<img alt="Marshmallow Root (Althaea officinalis)" class="w-9 h-9 rounded-lg object-cover bg-bg-raised shrink-0" src="https://lh3.googleusercontent.com/aida/AEtjO1VqQ9wl-837g0xXC-mZ9GIqEm1-rIDKsPizLkbeBhntIeVXWLsks2Rc1LT6uvujJLo9hgqEPPDEZxMPZxqx1vtVn6RnXt9Hy7p4vZiLls7ZKm4mxOVblPEciPgzkbJ6vPtfMRRc8XRm9FjbVJLOVicAdZHpQ0a6h2KBibliQ7j5pyPzXtmMYWtJl39lRP6O6lkE-1P36reQg_2xBuv6-SoYeoYeLPo7uxhsA1A3E-gUF2jrL8jGeM7c0h41">
+<div class="flex flex-col min-w-0 truncate">
+<span class="font-body-sm text-body-sm font-semibold text-text-primary truncate">Marshmallow Root</span>
+<span class="font-botanical-body text-[13px] italic text-text-muted leading-tight truncate">Althaea officinalis</span>
+</div>
+</div>
+<div class="z-10 pl-2 text-right shrink-0">
+<span class="font-data-mono text-data-mono text-text-primary font-medium">4,190</span>
+<span class="font-label-mono text-[10px] block text-text-muted">48%</span>
+</div>
+</div>
+<!-- Row 5: Sweet Basil -->
+<div class="relative py-2 px-1.5 rounded-lg flex items-center justify-between group hover:bg-bg-hover transition-colors overflow-hidden">
+<div class="absolute inset-y-0 left-0 bg-accent-500/10 w-[42%] pointer-events-none rounded-lg"></div>
+<div class="flex items-center gap-space-sm z-10 min-w-0">
+<span class="font-data-mono text-data-mono text-text-muted w-5">05</span>
+<img alt="Sweet Basil (Ocimum basilicum)" class="w-9 h-9 rounded-lg object-cover bg-bg-raised shrink-0" src="https://lh3.googleusercontent.com/aida/AEtjO1UBmKj3eHRY0T5c_lf2Au4F8GQRH9kXvrKk1FRact208pn4KxK9WTjATVKzkncqPKXktIbrM28CcuItcHcV5ecGr6mOA4FjemY9s6Z18dzBui7obUA5PVYZ7qCL3Bq3enKExvOKoJzdnhEVS2zqlIWQWubWWWCnWVjbpD-B7mPB60zUDUEuq3yu-w7XgpIQm2cAYlN7-AdBT1mRWBOn3DisMCSmC1Doyb2tuEqh61IffaxvcluwS2YnSSX9">
+<div class="flex flex-col min-w-0 truncate">
+<span class="font-body-sm text-body-sm font-semibold text-text-primary truncate">Sweet Basil</span>
+<span class="font-botanical-body text-[13px] italic text-text-muted leading-tight truncate">Ocimum basilicum</span>
+</div>
+</div>
+<div class="z-10 pl-2 text-right shrink-0">
+<span class="font-data-mono text-data-mono text-text-primary font-medium">3,820</span>
+<span class="font-label-mono text-[10px] block text-text-muted">42%</span>
+</div>
+</div>
+<!-- Row 6: Ashwagandha -->
+<div class="relative py-2 px-1.5 rounded-lg flex items-center justify-between group hover:bg-bg-hover transition-colors overflow-hidden">
+<div class="absolute inset-y-0 left-0 bg-accent-500/10 w-[32%] pointer-events-none rounded-lg"></div>
+<div class="flex items-center gap-space-sm z-10 min-w-0">
+<span class="font-data-mono text-data-mono text-text-muted w-5">06</span>
+<img alt="Ashwagandha (Withania somnifera)" class="w-9 h-9 rounded-lg object-cover bg-bg-raised shrink-0" src="https://lh3.googleusercontent.com/aida/AEtjO1VUWr--mcJfBZrQ7R_X78B92e7hzSo-LCCWcmr1IbbV2dnZ6ol4gXChIhDCEFrOQP9bsyrjiZ_nF-iXSJImzDJSthLqBzbnCgtlMHH-i50X6KLEM3xNOpjfbgYKw-uEG7KzPMTDbRTZQbokfYNA6Crl5UwY4g7e5MZDyK7Jnhhz80CJ02yzaixaT_e5uOkv_j9rOoD6Il79dyP_wXvShUlZ_w6w0hQSk4uuqLLBqnJZadIVUozkHo7saJVh">
+<div class="flex flex-col min-w-0 truncate">
+<span class="font-body-sm text-body-sm font-semibold text-text-primary truncate">Ashwagandha</span>
+<span class="font-botanical-body text-[13px] italic text-text-muted leading-tight truncate">Withania somnifera</span>
+</div>
+</div>
+<div class="z-10 pl-2 text-right shrink-0">
+<span class="font-data-mono text-data-mono text-text-primary font-medium">2,910</span>
+<span class="font-label-mono text-[10px] block text-text-muted">32%</span>
+</div>
+</div>
+</div>
+<!-- Bottom link -->
+<div class="pt-space-xs text-right">
+<a class="font-label-mono text-label-mono text-accent-400 hover:underline inline-flex items-center gap-1" href="#">
+          VIEW TAXA INDEX <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+<!-- ROW 3: QUIZ PASS RATE (1/2) + RECENT MODERATION FEED (1/2) -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-space-md" id="moderation-queue">
+<!-- Quiz Pass Rate Breakdown -->
+<div class="relative bg-bg-surface rounded-xl p-space-lg shadow-sm flex flex-col justify-between overflow-hidden">
+<div class="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+<div>
+<div class="flex items-center justify-between pb-space-sm">
+<div>
+<div class="flex items-center gap-2">
+<h2 class="font-headline-sm text-headline-sm text-text-primary">Quiz pass rate</h2>
+<span class="font-label-mono text-label-mono px-2 py-0.5 rounded-full bg-surface-container-high text-accent-400">CURRICULUM EVAL</span>
+</div>
+<p class="font-body-sm text-body-sm text-text-muted mt-0.5">Collector qualification modules across nocturnal botanicals</p>
+</div>
+<span class="material-symbols-outlined text-[20px] text-text-muted">school</span>
+</div>
+<!-- 4 Single-Hue Green Progress Bars Ramp -->
+<div class="space-y-space-md mt-space-md">
+<!-- Bar 1: Highest tier living green (#7BE0A8) -->
+<div class="space-y-1.5">
+<div class="flex items-center justify-between">
+<span class="font-body-sm text-body-sm font-medium text-text-primary">Medicinal Plant Fundamentals</span>
+<span class="font-data-mono text-data-mono text-accent-400 font-semibold">94% PASS <span class="text-text-muted font-normal">(1,420 TAKEN)</span></span>
+</div>
+<div class="w-full h-2 rounded-full bg-white/[0.06] overflow-hidden">
+<div class="h-full rounded-full bg-accent-400" style="width: 94%"></div>
+</div>
+</div>
+<!-- Bar 2: Secondary living green (#4FD18B) -->
+<div class="space-y-1.5">
+<div class="flex items-center justify-between">
+<span class="font-body-sm text-body-sm font-medium text-text-primary">Volatile Terpenoids &amp; Trichomes</span>
+<span class="font-data-mono text-data-mono text-accent-500 font-semibold">82% PASS <span class="text-text-muted font-normal">(980 TAKEN)</span></span>
+</div>
+<div class="w-full h-2 rounded-full bg-white/[0.06] overflow-hidden">
+<div class="h-full rounded-full bg-accent-500" style="width: 82%"></div>
+</div>
+</div>
+<!-- Bar 3: Forest green tier (#35A96D) -->
+<div class="space-y-1.5">
+<div class="flex items-center justify-between">
+<span class="font-body-sm text-body-sm font-medium text-text-primary">Nocturnal Plant Morphology</span>
+<span class="font-data-mono text-data-mono text-accent-600 font-semibold">71% PASS <span class="text-text-muted font-normal">(845 TAKEN)</span></span>
+</div>
+<div class="w-full h-2 rounded-full bg-white/[0.06] overflow-hidden">
+<div class="h-full rounded-full bg-accent-600" style="width: 71%"></div>
+</div>
+</div>
+<!-- Bar 4: Subdued warning hint tier (#282b28 / clay tint hint) -->
+<div class="space-y-1.5">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="font-body-sm text-body-sm font-medium text-text-primary">Alkaloid Toxicology &amp; Safety</span>
+<span class="material-symbols-outlined text-[14px] text-warning">warning</span>
+</div>
+<span class="font-data-mono text-data-mono text-warning font-semibold">58% PASS <span class="text-text-muted font-normal">(610 TAKEN)</span></span>
+</div>
+<div class="w-full h-2 rounded-full bg-white/[0.06] overflow-hidden">
+<div class="h-full rounded-full bg-clay-500" style="width: 58%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Info -->
+<div class="mt-space-md pt-space-sm flex items-center justify-between border-t border-white/5">
+<span class="font-label-mono text-label-mono text-text-muted">MEDIAN COMPLETION TIME: 6.4 MIN</span>
+<button class="font-label-mono text-label-mono text-accent-400 hover:underline">MANAGE TESTS →</button>
+</div>
+</div>
+<!-- Recent Moderation Activity Feed -->
+<div class="relative bg-bg-surface rounded-xl p-space-lg shadow-sm flex flex-col justify-between overflow-hidden">
+<div class="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+<div>
+<div class="flex items-center justify-between pb-space-sm">
+<div>
+<div class="flex items-center gap-2">
+<h2 class="font-headline-sm text-headline-sm text-text-primary">Recent moderation</h2>
+<span class="font-label-mono text-label-mono px-2 py-0.5 rounded-full bg-clay-tint text-warning font-semibold">4 URGENT</span>
+</div>
+<p class="font-body-sm text-body-sm text-text-muted mt-0.5">Automated taxonomic heuristics &amp; community flag dispatches</p>
+</div>
+<span class="material-symbols-outlined text-[20px] text-warning">verified_user</span>
+</div>
+<!-- 4 Moderation Feed Items -->
+<div class="space-y-space-sm mt-space-sm">
+<!-- Item 1: Danger Flag -->
+<div class="p-3 rounded-lg bg-bg-sunken flex flex-col gap-2">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-start gap-2.5">
+<span class="w-6 h-6 rounded flex items-center justify-center bg-danger-tint text-danger shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[15px]">flag</span>
+</span>
+<div class="flex flex-col min-w-0">
+<span class="font-body-sm text-body-sm text-text-primary leading-snug">
+                    Conflicting CAS Registry #8006-90-4 on Specimen <span class="font-data-mono text-text-secondary font-medium">#NX-0892</span>
+</span>
+<span class="font-label-mono text-[10px] text-text-muted mt-0.5">Submitted by @mira_botany</span>
+</div>
+</div>
+<span class="font-data-mono text-data-mono text-text-muted shrink-0">18M AGO</span>
+</div>
+<div class="flex items-center justify-end gap-2 pl-8">
+<button class="px-2.5 py-1 rounded bg-accent-tint text-accent-400 hover:bg-accent-500 hover:text-text-on-accent font-label-mono text-label-mono uppercase transition-colors">Approve</button>
+<button class="px-2.5 py-1 rounded bg-danger-tint text-danger hover:bg-danger hover:text-white font-label-mono text-label-mono uppercase transition-colors">Reject</button>
+</div>
+</div>
+<!-- Item 2: Toxic Warning / Belladonna -->
+<div class="p-3 rounded-lg bg-bg-sunken flex flex-col gap-2">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-start gap-2.5">
+<span class="w-6 h-6 rounded flex items-center justify-center bg-clay-tint text-warning shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[15px]">warning</span>
+</span>
+<div class="flex flex-col min-w-0">
+<span class="font-body-sm text-body-sm text-text-primary leading-snug">
+                    Potential toxic misidentification: <span class="font-botanical-body italic text-secondary">Atropa belladonna</span> in public plot
+                  </span>
+<span class="font-label-mono text-[10px] text-text-muted mt-0.5">Reported by 3 field curators</span>
+</div>
+</div>
+<span class="font-data-mono text-data-mono text-text-muted shrink-0">1H AGO</span>
+</div>
+<div class="flex items-center justify-end gap-2 pl-8">
+<button class="px-2.5 py-1 rounded bg-clay-tint text-warning hover:bg-warning hover:text-text-on-accent font-label-mono text-label-mono uppercase transition-colors">Quarantine</button>
+<button class="px-2.5 py-1 rounded bg-bg-raised text-text-secondary hover:text-text-primary font-label-mono text-label-mono uppercase transition-colors">Dismiss</button>
+</div>
+</div>
+<!-- Item 3: Verified Curatorial Revision -->
+<div class="p-3 rounded-lg bg-bg-sunken flex items-center justify-between gap-2">
+<div class="flex items-center gap-2.5 min-w-0">
+<span class="w-6 h-6 rounded flex items-center justify-center bg-accent-tint text-accent-500 shrink-0">
+<span class="material-symbols-outlined text-[15px]">check_circle</span>
+</span>
+<div class="flex flex-col min-w-0 truncate">
+<span class="font-body-sm text-body-sm text-text-primary truncate">
+                  Curatorial monograph revision verified: <span class="font-botanical-body italic text-accent-400">Salvia officinalis</span>
+</span>
+<span class="font-label-mono text-[10px] text-text-muted">Gas chromatography volatile profile attached</span>
+</div>
+</div>
+<div class="flex items-center gap-2 shrink-0">
+<span class="font-label-mono text-label-mono px-2 py-0.5 rounded-full bg-accent-tint text-accent-400 font-semibold">VERIFIED</span>
+<span class="font-data-mono text-data-mono text-text-muted">3H AGO</span>
+</div>
+</div>
+<!-- Item 4: Community Thread Report -->
+<div class="p-3 rounded-lg bg-bg-sunken flex items-center justify-between gap-2">
+<div class="flex items-center gap-2.5 min-w-0">
+<span class="w-6 h-6 rounded flex items-center justify-center bg-clay-tint text-clay-400 shrink-0">
+<span class="material-symbols-outlined text-[15px]">forum</span>
+</span>
+<div class="flex flex-col min-w-0 truncate">
+<span class="font-body-sm text-body-sm text-text-primary truncate">
+                  Reported nomenclature dispute in community taxonomy thread #402
+                </span>
+<span class="font-label-mono text-[10px] text-text-muted">Chemotypic variant discussion on Lamiaceae</span>
+</div>
+</div>
+<div class="flex items-center gap-2 shrink-0">
+<button class="px-2 py-0.5 rounded bg-bg-raised text-text-secondary hover:text-text-primary font-label-mono text-label-mono uppercase transition-colors">Review</button>
+<span class="font-data-mono text-data-mono text-text-muted">5H AGO</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Info -->
+<div class="mt-space-md pt-space-sm flex items-center justify-between border-t border-white/5">
+<span class="font-label-mono text-label-mono text-text-muted">MODERATION ENGINE SLA: 99.8% RESOLVED &lt; 24H</span>
+<a class="font-label-mono text-label-mono text-warning hover:underline" href="#moderation">FULL AUDIT LOG →</a>
+</div>
+</div>
+</div>
+</div></div></main></div></body></html>
