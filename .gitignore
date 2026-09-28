@@ -6,4 +6,5 @@ dist/
 .serena/
 *.log
 client/public/reference/*.png
+client/public/plants/*.jpg
 .DS_Store

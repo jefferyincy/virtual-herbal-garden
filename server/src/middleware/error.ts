@@ -59,6 +59,15 @@ export function errorHandler(
     return;
   }
 
+  // A malformed percent-encoded path/query (e.g. `/api/regions/%FF/plants`) makes Express's
+  // decoding throw a URIError. That is a bad request, not a server fault.
+  if (err instanceof URIError) {
+    res.status(400).json({
+      error: { code: 'bad_request', message: 'Malformed URL encoding' },
+    });
+    return;
+  }
+
   if (!isProd) console.error('[unhandled]', err);
   res.status(500).json({
     error: {

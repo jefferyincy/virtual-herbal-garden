@@ -11,8 +11,8 @@
  *   `verified`).
  * - `contraindications` carries text only where a cited source documents the hazard; otherwise it
  *   is null rather than invented.
- * - `publishedAt` is the record's own seed timestamp (not a medical claim); the seed runner reads
- *   it, so it is part of the record shape.
+ * - `publishedAt` records the date this seed entry was authored, not the publication date of any
+ *   source: several sources postdate it and it makes no claim about them.
  */
 
 export type PlantPartKey =
@@ -254,7 +254,13 @@ export const plantSeed: PlantSeedRecord[] = [
     ],
     region: ['Mediterranean', 'West Asia', 'South Asia'],
     systemsMentioned: ['western', 'unani', 'ayurveda'],
-    images: [],
+    images: [
+      {
+        url: '/plants/mentha-spicata.jpg',
+        alt: "Spearmint (Spearmint)",
+        credit: "Simon Eugster --Simon 13:07, 2 July 2006 (UTC) · CC BY-SA 3.0 · Wikimedia Commons",
+      },
+    ],
     modelUrl: null,
     modelScale: 1,
     tags: ['carminative', 'culinary herb', 'essential oil'],
@@ -384,7 +390,13 @@ export const plantSeed: PlantSeedRecord[] = [
     lookAlikes: [],
     region: ['India', 'South Asia', 'Southeast Asia'],
     systemsMentioned: ['ayurveda', 'siddha', 'unani', 'western'],
-    images: [],
+    images: [
+      {
+        url: '/plants/curcuma-longa.jpg',
+        alt: "Turmeric (Turmeric)",
+        credit: "SKsiddhartthan · CC BY-SA 4.0 · Wikimedia Commons",
+      },
+    ],
     modelUrl: null,
     modelScale: 1,
     tags: ['anti-inflammatory', 'culinary spice', 'natural dye'],
@@ -428,7 +440,13 @@ export const plantSeed: PlantSeedRecord[] = [
     ],
     region: ['South Asia', 'Southeast Asia', 'East Africa'],
     systemsMentioned: ['ayurveda', 'siddha', 'unani', 'western'],
-    images: [],
+    images: [
+      {
+        url: '/plants/zingiber-officinale.jpg',
+        alt: "Ginger (Ginger)",
+        credit: "Franz Eugen Köhler, Köhler's Medizinal-Pflanzen · Public domain · Wikimedia Commons",
+      },
+    ],
     modelUrl: null,
     modelScale: 1,
     tags: ['antiemetic', 'culinary spice', 'carminative'],
@@ -467,7 +485,13 @@ export const plantSeed: PlantSeedRecord[] = [
     lookAlikes: [],
     region: ['India', 'South Asia'],
     systemsMentioned: ['ayurveda', 'unani'],
-    images: [],
+    images: [
+      {
+        url: '/plants/elettaria-cardamomum.jpg',
+        alt: "Cardamom (Elettaria cardamomum)",
+        credit: "Franz Eugen Köhler, Köhler's Medizinal-Pflanzen · Public domain · Wikimedia Commons",
+      },
+    ],
     modelUrl: null,
     modelScale: 1,
     tags: ['culinary spice', 'carminative', 'aromatic'],
@@ -515,7 +539,13 @@ export const plantSeed: PlantSeedRecord[] = [
     ],
     region: ['Southeast Asia', 'South Asia'],
     systemsMentioned: ['ayurveda', 'siddha', 'unani'],
-    images: [],
+    images: [
+      {
+        url: '/plants/alpinia-galanga.jpg',
+        alt: "Greater galangal (Alpinia galanga)",
+        credit: "Raffi Kojian · CC BY-SA 3.0 · Wikimedia Commons",
+      },
+    ],
     modelUrl: null,
     modelScale: 1,
     tags: ['culinary spice', 'aromatic', 'carminative'],
@@ -551,12 +581,18 @@ export const plantSeed: PlantSeedRecord[] = [
     // Herb-induced liver injury has been reported with ashwagandha supplements, so the
     // contraindication text states the documented risk rather than a generic caution.
     contraindications:
-      'Cases of liver injury have been reported with ashwagandha supplements; anyone with liver disease, or who develops fatigue, dark urine or jaundice while taking it, should stop and seek medical advice. Autoimmune and thyroid conditions also warrant medical guidance before use.',
+      'Cases of liver injury have been reported with ashwagandha supplements; anyone with liver disease, or who develops fatigue, dark urine or jaundice while taking it, should stop and seek medical advice.',
     toxicity: 'low',
     lookAlikes: [],
     region: ['India', 'South Asia', 'North Africa', 'West Asia'],
     systemsMentioned: ['ayurveda', 'unani', 'siddha'],
-    images: [],
+    images: [
+      {
+        url: '/plants/withania-somnifera.jpg',
+        alt: "Ashwagandha (Withania somnifera)",
+        credit: "Wowbobwow12 · CC BY-SA 3.0 · Wikimedia Commons",
+      },
+    ],
     modelUrl: null,
     modelScale: 1,
     tags: ['adaptogen', 'tonic', 'root'],
@@ -572,7 +608,7 @@ export const plantSeed: PlantSeedRecord[] = [
       },
       {
         label:
-          'A proprietary herbal extract of ashwagandha root for stress and anxiety in healthy adults: a randomized trial (Journal of Medicine and Life, 2026)',
+          'A proprietary herbal extract of ashwagandha root for stress and anxiety in healthy adults: a randomized, double-blind, three-arm, placebo-controlled efficacy and safety study (Journal of Medicine and Life, 2026)',
         url: 'https://pubmed.ncbi.nlm.nih.gov/41815853/',
       },
     ],
@@ -602,7 +638,13 @@ export const plantSeed: PlantSeedRecord[] = [
     lookAlikes: [],
     region: ['India', 'South Asia', 'Southeast Asia', 'East Africa'],
     systemsMentioned: ['ayurveda', 'siddha', 'unani'],
-    images: [],
+    images: [
+      {
+        url: '/plants/azadirachta-indica.jpg',
+        alt: "Neem (Azadirachta indica)",
+        credit: "TheSlumPanda · CC BY-SA 4.0 · Wikimedia Commons",
+      },
+    ],
     modelUrl: null,
     modelScale: 1,
     tags: ['antimicrobial', 'bitter tonic', 'insecticide'],
@@ -643,7 +685,13 @@ export const plantSeed: PlantSeedRecord[] = [
     lookAlikes: [],
     region: ['North Africa', 'West Asia', 'South Asia', 'Mediterranean'],
     systemsMentioned: ['ayurveda', 'siddha', 'unani', 'western'],
-    images: [],
+    images: [
+      {
+        url: '/plants/aloe-vera.jpg',
+        alt: "Aloe (Aloe vera)",
+        credit: "Collage by en:User:MidgleyDJ, original images from Wikimedia commons (Image:Aloe_vera_offsets.jpg and Image:Aloe_vera_C.jpg) · CC BY-SA 3.0 · Wikimedia Commons",
+      },
+    ],
     modelUrl: null,
     modelScale: 1,
     tags: ['skin', 'succulent', 'laxative'],
@@ -681,14 +729,20 @@ export const plantSeed: PlantSeedRecord[] = [
     lookAlikes: [],
     region: ['India', 'South Asia', 'Southeast Asia'],
     systemsMentioned: ['ayurveda', 'siddha', 'unani', 'western'],
-    images: [],
+    images: [
+      {
+        url: '/plants/piper-nigrum.jpg',
+        alt: "Black pepper (Black pepper)",
+        credit: "Franz Eugen Köhler, Köhler's Medizinal-Pflanzen · Public domain · Wikimedia Commons",
+      },
+    ],
     modelUrl: null,
     modelScale: 1,
     tags: ['culinary spice', 'bioenhancer', 'pungent'],
     sources: [
       {
         label:
-          'Unveiling the Multifaceted Potential of Piper nigrum: A Comprehensive Review of Its Chemical Composition (Journal of Agricultural and Food Chemistry, 2026)',
+          'Unveiling the Multifaceted Potential of Piper nigrum: A Comprehensive Review of Its Chemical Components, Health Benefits, Safety Assessment and Industrial Application (Journal of Agricultural and Food Chemistry, 2026)',
         url: 'https://pubmed.ncbi.nlm.nih.gov/41564422/',
       },
       {
@@ -715,12 +769,21 @@ export const plantSeed: PlantSeedRecord[] = [
     medicinalUses:
       'Traditionally used as a warming tea for diarrhoea and indigestion and as a flavouring. Clinical trials of cinnamon for glycaemic control in type 2 diabetes are numerous but inconsistent, and reviews call for species-specific, better-controlled work.',
     dosage: null,
-    contraindications: null,
-    toxicity: 'none',
+    // Cinnamon essential oil (high in cinnamaldehyde and eugenol) is a hazard in concentrated form,
+    // unlike the culinary bark.
+    contraindications:
+      'Undiluted cinnamon essential oil must not be swallowed and is not the same as culinary bark; concentrated preparations are the concern, not food amounts of the spice.',
+    toxicity: 'low',
     lookAlikes: [],
     region: ['South Asia', 'India', 'Southeast Asia'],
     systemsMentioned: ['ayurveda', 'unani', 'western'],
-    images: [],
+    images: [
+      {
+        url: '/plants/cinnamomum-verum.jpg',
+        alt: "Ceylon cinnamon (Cinnamomum verum)",
+        credit: "Wikimedia Commons · Public domain · Wikimedia Commons",
+      },
+    ],
     modelUrl: null,
     modelScale: 1,
     tags: ['culinary spice', 'warming', 'aromatic'],
@@ -732,7 +795,7 @@ export const plantSeed: PlantSeedRecord[] = [
       },
       {
         label:
-          'A critical appraisal of anti-hyperglycemic mechanisms, matrix-dependent bioavailability, and species differences of cinnamon (Food Research International, 2026)',
+          'A critical appraisal of anti-hyperglycemic mechanisms, matrix-dependent bioavailability, and species-stratified safety of Cinnamomum spp. as functional food ingredients (Food Research International, 2026)',
         url: 'https://pubmed.ncbi.nlm.nih.gov/42169286/',
       },
     ],
@@ -754,12 +817,21 @@ export const plantSeed: PlantSeedRecord[] = [
     medicinalUses:
       'Traditionally applied for toothache and used as a warming carminative for indigestion and to ease inflamed tissue. Essential-oil research reports strong antimicrobial and antioxidant activity in vitro, and neuroprotective effects have been explored in laboratory models.',
     dosage: null,
-    contraindications: null,
-    toxicity: 'none',
+    // Clove essential oil is eugenol-rich and is a documented hazard in concentrated form:
+    // undiluted oil swallowed by children has caused CNS depression and metabolic acidosis.
+    contraindications:
+      'Undiluted clove essential oil is eugenol-rich and must not be swallowed, especially by children; concentrated preparations are the concern, not culinary amounts of the dried flower bud.',
+    toxicity: 'low',
     lookAlikes: [],
     region: ['Southeast Asia', 'South Asia', 'East Africa'],
     systemsMentioned: ['ayurveda', 'siddha', 'unani', 'western'],
-    images: [],
+    images: [
+      {
+        url: '/plants/syzygium-aromaticum.jpg',
+        alt: "Clove (Clove)",
+        credit: "Franz Eugen Köhler, Köhler's Medizinal-Pflanzen · Public domain · Wikimedia Commons",
+      },
+    ],
     modelUrl: null,
     modelScale: 1,
     tags: ['culinary spice', 'eugenol', 'antimicrobial'],
@@ -796,7 +868,7 @@ export const plantSeed: PlantSeedRecord[] = [
     // Thymol-rich ajwain oil is a documented hazard in concentrated form, whereas culinary seed
     // use is the ordinary food context, so the text distinguishes the two.
     contraindications:
-      'Concentrated ajwain essential oil is thymol-rich and must not be taken internally in undiluted form; the cited toxicity reports concern such high-dose or concentrated preparations rather than culinary use of the seed.',
+      'Concentrated ajwain essential oil is thymol-rich and should not be taken internally in undiluted form; high-dose or concentrated preparations are the concern, not culinary use of the seed.',
     toxicity: 'low',
     lookAlikes: [
       {
@@ -806,7 +878,13 @@ export const plantSeed: PlantSeedRecord[] = [
     ],
     region: ['India', 'South Asia', 'West Asia', 'Central Asia'],
     systemsMentioned: ['ayurveda', 'unani', 'siddha'],
-    images: [],
+    images: [
+      {
+        url: '/plants/trachyspermum-ammi.jpg',
+        alt: "Ajwain (Trachyspermum ammi)",
+        credit: "Bames24 · CC BY-SA 3.0 · Wikimedia Commons",
+      },
+    ],
     modelUrl: null,
     modelScale: 1,
     tags: ['carminative', 'culinary spice', 'thymol'],
@@ -818,7 +896,7 @@ export const plantSeed: PlantSeedRecord[] = [
       },
       {
         label:
-          'Efficacy of Six Plants of Apiaceae Family for Body Weight Management: A Review from the Perspective of Modern Medicine (Current Drug Discovery Technologies, 2021)',
+          'Efficacy of Six Plants of Apiaceae Family for Body Weight Management: A Review from the Perspective of Modern and Traditional Persian Medicine (Current Drug Discovery Technologies, 2021)',
         url: 'https://pubmed.ncbi.nlm.nih.gov/33023434/',
       },
     ],
@@ -850,7 +928,13 @@ export const plantSeed: PlantSeedRecord[] = [
     ],
     region: ['Mediterranean', 'West Asia', 'South Asia', 'Central Asia'],
     systemsMentioned: ['ayurveda', 'unani', 'western'],
-    images: [],
+    images: [
+      {
+        url: '/plants/foeniculum-vulgare.jpg',
+        alt: "Fennel (Foeniculum vulgare)",
+        credit: "Alvesgaspar · CC BY-SA 3.0 · Wikimedia Commons",
+      },
+    ],
     modelUrl: null,
     modelScale: 1,
     tags: ['carminative', 'culinary spice', 'anise-scented'],
@@ -892,7 +976,13 @@ export const plantSeed: PlantSeedRecord[] = [
     lookAlikes: [],
     region: ['India', 'South Asia', 'Southeast Asia'],
     systemsMentioned: ['ayurveda', 'siddha', 'unani'],
-    images: [],
+    images: [
+      {
+        url: '/plants/tinospora-cordifolia.jpg',
+        alt: "Giloy (Tinospora cordifolia)",
+        credit: "Tmd at Thai Wikipedia · Public domain · Wikimedia Commons",
+      },
+    ],
     modelUrl: null,
     modelScale: 1,
     tags: ['immunomodulator', 'bitter tonic', 'antipyretic'],
@@ -936,7 +1026,13 @@ export const plantSeed: PlantSeedRecord[] = [
     lookAlikes: [],
     region: ['India', 'South Asia', 'Southeast Asia'],
     systemsMentioned: ['ayurveda', 'siddha', 'unani'],
-    images: [],
+    images: [
+      {
+        url: '/plants/bacopa-monnieri.jpg',
+        alt: "Brahmi (Bacopa monnieri)",
+        credit: "Forest &amp; Kim Starr · CC BY 3.0 · Wikimedia Commons",
+      },
+    ],
     modelUrl: null,
     modelScale: 1,
     tags: ['nootropic', 'marsh plant', 'adaptogen'],
@@ -948,7 +1044,7 @@ export const plantSeed: PlantSeedRecord[] = [
       },
       {
         label:
-          'Bacopa monnieri: Preclinical and Clinical Evidence of Neuroactive Effects, Safety of Use and the Sea of Uncertainties (Nutrients, 2025)',
+          'Bacopa monnieri: Preclinical and Clinical Evidence of Neuroactive Effects, Safety of Use and the Search for Improved Bioavailability (Nutrients, 2025)',
         url: 'https://pubmed.ncbi.nlm.nih.gov/40507208/',
       },
     ],

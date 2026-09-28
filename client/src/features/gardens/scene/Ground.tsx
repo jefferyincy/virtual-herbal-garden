@@ -204,7 +204,10 @@ export function Ground({
           const target = tileAt(event.point.x, event.point.z, size, gridSize);
           if (target) onTileClick?.(target);
         }}
-        onPointerOut={() => onTileHover?.(null)}
+        // Placement mode keeps the hovered tile as the selection: moving the pointer off the soil to
+        // the bottom action bar must NOT clear it, or the "Place plant" button disables before it can
+        // be clicked. View mode still clears so no highlight lingers after the pointer leaves the bed.
+        onPointerOut={onTileClick ? undefined : () => onTileHover?.(null)}
       >
         <meshStandardMaterial vertexColors color="#ffffff" roughness={0.95} metalness={0} />
       </mesh>

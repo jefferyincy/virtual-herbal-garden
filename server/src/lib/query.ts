@@ -6,9 +6,14 @@
 /**
  * Escape every RegExp metacharacter so user input is matched literally.
  * Without this, a search for "a+b(" either throws or matches the whole collection.
+ *
+ * Control characters are stripped first: a NUL byte reaches `new RegExp` as "embedded null byte"
+ * (an unhandled throw -> 500) and no legitimate search term or region name contains one.
  */
 export function escapeRegExp(value: string): string {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return value
+    .replace(/[\u0000-\u001f\u007f]/g, '')
+    .replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 export const DEFAULT_PAGE_SIZE = 12;
