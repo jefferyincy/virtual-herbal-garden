@@ -2,9 +2,15 @@ node_modules/
 dist/
 .env
 .env.local
+.vercel/
 .mongo/
 .serena/
 *.log
 client/public/reference/*.png
-client/public/plants/*.jpg
+!/client/public/reference/dark_moody_botanical_macro_photography_of_fresh_holy_basil_ocimum_tenuiflorum.png
+!/client/public/reference/dark_moody_botanical_photography_of_dried_marshmallow_root_slices_and_leaves.png
+!/client/public/reference/dark_moody_botanical_photography_of_fresh_sage_leaves_salvia_officinalis_macro.png
+!/client/public/reference/dark_moody_botanical_photography_of_licorice_root_pieces_and_dried_glycyrrhiza.png
+!/client/public/reference/studio_botanical_photography_of_sweet_basil_or_african_blue_basil_sprig_with.png
+!/client/public/reference/studio_botanical_photography_of_tulsi_holy_basil_ocimum_tenuiflorum_sprig_with.png
 .DS_Store
