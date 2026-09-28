@@ -109,12 +109,9 @@ export type ResetViewHandle = MutableRefObject<(() => void) | null>;
 function SceneControls({
   resetViewRef,
   driftEnabled,
-  idleAnimation,
 }: {
   resetViewRef?: ResetViewHandle;
   driftEnabled: boolean;
-  /** Keeps the demand loop ticking so plant sway animates even when the camera drift is off. */
-  idleAnimation: boolean;
 }): React.ReactNode {
   const controlsRef = useRef<React.ComponentRef<typeof OrbitControls> | null>(null);
   const { invalidate } = useThree();
@@ -144,11 +141,11 @@ function SceneControls({
     if (!controls) return;
     controls.autoRotate = driftEnabled;
     controls.autoRotateSpeed = 0.35;
-    // The demand loop must tick while anything animates: the camera drift, or the plant sway.
-    if (!driftEnabled && !idleAnimation) return;
+    // The demand loop must tick while the camera drift animates; the rain keeps its own loop alive.
+    if (!driftEnabled) return;
     const timer = window.setInterval(() => invalidate(), DRIFT_INTERVAL_MS);
     return () => window.clearInterval(timer);
-  }, [driftEnabled, idleAnimation, invalidate]);
+  }, [driftEnabled, invalidate]);
 
   return (
     <OrbitControls
@@ -327,7 +324,6 @@ export function GardenScene({
         <SceneControls
           resetViewRef={resetViewRef}
           driftEnabled={mode === 'view' && !selectedPlotId && !reducedMotion}
-          idleAnimation={plots.length > 0 && !reducedMotion}
         />
         {onProjectSelected && (
           <SelectionProjector position={selectedPosition} onProject={onProjectSelected} />

@@ -6,15 +6,14 @@
  * Geometry is memoised per plant + quality so a re-render (selection, hover, settings change) never
  * rebuilds meshes, and the merged BufferGeometry is a single mesh per plant.
  */
-import { useEffect, useMemo, useRef } from 'react';
-import { DoubleSide, type Group } from 'three';
-import { useFrame, type ThreeEvent } from '@react-three/fiber';
+import { useEffect, useMemo } from 'react';
+import { DoubleSide } from 'three';
+import type { ThreeEvent } from '@react-three/fiber';
 import type { PlotPlant, PlotStage } from '../hooks';
 import {
   FLOWER_COLOR,
   GREEN_RAMP,
   buildHerbGeometry,
-  hashString,
   herbShapeFor,
   type QualityLevel,
 } from './procedural';
@@ -28,6 +27,8 @@ const STAGE_SCALE: Record<PlotStage, number> = {
 };
 
 const SELECTION_RING_COLOR = '#7BE0A8';
+/** The soil mound under each plant, matching the bed's darker soil tone. */
+const MOUND_COLOR = '#10160f';
 
 export function PlantMesh({
   plant,
@@ -62,20 +63,16 @@ export function PlantMesh({
     onSelect();
   };
 
-  // Idle sway: a small per-plant phase offset (hash of the id) so the bed never moves in lockstep.
-  // Presentation only, and skipped for ghosts - a placement preview should sit still on its tile.
-  const swayRef = useRef<Group>(null);
-  const phase = useMemo(() => (hashString(plant._id) / 0x100000000) * Math.PI * 2, [plant._id]);
-  useFrame((state) => {
-    const node = swayRef.current;
-    if (!node || ghost) return;
-    const t = state.clock.elapsedTime;
-    node.rotation.z = Math.sin(t * 0.9 + phase) * 0.035;
-    node.rotation.x = Math.cos(t * 0.7 + phase) * 0.02;
-  });
-
   return (
-    <group ref={swayRef} position={[position[0], position[1], position[2]]} scale={scale}>
+    <group position={[position[0], position[1], position[2]]} scale={scale}>
+      {!ghost && (
+        // The planting mound: a shallow cone at the base so each herb reads as planted in soil
+        // rather than resting on a flat plane.
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 0]} scale={1 / scale}>
+          <circleGeometry args={[0.34, 20]} />
+          <meshStandardMaterial color={MOUND_COLOR} roughness={1} metalness={0} />
+        </mesh>
+      )}
       <mesh
         geometry={geometry}
         castShadow={!ghost}

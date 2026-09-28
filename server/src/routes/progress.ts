@@ -243,7 +243,7 @@ progressRouter.get(
     res.json({
       xp: user?.xp ?? 0,
       level: user?.level ?? 1,
-      levelProgress,
+      levelProgress: levelProgress(user?.xp ?? 0),
       streak: {
         current: user?.streak?.current ?? 0,
         longest: user?.streak?.longest ?? 0,

@@ -8,7 +8,6 @@
  */
 import { useEffect, useMemo } from 'react';
 import { BufferGeometry, Color, DoubleSide, Float32BufferAttribute, PlaneGeometry } from 'three';
-import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { useFrame, useThree, type ThreeEvent } from '@react-three/fiber';
 import type { GardenSettings } from '@/types/api';
 import type { QualityLevel } from './procedural';
@@ -29,8 +28,13 @@ const KEY_DAY = 0xf2ddba;
 /** Overcast key: a cool grey, so rain/storm reads as dull daylight rather than a lit scene. */
 const KEY_OVERCAST = 0xb9c4bd;
 const RIM_COLOR = 0x7be0a8;
+/** Rain streak tint: cool and desaturated so it reads as water, not the accent green. */
+const RAIN_COLOR = 0x9fb8c8;
 const TILE_LIGHT = 0x1d2821;
 const TILE_DARK = 0x131a15;
+/** Lawn and bed-border tones: green-family, kept dark so the bed stays the focal surface. */
+const LAWN_COLOR = 0x15211a;
+const BORDER_COLOR = 0x2b3a30;
 /** Overcast backgrounds: a desaturated cool grey, slightly darker than the clear-sky twins. */
 const OVERCAST_NIGHT_BACKGROUND = 0x080b0a;
 const OVERCAST_DAY_BACKGROUND = 0x151b19;
@@ -102,28 +106,29 @@ function tileAt(worldX: number, worldZ: number, size: number, gridSize: number):
 }
 
 /**
- * All tiles as ONE mesh with per-vertex colours: the variation is visible but the bed costs a single
- * draw call no matter how large the grid grows. Built in the XY plane and rotated flat at the end.
+ * The soil bed as ONE subdivided plane with per-vertex colour and a little height ripple. The tiles
+ * are a placement overlay, not the geometry: the bed itself should read as turned earth, so it has
+ * no visible square seams when the grid is hidden. Still a single draw call, and the same mesh is the
+ * raycast target for tile picking.
  */
-function tiledSoilGeometry(size: number, gridSize: number): BufferGeometry {
-  const tile = size / gridSize;
-  const parts: PlaneGeometry[] = [];
-  for (let row = 0; row < gridSize; row += 1) {
-    for (let column = 0; column < gridSize; column += 1) {
-      const quad = new PlaneGeometry(tile * 0.985, tile * 0.985);
-      const shade = new Color(TILE_DARK).lerp(new Color(TILE_LIGHT), tileNoise(column, row));
-      const colors: number[] = [];
-      for (let vertex = 0; vertex < 4; vertex += 1) colors.push(shade.r, shade.g, shade.b);
-      quad.setAttribute('color', new Float32BufferAttribute(colors, 3));
-      // Plane y maps to world -Z under rotateX(-90deg), so the row offset is negated here.
-      quad.translate(-size / 2 + tile * (column + 0.5), -(-size / 2 + tile * (row + 0.5)), 0);
-      parts.push(quad);
-    }
+function soilBedGeometry(size: number, segments = 48): BufferGeometry {
+  const geometry = new PlaneGeometry(size, size, segments, segments).toNonIndexed();
+  const position = geometry.getAttribute('position');
+  const colors: number[] = [];
+  for (let index = 0; index < position.count; index += 1) {
+    const x = position.getX(index);
+    const y = position.getY(index);
+    // Low-frequency ripple: a few broad mounds rather than per-vertex noise, so it reads as soil.
+    const ripple = Math.sin(x * 1.3) * Math.cos(y * 1.1) * 0.012 + tileNoise(x * 2.1, y * 2.3) * 0.006;
+    position.setZ(index, ripple);
+    // Shade each vertex between the soil tones, softened further by the ripple.
+    const shade = new Color(TILE_DARK).lerp(new Color(TILE_LIGHT), 0.35 + ripple * 12 + tileNoise(x * 5, y * 5) * 0.3);
+    colors.push(shade.r, shade.g, shade.b);
   }
-  const merged = mergeGeometries(parts) ?? new PlaneGeometry(size, size);
-  for (const part of parts) part.dispose();
-  merged.rotateX(-Math.PI / 2);
-  return merged;
+  geometry.setAttribute('color', new Float32BufferAttribute(colors, 3));
+  geometry.computeVertexNormals();
+  geometry.rotateX(-Math.PI / 2);
+  return geometry;
 }
 
 /** Accent grid lines as one LineSegments geometry, so the overlay is a single draw call. */
@@ -163,7 +168,7 @@ export function Ground({
   timeOfDay: number;
   season: SeasonKind;
 }): React.ReactNode {
-  const soil = useMemo(() => tiledSoilGeometry(size, gridSize), [size, gridSize]);
+  const soil = useMemo(() => soilBedGeometry(size), [size]);
   const grid = useMemo(
     () => (showGrid ? gridLineGeometry(size, gridSize) : null),
     [showGrid, size, gridSize],
@@ -188,10 +193,17 @@ export function Ground({
 
   return (
     <group>
-      {/* Opaque base under the speckle so the hairline gaps between tiles never show through. */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow={shadows}>
-        <planeGeometry args={[size, size]} />
-        <meshStandardMaterial color={TILE_DARK} roughness={0.96} metalness={0} />
+      {/* Lawn: an apron of grass under and around the bed, so the garden sits in a garden rather
+          than floating on the void. Flat-shaded and slightly darker than the soil. */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.02, 0]} receiveShadow={shadows}>
+        <circleGeometry args={[size * 1.55, 48]} />
+        <meshStandardMaterial color={LAWN_COLOR} roughness={0.98} metalness={0} />
+      </mesh>
+
+      {/* Bed border: a low rim marking the planted square against the lawn. */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.006, 0]}>
+        <ringGeometry args={[size * 0.5, size * 0.56, 64, 1]} />
+        <meshStandardMaterial color={BORDER_COLOR} roughness={0.9} metalness={0} transparent opacity={0.9} />
       </mesh>
 
       <mesh
@@ -237,43 +249,60 @@ export function Ground({
 }
 
 /**
- * Falling rain: a capped point field that each frame drops straight down and wraps back to the top,
- * so it reads as weather rather than a static scatter. `useFrame` runs on the demand loop, which the
- * same loop keeps invalidating via `invalidate()` while it is mounted - so rain animates and the idle
- * garden still costs nothing once the weather is switched off.
- *
- * Motes are drawn as small accent-tinted points; three.js cannot render true streaks from `Points`,
- * so the length reads from the fall speed instead of geometry.
+ * Falling rain as thin streaks. Each streak is a two-vertex line segment tilted along the fall
+ * direction, dropped and wrapped every frame, which reads as falling water far better than dots
+ * (WebGL draws one-pixel lines, so the streaks stay hair-fine). `useFrame` keeps the demand loop
+ * invalidated while it is mounted; switching weather off removes it and the garden idles again.
  */
 function Rain({ size, quality }: { size: number; quality: QualityLevel }): React.ReactNode {
   const { invalidate } = useThree();
-  const count = quality === 'low' ? 260 : quality === 'medium' ? 520 : 900;
-  const top = size * 0.95;
+  const count = quality === 'low' ? 220 : quality === 'medium' ? 420 : 700;
+  const top = size * 1.15;
+  const streak = size * 0.05;
 
   const geometry = useMemo(() => {
-    const positions = new Float32Array(count * 3);
+    // Slight slant so the rain reads as wind-blown rather than a vertical curtain.
+    const dir = [0.16, -1, 0.07];
+    const norm = Math.hypot(dir[0] ?? 0, dir[1] ?? 0, dir[2] ?? 0) || 1;
+    const dx = (dir[0] ?? 0) / norm;
+    const dy = (dir[1] ?? 0) / norm;
+    const dz = (dir[2] ?? 0) / norm;
+
+    const positions = new Float32Array(count * 2 * 3);
     const speeds = new Float32Array(count);
     for (let index = 0; index < count; index += 1) {
-      positions[index * 3 + 0] = (tileNoise(index, count) - 0.5) * size * 2.2;
-      positions[index * 3 + 1] = tileNoise(index * 1.7, count * 0.5) * top;
-      positions[index * 3 + 2] = (tileNoise(index * 3.1, count * 0.9) - 0.5) * size * 2.2;
-      speeds[index] = 6 + tileNoise(index * 5.3, count) * 6;
+      const x = (tileNoise(index, count) - 0.5) * size * 2.6;
+      const z = (tileNoise(index * 3.1, count * 0.9) - 0.5) * size * 2.6;
+      const y = tileNoise(index * 1.7, count * 0.5) * top;
+      speeds[index] = 8 + tileNoise(index * 5.3, count) * 8;
+      const base = index * 6;
+      positions[base + 0] = x;
+      positions[base + 1] = y;
+      positions[base + 2] = z;
+      positions[base + 3] = x - dx * streak;
+      positions[base + 4] = y - dy * streak;
+      positions[base + 5] = z - dz * streak;
     }
     const buffer = new BufferGeometry();
     buffer.setAttribute('position', new Float32BufferAttribute(positions, 3));
-    return { buffer, positions, speeds };
-  }, [count, size, top]);
+    return { buffer, positions, speeds, dx, dy, dz };
+  }, [count, size, top, streak]);
 
   useEffect(() => () => geometry.buffer.dispose(), [geometry]);
 
   useFrame((_state, delta) => {
-    // dt is clamped so a backgrounded tab does not teleport every drop on resume.
     const step = Math.min(delta, 0.05);
-    const { positions, speeds } = geometry;
+    const { positions, speeds, dx, dy, dz } = geometry;
     for (let index = 0; index < count; index += 1) {
-      const y = index * 3 + 1;
-      const next = (positions[y] ?? 0) - (speeds[index] ?? 0) * step;
-      positions[y] = next < 0 ? top : next;
+      const base = index * 6;
+      const head = (positions[base + 1] ?? 0) - (speeds[index] ?? 0) * step;
+      const y = head < 0 ? head + top : head;
+      const x = positions[base + 0] ?? 0;
+      const z = positions[base + 2] ?? 0;
+      positions[base + 1] = y;
+      positions[base + 3] = x - dx * streak;
+      positions[base + 4] = y - dy * streak;
+      positions[base + 5] = z - dz * streak;
     }
     const attr = geometry.buffer.attributes.position;
     if (attr) attr.needsUpdate = true;
@@ -281,16 +310,9 @@ function Rain({ size, quality }: { size: number; quality: QualityLevel }): React
   });
 
   return (
-    <points geometry={geometry.buffer} frustumCulled={false}>
-      <pointsMaterial
-        color={RIM_COLOR}
-        size={quality === 'low' ? 0.045 : 0.05}
-        transparent
-        opacity={0.32}
-        depthWrite={false}
-        sizeAttenuation
-      />
-    </points>
+    <lineSegments geometry={geometry.buffer} frustumCulled={false}>
+      <lineBasicMaterial color={RAIN_COLOR} transparent opacity={0.38} depthWrite={false} />
+    </lineSegments>
   );
 }
 

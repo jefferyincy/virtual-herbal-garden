@@ -37,13 +37,31 @@ import { BADGE_ICON_NAMES } from './badges.ts';
 export const adminRouter: Router = Router();
 
 /**
- * The file's ENTIRE authorisation story, deliberately in one place: Express runs this pair for
- * every request that reaches the router, so every route declared below - and every route added
- * later, the GETs included - is admin-only by construction. There is no per-route `requireRole`
- * to forget. `requireAuth` runs first so an anonymous caller gets 401 and a signed-in non-admin
- * gets 403 before any handler or validator runs.
+ * Authorisation, deliberately in one place per surface:
+ *  - `postsRouter` allows BOTH `expert` and `admin` to moderate a post (POST /api/posts/:id/moderate),
+ *    so the moderation queue and its diff - the read side of the same job - are granted the same pair.
+ *  - ieverything else under /api/admin is admin-only; `requireAuth` runs first so an anonymous caller
+ *    gets 401 and a signed-in non-admin gets 403 before any handler or validator runs.
+ *
+ * A caller who reaches the router still hits the read-side gate below on every other route.
  */
-adminRouter.use(requireAuth, requireRole('admin'));
+adminRouter.use(requireAuth);
+
+/**
+ * The moderation read surface is shared with experts (see `postsRouter`), so its paths bypass the
+ * admin-only gate and carry their own `requireRole` on the route. Everything else under /api/admin
+ * is admin-only by construction, the GETs included.
+ */
+adminRouter.use((req, res, next) => {
+  if (req.path.startsWith('/moderation')) {
+    next();
+    return;
+  }
+  requireRole('admin')(req, res, next);
+});
+
+/** The pair the post moderation action already accepts: the read side of the same job. */
+const MODERATOR_ROLES = ['expert', 'admin'] as const;
 
 const OBJECT_ID = /^[0-9a-f]{24}$/i;
 const objectIdString = z.string().trim().regex(OBJECT_ID, 'Expected a 24 character id');
@@ -634,6 +652,7 @@ function authorOf(author: unknown): { name: string; handle: string } {
 
 adminRouter.get(
   '/moderation/queue',
+  requireRole(...MODERATOR_ROLES),
   validate({ query: queueQuerySchema }),
   route(async (req, res) => {
     const query = req.query as unknown as z.infer<typeof queueQuerySchema>;
@@ -675,6 +694,7 @@ adminRouter.get(
 
 adminRouter.get(
   '/moderation/:id/diff',
+  requireRole(...MODERATOR_ROLES),
   validate({ params: idParams }),
   route(async (req, res) => {
     const post = await Post.findById(routeParamId(req)).lean<LeanQueuePost | null>();
@@ -891,8 +911,9 @@ adminRouter.get(
   route(async (req, res) => {
     const window = pagination(req.query as unknown as z.infer<typeof quizQuerySchema>);
 
-    // The list counts the questions instead of shipping them: the builder only needs the number,
-    // and answer sets stay out of a response that is not an explicit create/update result.
+    // The quiz builder edits questions in place, so the list ships them: this is an admin-only
+    // endpoint and the builder is its only consumer. `questionCount` is still derived for the
+    // list's mono count line.
     const [items, total] = await Promise.all([
       Quiz.aggregate<QuizListRow>([
         { $sort: { updatedAt: -1 } },
@@ -907,6 +928,9 @@ adminRouter.get(
             published: 1,
             questionCount: 1,
             updatedAt: 1,
+            timeLimitSec: 1,
+            plantIds: 1,
+            questions: 1,
           },
         },
       ]),

@@ -100,10 +100,10 @@ export default function PlaceModePage(): React.ReactNode {
 
   const canPlace = Boolean(activePlant && hoveredTile && tileFree && !atCapacity);
 
-  const submit = () => {
-    if (!activePlant || !hoveredTile || !canPlace) return;
+  const placeAt = (tile: TileCoord) => {
+    if (!activePlant || atCapacity) return;
     plantPlot.mutate(
-      { x: hoveredTile.x, z: hoveredTile.z, plantId: activePlant._id },
+      { x: tile.x, z: tile.z, plantId: activePlant._id },
       {
         onSuccess: () => {
           // Placement mode STAYS open: users plant several species in a row, and bouncing back to
@@ -119,7 +119,7 @@ export default function PlaceModePage(): React.ReactNode {
           // placement mode, mark the tile occupied so the ghost/primary button stop offering it, and
           // say what happened instead of dropping the action.
           if (error instanceof ApiError && error.status === 409) {
-            setTakenTiles((prev) => [...prev, hoveredTile]);
+            setTakenTiles((prev) => [...prev, tile]);
             setTileError('That tile was planted from another session. Choose a free tile.');
             void garden.refetch();
             return;
@@ -130,6 +130,10 @@ export default function PlaceModePage(): React.ReactNode {
         },
       },
     );
+  };
+
+  const submit = () => {
+    if (hoveredTile && canPlace) placeAt(hoveredTile);
   };
 
   if (gardens.isLoading || garden.isLoading || palette.isLoading) {
@@ -208,14 +212,16 @@ export default function PlaceModePage(): React.ReactNode {
           setTileError(null);
         }}
         onTileClick={(tile) => {
-          // Occupied tiles are not selectable: clicking one explains why instead of arming the ghost.
+          setTileError(null);
+          // Clicking a free grid tile plants the selected species there - the primary gesture, kept
+          // alongside the hover + "Place plant" button. An occupied tile explains itself instead.
           if (!isTileFree(occupied, tile.x, tile.z)) {
+            setHoveredTile(tile);
             setTileError('That tile is already planted. Pick a free tile.');
-            setHoveredTile(null);
             return;
           }
           setHoveredTile(tile);
-          setTileError(null);
+          placeAt(tile);
         }}
         ghostPlant={tileFree ? activePlant : null}
         settings={settings}
