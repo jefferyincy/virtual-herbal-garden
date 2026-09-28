@@ -14,3 +14,5 @@ client/public/reference/*.png
 !/client/public/reference/studio_botanical_photography_of_sweet_basil_or_african_blue_basil_sprig_with.png
 !/client/public/reference/studio_botanical_photography_of_tulsi_holy_basil_ocimum_tenuiflorum_sprig_with.png
 .DS_Store
+.vercel
+.env*

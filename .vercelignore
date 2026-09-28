@@ -1,0 +1,30 @@
+# Vercel CLI upload excludes. Without this the CLI ships the whole working tree:
+# .mongo/ alone is 615 MB (the portable mongod binary + data), which aborts the upload.
+#
+# All patterns are root-anchored (leading `/`) so they never match nested paths such as
+# `client/public/reference/` - the plant photos the app actually serves.
+
+# Local infra, VCS and build output
+/.mongo/
+/node_modules/
+/.git/
+/.serena/
+/client/dist/
+/server/dist/
+/client/node_modules/
+/server/node_modules/
+
+# Design references: the Stitch export and the mockup PNGs. Not needed to build the app.
+# NOTE: /client/public/reference/ is deliberately NOT ignored - those 6 photographs ship.
+/reference/
+/stitch_interactive_3d_herb_garden.zip
+
+# Secrets - never upload these
+/.env
+/.env.local
+/.env.*.local
+
+# Tooling / docs / local scripts not required to build the client
+/docs/
+/scripts/
+*.log

@@ -79,6 +79,35 @@ This is idempotent, so re-running is safe.
 - **`.env` is never deployed.** Render injects env vars; `--env-file-if-exists` is a harmless no-op
   there. Never commit `.env`.
 - **Plant images / `reference` are gitignored.** Plant photos live in `client/public/plants/*.jpg`
-  and mockups in `client/public/reference/*.png`; both are excluded by `.gitignore`, so a Vercel build
-  from the repo has the UI but **not the images**. Commit those files (or host them separately) if the
-  deployed site needs them.
+  and mockups in `client/public/reference/*.png`. The six `/reference/*.png` files the seed records
+  point at ARE committed (negated in `.gitignore`); the mockups are not.
+
+## CLI deploys (what actually happened)
+
+Deploying with `vercel deploy` from a working tree uploads **every file not in `.vercelignore`**.
+`.mongo/` in this repo is ~615 MB (the portable mongod binary + data), which aborts the upload with
+`Error: Upload aborted`. `.vercelignore` (committed) excludes it — keep it root-anchored (`/path/`)
+or the `reference/` pattern also matches `client/public/reference/` and the app loses its images.
+
+The reliable path is to build locally and deploy the build output only:
+```bash
+npx vercel pull --yes --environment production
+npx vercel build --prod
+npx vercel deploy --prebuilt --prod --yes
+```
+
+Two things that surprise people:
+
+- **`<project>.vercel.app` may already belong to someone else.** `vercel.app` is a single global
+  namespace. If the plain name is taken, Vercel assigns a suffix and the project's real domain is
+  e.g. `virtual-herbal-garden-fawn.vercel.app`. Read it from
+  `GET https://api.vercel.com/v9/projects/<projectId>/domains`.
+- **Deployment protection is on by default for new teams** (`ssoProtection:
+  all_except_custom_domains`), so the URL 302s to a Vercel login instead of serving the app. Disable
+  it for a public site:
+  ```bash
+  curl -X PATCH -H "Authorization: Bearer $VERCEL_TOKEN" -H "Content-Type: application/json" \
+    -d '{"ssoProtection":null}' \
+    "https://api.vercel.com/v9/projects/<projectId>?teamId=<orgId>"
+  ```
+
