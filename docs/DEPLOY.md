@@ -42,10 +42,15 @@ Browser ──▶ app.vercel.app ──rewrite /api/*──▶ vhg-api.onrender.
 4. Deploy. Verify: `curl https://vhg-api.onrender.com/api/health` → `{"ok":true,"db":"connected",...}`
 
 ### Seed the database (once)
-From your machine, point the seed at Atlas (do **not** commit the URI):
+From your machine, point the seed at Atlas (do **not** commit the URI). The seed never signs a
+token, but `src/config/env.ts` validates the whole environment at import, so both JWT secrets must
+still be present — any 16+ character strings will do here:
 ```bash
 cd server
-MONGO_URI="mongodb+srv://.../herbal_garden" npx tsx src/seed/index.ts
+MONGO_URI="mongodb+srv://.../herbal_garden" \
+JWT_ACCESS_SECRET="any-16-plus-char-string" \
+JWT_REFRESH_SECRET="any-other-16-plus-char-string" \
+npx tsx src/seed/index.ts
 ```
 This is idempotent, so re-running is safe.
 
