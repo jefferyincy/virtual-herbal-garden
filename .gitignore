@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.env
+.env.local
+.mongo/data/
+.mongo/log/
+*.log
+client/public/reference/*.png
+.DS_Store
